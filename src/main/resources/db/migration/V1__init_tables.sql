@@ -13,20 +13,14 @@ CREATE TABLE IF NOT EXISTS motorcycle
     FOREIGN KEY (brand_id) REFERENCES brand(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS role
-(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(20)
-);
-
 CREATE TABLE IF NOT EXISTS usr
 (
     id SERIAL PRIMARY KEY,
-    role_id INT,
-    username VARCHAR(20),
-    password CHAR(60),
-    public_name VARCHAR(30),
-    FOREIGN KEY (role_id) REFERENCES role(id) ON UPDATE CASCADE
+    username VARCHAR(20) NOT NULL,
+    password CHAR(60) NOT NULL,
+    enabled BOOLEAN NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    public_name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS review
