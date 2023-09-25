@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "review")
 @AllArgsConstructor
@@ -28,4 +30,27 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return id.equals(review.id) && Objects.equals(body, review.body) && Objects.equals(motorcycle, review.motorcycle) && Objects.equals(user, review.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, body, motorcycle, user);
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", body='" + body + '\'' +
+                ", motorcycle=" + motorcycle +
+                ", user=" + user +
+                '}';
+    }
 }

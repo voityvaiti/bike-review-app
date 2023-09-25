@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "motorcycle")
@@ -30,4 +31,26 @@ public class Motorcycle {
 
     @OneToMany(mappedBy = "motorcycle")
     private List<Review> reviews = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Motorcycle that = (Motorcycle) o;
+        return id.equals(that.id) && Objects.equals(model, that.model) && Objects.equals(brand, that.brand);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, model, brand);
+    }
+
+    @Override
+    public String toString() {
+        return "Motorcycle{" +
+                "id=" + id +
+                ", model='" + model + '\'' +
+                ", brand=" + brand +
+                '}';
+    }
 }

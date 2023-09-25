@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "usr")
@@ -39,4 +40,30 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return enabled == user.enabled && id.equals(user.id) && username.equals(user.username) && password.equals(user.password) && role == user.role && Objects.equals(publicName, user.publicName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, enabled, role, publicName);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", role=" + role +
+                ", publicName='" + publicName + '\'' +
+                '}';
+    }
 }
