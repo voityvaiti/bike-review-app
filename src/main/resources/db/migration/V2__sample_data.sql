@@ -1,0 +1,32 @@
+INSERT INTO brand (name, country)
+VALUES ('Kawasaki', 'Japan'),
+       ('Honda', 'Japan'),
+       ('Ducati', 'Italy'),
+       ('BMW', 'Germany'),
+       ('Harley-Davidson', 'United States');
+
+INSERT INTO motorcycle(brand_id, model)
+VALUES (1, 'Ninja H2'),
+       (1, 'KX 250'),
+       (1, 'Z 750'),
+       (1, 'Versys'),
+       (1, 'Vulcan 900'),
+       (1, 'W800'),
+       (2, 'CB1000R'),
+       (2, 'Rebel 1100'),
+       (2, 'CRF Africa Twin'),
+       (2, 'NC 700S'),
+       (2, 'CB 500'),
+       (3, 'Scrambler'),
+       (3, 'Monster 1100'),
+       (3, 'Streetfighter'),
+       (3, 'SuperSport'),
+       (4, 'F 650'),
+       (4, 'G 130R'),
+       (4, 'K 100'),
+       (4, 'R nineT'),
+       (4, 'S 1000R'),
+       (5, '883 Iron'),
+       (5, '1200 Sportster'),
+       (5, 'CVO'),
+       (5, 'Fat Boy');
