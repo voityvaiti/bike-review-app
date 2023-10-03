@@ -5,6 +5,8 @@ import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MotorcycleServiceImpl implements MotorcycleService {
 
@@ -14,6 +16,11 @@ public class MotorcycleServiceImpl implements MotorcycleService {
         this.motorcycleRepository = motorcycleRepository;
     }
 
+
+    @Override
+    public List<Motorcycle> getAll() {
+        return motorcycleRepository.findAll();
+    }
 
     @Override
     public Motorcycle create(Motorcycle motorcycle) {
