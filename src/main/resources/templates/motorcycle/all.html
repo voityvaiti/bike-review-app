@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Motorcycles</title>
+</head>
+<body>
+
+<div>
+
+  <table>
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Brand</th>
+      <th scope="col">Model</th>
+      <th scope="col">Country</th>
+    </thead>
+
+    <tr th:each="motorcycle: ${motorcycles}">
+      <th scope="row" th:text="${motorcycle.getId()}"></th>
+
+      <th scope="row">
+        <p th:text="${motorcycle.getBrand().getName()}"></p>
+      </th>
+
+      <th scope="row">
+        <p th:text="${motorcycle.getModel()}"></p>
+      </th>
+
+      <th scope="row">
+        <p th:text="${motorcycle.getBrand().getCountry()}"></p>
+      </th>
+    </tr>
+
+  </table>
+
+</div>
+
+</body>
+</html>
