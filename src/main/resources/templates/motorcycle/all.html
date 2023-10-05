@@ -16,7 +16,6 @@
       <th scope="col">ID</th>
       <th scope="col">Brand</th>
       <th scope="col">Model</th>
-      <th scope="col">Country</th>
     </thead>
 
     <tr th:each="motorcycle: ${motorcycles}">
@@ -27,12 +26,9 @@
       </th>
 
       <th scope="row">
-        <p th:text="${motorcycle.getModel()}"></p>
+        <a th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}" th:text="${motorcycle.getModel()}"></a>
       </th>
 
-      <th scope="row">
-        <p th:text="${motorcycle.getBrand().getCountry()}"></p>
-      </th>
     </tr>
 
   </table>

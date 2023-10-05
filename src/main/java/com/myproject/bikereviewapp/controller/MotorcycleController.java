@@ -4,6 +4,7 @@ import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -21,5 +22,12 @@ public class MotorcycleController {
 
         model.addAttribute("motorcycles", motorcycleService.getAll());
         return "motorcycle/all";
+    }
+
+    @GetMapping("/{id}")
+    public String show(@PathVariable("id") Long id, Model model) {
+
+        model.addAttribute("motorcycle", motorcycleService.getById(id));
+        return "motorcycle/show";
     }
 }

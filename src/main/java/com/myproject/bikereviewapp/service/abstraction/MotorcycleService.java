@@ -8,6 +8,8 @@ public interface MotorcycleService {
 
     List<Motorcycle> getAll();
 
+    Motorcycle getById(Long id);
+
     Motorcycle create(Motorcycle motorcycle);
 
     void delete(Long id);
