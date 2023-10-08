@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
             EntityNotFoundException exception, Model model
     ) {
         model.addAttribute("errorMessage", exception.getMessage());
-        return "error";
+        return "error/entity_not_found";
     }
 
 }
