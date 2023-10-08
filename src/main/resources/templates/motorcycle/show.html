@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Motorcycle</title>
+</head>
+<body>
+<h1 th:text="${'Motorcycle #' + motorcycle.getId()}"></h1>
+<p th:text="${'Brand: ' + motorcycle.getBrand().getName()}"></p>
+<p th:text="${'Model: ' + motorcycle.getModel()}"></p>
+<p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
+
+</body>
+</html>

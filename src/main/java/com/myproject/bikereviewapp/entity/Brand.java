@@ -31,6 +31,13 @@ public class Brand {
     @OneToMany(mappedBy = "brand")
     private List<Motorcycle> motorcycles = new ArrayList<>();
 
+
+    public Brand(Long id, String name, String country) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

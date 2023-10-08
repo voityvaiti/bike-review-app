@@ -42,6 +42,15 @@ public class User {
     private List<Review> reviews = new ArrayList<>();
 
 
+    public User(Long id, String username, String password, boolean enabled, Role role, String publicName) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+        this.role = role;
+        this.publicName = publicName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
