@@ -1,5 +1,6 @@
 package com.myproject.bikereviewapp.controller;
 
+import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,8 @@ public class MotorcycleController {
     public String show(@PathVariable("id") Long id, Model model) {
 
         model.addAttribute("motorcycle", motorcycleService.getById(id));
+        model.addAttribute("review", new Review());
+
         return "motorcycle/show";
     }
 }

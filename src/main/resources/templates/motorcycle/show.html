@@ -12,5 +12,19 @@
 <p th:text="${'Model: ' + motorcycle.getModel()}"></p>
 <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
 
+<h4>Describe your opinion:</h4>
+
+<form th:method="POST" th:action="@{/review}" th:object="${review}">
+
+    <textarea rows="5" cols="50" th:field="*{body}" style="margin-bottom: 5px; font-family: Arial,sans-serif;"></textarea>
+
+    <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
+
+    <br>
+    <input type="submit" value="Post your review">
+
+</form>
+
+
 </body>
 </html>
