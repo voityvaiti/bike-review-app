@@ -36,7 +36,7 @@ public class ReviewController {
         review.setUser(userService.findByUsername(userDetails.getUsername()));
         reviewService.create(review);
 
-        return "redirect:/motorcycles";
+        return "redirect:/motorcycles/" + review.getMotorcycle().getId();
 
     }
 }

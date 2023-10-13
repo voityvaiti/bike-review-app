@@ -14,7 +14,7 @@
 
 <h4>Describe your opinion:</h4>
 
-<form th:method="POST" th:action="@{/review}" th:object="${review}">
+<form th:method="POST" th:action="@{/review}" th:object="${newReview}">
 
     <textarea rows="5" cols="50" th:field="*{body}" style="margin-bottom: 5px; font-family: Arial,sans-serif;"></textarea>
 
@@ -22,6 +22,13 @@
 
     <br>
     <input type="submit" value="Post your review">
+
+    <h3 style="margin-top: 40px; ">Reviews:</h3>
+
+    <div th:each="review: ${reviews}" style="border: 1px solid; margin-bottom: 8px; padding: 4px; width: 50%;">
+        <strong th:text="${review.user.getPublicName()}"></strong><br>
+        <p th:text="${review.body}"></p>
+    </div>
 
 </form>
 
