@@ -27,7 +27,8 @@
 
     <div th:each="review: ${reviews}" style="border: 1px solid; margin-bottom: 8px; padding: 4px; width: 50%;">
         <strong th:text="${review.user.getPublicName()}"></strong><br>
-        <p th:text="${review.body}"></p>
+        <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}"></p>
+
     </div>
 
 </form>
