@@ -1,6 +1,8 @@
 package com.myproject.bikereviewapp.controller;
 
+import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
+import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +15,11 @@ public class MotorcycleController {
 
     private final MotorcycleService motorcycleService;
 
-    public MotorcycleController(MotorcycleService motorcycleService) {
+    private final ReviewService reviewService;
+
+    public MotorcycleController(MotorcycleService motorcycleService, ReviewService reviewService) {
         this.motorcycleService = motorcycleService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping
@@ -28,6 +33,9 @@ public class MotorcycleController {
     public String show(@PathVariable("id") Long id, Model model) {
 
         model.addAttribute("motorcycle", motorcycleService.getById(id));
+        model.addAttribute("newReview", new Review());
+        model.addAttribute("reviews", reviewService.getReviewsByMotorcycleId(id));
+
         return "motorcycle/show";
     }
 }
