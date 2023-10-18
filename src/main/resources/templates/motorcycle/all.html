@@ -17,7 +17,7 @@
            th:each="motorcycle: ${motorcycles}" th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
             <div class="d-flex flex-column align-items-center">
-                <p th:text="${motorcycle.getBrand().getName()}">LOL</p>
+                <p th:text="${motorcycle.getBrand().getName()}"></p>
                 <p th:text="${motorcycle.getModel()}"></p>
             </div>
 
