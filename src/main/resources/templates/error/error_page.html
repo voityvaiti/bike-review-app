@@ -5,8 +5,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Error</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
 </head>
 <body>
-<h2 style="color: red" th:text="${errorMessage}"></h2>
+
+<div class="text-center mt-4">
+
+    <h2 th:text="${errorDetails.getHttpStatus()}"></h2>
+    <p th:text="${#temporals.format(errorDetails.getTimestamp(), 'dd-M-yyyy HH:mm:ss')}"></p>
+    <p th:text="${errorDetails.getMessage()}"></p>
+
+</div>
+
 </body>
 </html>
