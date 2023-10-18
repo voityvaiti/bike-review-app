@@ -5,33 +5,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Motorcycles</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
 </head>
 <body>
 
-<div>
+<div class="container mt-4">
 
-  <table>
-    <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Brand</th>
-      <th scope="col">Model</th>
-    </thead>
+    <div class="row gap-3">
+        <a class="col-sm-12 col-md-4 col-lg-2 border border-black rounded d-flex align-items-center flex-column text-decoration-none text-black"
+           th:each="motorcycle: ${motorcycles}" th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
-    <tr th:each="motorcycle: ${motorcycles}">
-      <th scope="row" th:text="${motorcycle.getId()}"></th>
+            <div class="d-flex flex-column align-items-center">
+                <p th:text="${motorcycle.getBrand().getName()}"></p>
+                <p th:text="${motorcycle.getModel()}"></p>
+            </div>
 
-      <th scope="row">
-        <p th:text="${motorcycle.getBrand().getName()}"></p>
-      </th>
-
-      <th scope="row">
-        <a th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}" th:text="${motorcycle.getModel()}"></a>
-      </th>
-
-    </tr>
-
-  </table>
+        </a>
+    </div>
 
 </div>
 
