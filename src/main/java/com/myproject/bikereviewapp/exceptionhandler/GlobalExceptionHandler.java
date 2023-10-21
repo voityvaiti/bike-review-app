@@ -1,6 +1,7 @@
 package com.myproject.bikereviewapp.exceptionhandler;
 
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
+import com.myproject.bikereviewapp.exceptionhandler.exception.UserDuplicationException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -28,6 +29,14 @@ public class GlobalExceptionHandler {
             RuntimeException exception, Model model
     ) {
         return handleException(exception, model, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({UserDuplicationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequestExceptions(
+            RuntimeException exception, Model model
+    ) {
+        return handleException(exception, model, HttpStatus.BAD_REQUEST);
     }
 
 
