@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login page</title>
+    <title>Log In</title>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
 </head>
@@ -12,9 +12,9 @@
 
     <div class="w-25">
 
-        <h1 class="text-center">LogIn</h1>
+        <form th:method="POST" th:action="@{/login}" class="border border-black rounded p-4">
 
-        <form th:method="POST" th:action="@{/login}" class="border-1 p-4">
+            <h1 class="text-center">LogIn</h1>
 
             <div class="form-group mb-2">
                 <label for="username">Username</label>
@@ -27,6 +27,9 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
+
+            <hr>
+            <p class="mb-1">Don't have an account? <a th:href="@{/signup}" class="text-decoration-none">Sign Up</a></p>
 
         </form>
     </div>
