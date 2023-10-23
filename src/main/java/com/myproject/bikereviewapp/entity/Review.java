@@ -1,6 +1,8 @@
 package com.myproject.bikereviewapp.entity;
 
 import jakarta.persistence.*;
+
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,7 @@ public class Review {
     private Long id;
 
     @Column(name = "body")
+    @Size(min = 5, max = 999, message = "Review must be between 5 and 999 characters.")
     private String body;
 
     @ManyToOne
