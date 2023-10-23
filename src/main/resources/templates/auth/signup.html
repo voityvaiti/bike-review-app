@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up</title>
+  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+  <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+</head>
+<body>
+
+<div class="d-flex justify-content-center mt-4">
+
+  <div class="w-25">
+
+    <form th:method="POST" th:action="@{/signup}" th:object="${user}" class="border border-black rounded p-4">
+
+      <h1 class="text-center">SignUp</h1>
+
+      <div class="form-group mb-2">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+      </div>
+
+      <div class="form-group mb-2">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+      </div>
+
+      <div class="form-group mb-2">
+        <label for="publicName">Public name</label>
+        <input type="text" class="form-control" id="publicName" name="publicName" placeholder="Public name">
+        <small class="form-text text-muted">The name by which others will see you.</small>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+
+      <p th:text="${errorMessage}" style="color: red;"></p>
+
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
