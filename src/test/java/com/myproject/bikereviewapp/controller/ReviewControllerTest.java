@@ -6,15 +6,14 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
-import com.myproject.bikereviewapp.service.impl.MotorcycleServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,6 +27,9 @@ class ReviewControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    MotorcycleController motorcycleController;
 
     @Autowired
     ReviewController reviewController;
@@ -57,7 +59,7 @@ class ReviewControllerTest {
         when(authentication.getPrincipal()).thenReturn(userDetails);
         when(userDetails.getUsername()).thenReturn(user.getUsername());
 
-        assertEquals("redirect:/motorcycles/" + motorcycleId, reviewController.create(review, authentication));
+        assertEquals("redirect:/motorcycles/" + motorcycleId, reviewController.create(review, mock(BindingResult.class), authentication, null));
 
         verify(reviewService).create(review);
     }
@@ -67,7 +69,7 @@ class ReviewControllerTest {
 
         Review review = new Review();
 
-        assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, null));
+        assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, mock(BindingResult.class), null, null));
 
         verify(reviewService, never()).create(any());
     }
