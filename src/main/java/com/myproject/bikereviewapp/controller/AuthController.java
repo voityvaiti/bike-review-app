@@ -3,11 +3,15 @@ package com.myproject.bikereviewapp.controller;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.lang.reflect.Field;
 
 @Controller
 public class AuthController {
@@ -25,20 +29,16 @@ public class AuthController {
 
 
     @GetMapping("/signup")
-    public String getSignUpPage(Model model) {
+    public String getSignUpPage(@ModelAttribute("user") User user) {
 
-        model.addAttribute("user", new User());
         return "auth/signup";
     }
 
     @PostMapping("/signup")
-    public String signUp(@ModelAttribute("user") User user, Model model) {
+    public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
 
-        if(userService.exists(user.getUsername())) {
-
-            model.addAttribute("user", user);
-            model.addAttribute("errorMessage", "User with same username is already exists");
-            return "auth/signup";
+        if(bindingResult.hasErrors()) {
+            return getSignUpPage(user);
         }
         user.setRole(Role.CLIENT);
         user.setEnabled(true);
