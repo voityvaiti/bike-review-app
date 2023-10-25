@@ -19,12 +19,12 @@
 
         <form th:method="POST" th:action="@{/review}" th:object="${newReview}">
 
-            <textarea class="form-control mb-2" rows="5" cols="50" th:field="*{body}"
-                      style="font-family: Arial,sans-serif;"></textarea>
+            <textarea class="form-control" rows="5" cols="50" th:field="*{body}"></textarea>
+            <div th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="form-text text-danger"></div>
 
             <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
 
-            <input type="submit" class="btn btn-primary" value="Post review">
+            <input type="submit" class="btn btn-primary mt-2" value="Post review">
 
         </form>
 

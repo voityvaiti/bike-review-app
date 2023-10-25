@@ -1,6 +1,9 @@
 package com.myproject.bikereviewapp.entity;
 
+import com.myproject.bikereviewapp.validation.annotation.UniqueFieldValue;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +26,12 @@ public class User {
     private Long id;
 
     @Column(name = "username")
+    @UniqueFieldValue(entityClass = User.class, fieldName = "username", message = "User with same username is already exists.")
+    @Size(min = 3, max = 19, message = "Username must be between 3 and 19 characters.")
     private String username;
 
     @Column(name = "password")
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters.")
     private String password;
 
     @Column(name = "enabled")
@@ -36,6 +42,7 @@ public class User {
     private Role role;
 
     @Column(name = "public_name")
+    @NotBlank(message = "Public name is required.")
     private String publicName;
 
     @OneToMany(mappedBy = "user")

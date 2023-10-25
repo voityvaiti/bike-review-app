@@ -40,7 +40,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(RuntimeException.class)
     private String handleException(
             RuntimeException exception, Model model, HttpStatus httpStatus
     ) {
