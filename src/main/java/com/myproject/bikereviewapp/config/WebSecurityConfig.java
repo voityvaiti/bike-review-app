@@ -44,6 +44,7 @@ public class WebSecurityConfig {
                 .anyRequest().permitAll()
         ).formLogin(form -> form
                 .loginPage("/login")
+                .failureUrl("/login-error")
         ).build();
     }
 
