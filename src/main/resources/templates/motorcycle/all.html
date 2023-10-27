@@ -1,27 +1,20 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8">
     <title>Motorcycles</title>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 </head>
-<body>
 
-<div class="border-bottom border-2 py-2 px-4 d-flex justify-content-around align-items-center">
-    <a th:href="@{/}" class="text-black text-decoration-none">
-        <h1>BIKE REVIEWER</h1>
-    </a>
+<body style="font-family: 'Kanit', sans-serif;">
 
-    <a sec:authorize="isAuthenticated()" class="btn btn-light">Profile</a>
-    <div sec:authorize="isAnonymous()">
-        <a th:href="@{/login}" class="btn btn-light">Log In</a>
-        <a th:href="@{/signup}" class="btn btn-light">Sign Up</a>
-    </div>
-</div>
+<div th:replace="~{navbar/header :: content}"></div>
 
 <div class="container mt-4">
 

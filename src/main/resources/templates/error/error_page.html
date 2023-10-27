@@ -7,8 +7,14 @@
     <title>Error</title>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 </head>
-<body>
+
+<body style="font-family: 'Kanit', sans-serif;">
+
+<div th:replace="~{navbar/header :: content}"></div>
 
 <div class="text-center mt-4">
 
