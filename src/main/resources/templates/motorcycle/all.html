@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8">
@@ -9,6 +10,18 @@
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
 </head>
 <body>
+
+<div class="border-bottom border-2 py-2 px-4 d-flex justify-content-around align-items-center">
+    <a th:href="@{/}" class="text-black text-decoration-none">
+        <h1>BIKE REVIEWER</h1>
+    </a>
+
+    <a sec:authorize="isAuthenticated()" class="btn btn-light">Profile</a>
+    <div sec:authorize="isAnonymous()">
+        <a th:href="@{/login}" class="btn btn-light">Log In</a>
+        <a th:href="@{/signup}" class="btn btn-light">Sign Up</a>
+    </div>
+</div>
 
 <div class="container mt-4">
 
