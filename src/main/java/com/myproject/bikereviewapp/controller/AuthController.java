@@ -33,6 +33,11 @@ public class AuthController {
         return "auth/login";
     }
 
+    @GetMapping("/logout")
+    public String getLogOutPage() {
+        return "auth/logout";
+    }
+
 
     @GetMapping("/signup")
     public String getSignUpPage(@ModelAttribute("user") User user) {
