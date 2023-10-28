@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.lang.reflect.Field;
 
 @Controller
 public class AuthController {
@@ -25,6 +24,18 @@ public class AuthController {
     @GetMapping("/login")
     public String getLogInPage() {
         return "auth/login";
+    }
+
+    @GetMapping("/login-error")
+    public String getLogInErrorPage(Model model) {
+
+        model.addAttribute("error", true);
+        return "auth/login";
+    }
+
+    @GetMapping("/logout")
+    public String getLogOutPage() {
+        return "auth/logout";
     }
 
 

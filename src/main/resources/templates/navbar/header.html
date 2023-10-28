@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
+<head>
+    <meta charset="UTF-8">
+    <title>Header</title>
+</head>
+<body>
+
+<div th:fragment="content" class="border-bottom border-2 py-2 px-4 d-flex justify-content-around align-items-center">
+    <a th:href="@{/}" class="text-white text-decoration-none bg-black px-3 py-2 rounded-1">
+        <h1 class="m-0">BIKE REVIEWER</h1>
+    </a>
+
+    <a th:href="@{/users/profile}" sec:authorize="isAuthenticated()" class="btn btn-dark">Profile</a>
+    <div sec:authorize="isAnonymous()">
+        <a th:href="@{/login}" class="btn btn-dark">Log In</a>
+        <a th:href="@{/signup}" class="btn btn-dark">Sign Up</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -40,11 +40,16 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(antMatcher(HttpMethod.POST, "/review/**")).authenticated()
-                .anyRequest().permitAll()
-        ).formLogin(form -> form
-                .loginPage("/login")
-        ).build();
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/reviews/**")).authenticated()
+                        .anyRequest().permitAll())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .failureUrl("/login-error"))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                )
+                .build();
     }
 
     @Bean
