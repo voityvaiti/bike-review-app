@@ -24,7 +24,7 @@
 
         <h4 class="mt-4">Describe your opinion:</h4>
 
-        <form th:method="POST" th:action="@{/review}" th:object="${newReview}">
+        <form th:method="POST" th:action="@{/reviews}" th:object="${newReview}">
 
             <textarea class="form-control" rows="5" cols="50" th:field="*{body}"></textarea>
             <div th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="form-text text-danger"></div>

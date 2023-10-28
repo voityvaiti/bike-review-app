@@ -31,7 +31,7 @@ public class WebSecurityConfig {
     @Bean
     public UserDetailsManager authenticateUsers() {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        jdbcUserDetailsManager.setUsersByUsernameQuery("SELECT username, password, enabled FROM usr WHERE username = ?");
+        jdbcUserDetailsManager.setUsersByUsernameQuery("SELECT username, password, enabled FROM usr WHERE useRrname = ?");
         jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT username, role FROM usr WHERE username = ?");
         return jdbcUserDetailsManager;
     }
@@ -40,7 +40,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(antMatcher(HttpMethod.POST, "/review/**")).authenticated()
+                .requestMatchers(antMatcher(HttpMethod.POST, "/reviews/**")).authenticated()
                 .anyRequest().permitAll()
         ).formLogin(form -> form
                 .loginPage("/login")
