@@ -24,10 +24,16 @@ public class MotorcycleController {
     }
 
     @GetMapping
-    public String index(Model model) {
+    public String showAll(Model model) {
 
         model.addAttribute("motorcycles", motorcycleService.getAll());
         return "motorcycle/all";
+    }
+
+    @GetMapping("/admin")
+    public String showAllInAdminPanel(Model model) {
+        model.addAttribute("motorcycles", motorcycleService.getAll());
+        return "motorcycle/admin/all";
     }
 
     @GetMapping("/{id}")
