@@ -41,6 +41,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(antMatcher(HttpMethod.POST, "/reviews/**")).authenticated()
+                        .requestMatchers(antMatcher("/**/admin/**")).hasAnyAuthority("ADMIN", "STUFF")
                         .anyRequest().permitAll())
                 .formLogin(form -> form
                         .loginPage("/login")

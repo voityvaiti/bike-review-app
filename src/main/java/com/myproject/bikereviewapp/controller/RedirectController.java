@@ -11,4 +11,9 @@ public class RedirectController {
         return "redirect:/motorcycles";
     }
 
+    @GetMapping("/admin")
+    public String redirectToMainAdminPanelPage() {
+        return "redirect:/motorcycles/admin";
+    }
+
 }
