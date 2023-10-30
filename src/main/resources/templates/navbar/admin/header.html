@@ -10,9 +10,9 @@
 
 <div th:fragment="content" class="border-bottom border-2 py-2 px-4 d-flex justify-content-around align-items-center">
 
-    <a class="btn btn-dark">Motorcycles</a>
+    <a th:href="@{/motorcycles/admin}" class="btn btn-dark">Motorcycles</a>
 
-    <a class="btn btn-dark">Brands</a>
+    <a th:href="@{/brands/admin}" class="btn btn-dark">Brands</a>
 
     <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-dark">Users</a>
 

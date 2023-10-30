@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page: Brands</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+</head>
+
+<body style="font-family: 'Kanit', sans-serif;">
+
+<div th:replace="~{navbar/admin/header :: content}"></div>
+
+<div class="d-flex justify-content-center">
+    <div class="w-75 mb-4">
+
+        <div class="d-flex justify-content-around align-items-center">
+
+            <h1 class="text-center mb-4 mt-3">Brands</h1>
+
+            <a class="btn btn-dark">Create new Brand</a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Country</th>
+                <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
+                <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
+            </thead>
+
+            <tr th:each="brand: ${brands}">
+                <th scope="row" th:text="${brand.getId()}"></th>
+                <th scope="row" th:text="${brand.getName()}"></th>
+                <th scope="row" th:text="${brand.getCountry()}"></th>
+                <th scope="row" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
+                    <a class="btn btn-dark">Edit</a>
+                </th>
+                <th scope="row" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="btn btn-dark">Delete</a>
+                </th>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>
