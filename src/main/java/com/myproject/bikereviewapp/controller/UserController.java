@@ -22,6 +22,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/admin")
+    public String showAllInAdminPanel(Model model) {
+        model.addAttribute("users", userService.getAll());
+        return "user/admin/all";
+    }
+
     @GetMapping("/profile")
     public String showCurrentUserProfile(Authentication authentication, Model model) {
 
