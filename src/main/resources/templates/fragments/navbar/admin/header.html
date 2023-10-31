@@ -14,7 +14,7 @@
 
     <a th:href="@{/brands/admin}" class="btn btn-dark">Brands</a>
 
-    <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-dark">Users</a>
+    <a th:href="@{/users/admin}" sec:authorize="hasAuthority('ADMIN')" class="btn btn-dark">Users</a>
 
     <a th:href="@{/}" class="btn btn-dark">Return to Main Page</a>
 
