@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page: Motorcycles</title>
+    <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
+    <th:block th:replace="~{fragments/font :: font-link}"></th:block>
+    <link th:href="@{/main.css}" rel="stylesheet" />
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar/admin/header :: content}"></div>
+
+<div class="d-flex justify-content-center">
+    <div class="w-75 mb-4">
+
+        <div class="d-flex justify-content-around align-items-center">
+
+            <h1 class="text-center mb-4 mt-3">Motorcycles</h1>
+
+            <a class="btn btn-dark">Create new Motorcycle</a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Model</th>
+                <th scope="col">Country</th>
+                <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
+                <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
+            </thead>
+
+            <tr th:each="motorcycle: ${motorcycles}">
+                <th scope="row" th:text="${motorcycle.getId()}"></th>
+                <th scope="row" th:text="${motorcycle.getBrand().getName()}"></th>
+                <th scope="row" th:text="${motorcycle.getModel()}"></th>
+                <th scope="row" th:text="${motorcycle.getBrand().getCountry()}"></th>
+                <th scope="row" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
+                    <a class="btn btn-dark">Edit</a>
+                </th>
+                <th scope="row" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="btn btn-dark">Delete</a>
+                </th>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>

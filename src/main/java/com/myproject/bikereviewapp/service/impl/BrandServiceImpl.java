@@ -5,6 +5,8 @@ import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BrandServiceImpl implements BrandService {
 
@@ -12,6 +14,11 @@ public class BrandServiceImpl implements BrandService {
 
     public BrandServiceImpl(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
+    }
+
+    @Override
+    public List<Brand> getAll() {
+        return brandRepository.findAll();
     }
 
     @Override

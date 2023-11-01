@@ -2,9 +2,13 @@ package com.myproject.bikereviewapp.service.abstraction;
 
 import com.myproject.bikereviewapp.entity.User;
 
+import java.util.List;
+
 public interface UserService {
 
     boolean exists(String username);
+
+    List<User> getAll();
 
     User findByUsername(String name);
 

@@ -8,6 +8,7 @@ import com.myproject.bikereviewapp.service.abstraction.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +24,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean exists(String username) {
         return userRepository.existsUserByUsername(username);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
     @Override

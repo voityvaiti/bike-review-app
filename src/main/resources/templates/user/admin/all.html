@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page: Users</title>
+    <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
+    <th:block th:replace="~{fragments/font :: font-link}"></th:block>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar/admin/header :: content}"></div>
+
+<div class="d-flex justify-content-center">
+    <div class="w-75 mb-4">
+
+        <div class="d-flex justify-content-around align-items-center">
+
+            <h1 class="text-center mb-4 mt-3">Users</h1>
+
+            <a class="btn btn-dark">Create new User</a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Username</th>
+                <th scope="col">Public name</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
+                <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
+            </thead>
+
+            <tr th:each="user: ${users}">
+                <th scope="row" th:text="${user.getId()}"></th>
+                <th scope="row" th:text="${user.getUsername()}"></th>
+                <th scope="row" th:text="${user.getPublicName()}"></th>
+                <th scope="row" th:text="${user.getRole()}"></th>
+                <th scope="row">
+                    <span th:if="${user.isEnabled()}" th:text="Enabled" class="text-success"></span>
+                    <span th:unless="${user.isEnabled()}" th:text="Disabled" class="text-danger"></span>
+                </th>
+                <th scope="row">
+                    <a class="btn btn-dark">Edit</a>
+                </th>
+                <th scope="row">
+                    <a class="btn btn-dark">Delete</a>
+                </th>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>
