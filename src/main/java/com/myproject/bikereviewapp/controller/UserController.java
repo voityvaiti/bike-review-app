@@ -1,13 +1,19 @@
 package com.myproject.bikereviewapp.controller;
 
+import com.myproject.bikereviewapp.entity.Role;
+import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -39,6 +45,23 @@ public class UserController {
         model.addAttribute("user", userService.findByUsername(userDetails.getUsername()));
 
         return "user/profile";
+    }
+
+    @GetMapping("/admin/new")
+    public String getCreateUserPage(@ModelAttribute User user, Model model) {
+        model.addAttribute("roles", Role.values());
+        return "user/admin/new";
+    }
+
+    @PostMapping("/admin")
+    public String create(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
+
+        if(bindingResult.hasErrors()) {
+            return getCreateUserPage(user, model);
+        }
+        userService.create(user);
+
+        return "redirect:/user/admin";
     }
 
 }

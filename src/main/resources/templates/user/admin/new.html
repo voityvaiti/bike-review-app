@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>New user</title>
+    <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
+    <th:block th:replace="~{fragments/font :: font-link}"></th:block>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar/admin/header :: content}"></div>
+
+<div class="d-flex justify-content-center mt-4">
+
+    <div class="w-25">
+
+        <form th:method="POST" th:action="@{/users/admin}" th:object="${user}"
+              class="border border-black rounded p-4">
+
+            <h1 class="text-center">New user</h1>
+
+            <div class="form-group mb-2">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Username">
+                <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+                     class="form-text text-danger"></div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password">
+                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                     class="form-text text-danger"></div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="publicName">Public name</label>
+                <input type="text" class="form-control" id="publicName" th:field="*{publicName}"
+                       placeholder="Public name">
+                <div th:if="${#fields.hasErrors('publicName')}" th:errors="*{publicName}"
+                     class="form-text text-danger"></div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="role">Role</label>
+
+                <select class="form-select" id="role" th:field="*{role}">
+                    <option th:each="role: ${roles}" th:value="${role}"
+                            th:text="${role.name()}"></option>
+                </select>
+            </div>
+
+            <div class="form-group mb-2">
+                <label class="form-check-label" for="enabled">Enabled</label>
+                <input class="form-check-input" type="checkbox" th:field="*{enabled}" id="enabled">
+            </div>
+
+            <button type="submit" class="btn btn-dark">Create</button>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

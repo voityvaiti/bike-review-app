@@ -43,6 +43,7 @@ public class User {
 
     @Column(name = "public_name")
     @NotBlank(message = "Public name is required.")
+    @Size(max = 30, message = "Public name cannot be longer then 30 characters.")
     private String publicName;
 
     @OneToMany(mappedBy = "user")
