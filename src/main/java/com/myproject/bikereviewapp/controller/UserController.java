@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,12 +57,17 @@ public class UserController {
     @PostMapping("/admin")
     public String create(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
 
+        //Temp solution to check username for uniqueness
+        if(userService.exists(user.getUsername())) {
+            bindingResult.rejectValue("username", "error.user", "User with same username is already exists.");
+        }
+
         if(bindingResult.hasErrors()) {
             return getCreateUserPage(user, model);
         }
         userService.create(user);
 
-        return "redirect:/user/admin";
+        return "redirect:/users/admin";
     }
 
 }

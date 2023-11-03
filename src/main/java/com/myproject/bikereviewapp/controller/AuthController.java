@@ -48,6 +48,11 @@ public class AuthController {
     @PostMapping("/signup")
     public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
 
+        //Temp solution to check username for uniqueness
+        if(userService.exists(user.getUsername())) {
+            bindingResult.rejectValue("username", "error.user", "User with same username is already exists.");
+        }
+
         if(bindingResult.hasErrors()) {
             return getSignUpPage(user);
         }
