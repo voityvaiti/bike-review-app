@@ -42,7 +42,7 @@
                 <th scope="row" th:text="${brand.getName()}"></th>
                 <th scope="row" th:text="${brand.getCountry()}"></th>
                 <th scope="row" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
-                    <a class="btn btn-dark">Edit</a>
+                    <a th:href="@{/brands/admin/edit/{id}(id=${brand.getId()})}" class="btn btn-dark">Edit</a>
                 </th>
                 <th scope="row" sec:authorize="hasAuthority('ADMIN')">
                     <a class="btn btn-dark">Delete</a>

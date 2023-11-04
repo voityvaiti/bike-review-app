@@ -6,10 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/brands")
@@ -35,10 +32,31 @@ public class BrandController {
     @PostMapping("/admin")
     public String create(@ModelAttribute @Valid Brand brand, BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return newBrand(brand);
         }
         brandService.create(brand);
+
+        return "redirect:/brands/admin";
+    }
+
+
+    @GetMapping("/admin/edit/{id}")
+    public String edit(@PathVariable("id") Long id, Model model) {
+
+        if (!model.containsAttribute("brand")) {
+            model.addAttribute("brand", brandService.getById(id));
+        }
+        return "brand/admin/edit";
+    }
+
+    @PutMapping("/admin/{id}")
+    public String update(@PathVariable("id") Long id, @ModelAttribute("brand") @Valid Brand brand, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return edit(id, model);
+        }
+        brandService.update(id, brand);
 
         return "redirect:/brands/admin";
     }
