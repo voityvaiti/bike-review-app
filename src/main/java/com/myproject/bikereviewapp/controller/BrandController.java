@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/brands")
 public class BrandController {
 
+    private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/brands/admin";
+
     private final BrandService brandService;
 
     public BrandController(BrandService brandService) {
@@ -20,6 +22,7 @@ public class BrandController {
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model) {
+
         model.addAttribute("brands", brandService.getAll());
         return "brand/admin/all";
     }
@@ -37,12 +40,12 @@ public class BrandController {
         }
         brandService.create(brand);
 
-        return "redirect:/brands/admin";
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
 
 
     @GetMapping("/admin/edit/{id}")
-    public String edit(@PathVariable("id") Long id, Model model) {
+    public String edit(@PathVariable Long id, Model model) {
 
         if (!model.containsAttribute("brand")) {
             model.addAttribute("brand", brandService.getById(id));
@@ -51,13 +54,20 @@ public class BrandController {
     }
 
     @PutMapping("/admin/{id}")
-    public String update(@PathVariable("id") Long id, @ModelAttribute("brand") @Valid Brand brand, BindingResult bindingResult, Model model) {
+    public String update(@PathVariable Long id, @ModelAttribute @Valid Brand brand, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             return edit(id, model);
         }
         brandService.update(id, brand);
 
-        return "redirect:/brands/admin";
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
+    }
+
+    @DeleteMapping("/admin/{id}")
+    public String delete(@PathVariable Long id) {
+
+        brandService.delete(id);
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
 }

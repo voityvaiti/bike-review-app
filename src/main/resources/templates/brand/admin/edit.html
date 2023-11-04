@@ -17,7 +17,7 @@
 
     <div class="w-25">
 
-        <form th:method="put" th:action="@{/brands/admin/{id}(id=${brand.getId()})}" th:object="${brand}"
+        <form th:method="PUT" th:action="@{/brands/admin/{id}(id=${brand.getId()})}" th:object="${brand}"
               class="border border-black rounded p-4">
 
             <h1 class="text-center">Edit Brand</h1>

@@ -7,7 +7,6 @@ import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BrandServiceImpl implements BrandService {
@@ -48,7 +47,6 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public void delete(Long id) {
-
-        brandRepository.deleteById(id);
+        brandRepository.delete(getById(id));
     }
 }
