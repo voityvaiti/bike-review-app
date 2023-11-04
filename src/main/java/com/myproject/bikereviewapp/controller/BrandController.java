@@ -28,7 +28,7 @@ public class BrandController {
     }
 
     @GetMapping("/admin/new")
-    public String getCreateBrandPage(@ModelAttribute Brand brand) {
+    public String newBrand(@ModelAttribute Brand brand) {
         return "brand/admin/new";
     }
 
@@ -36,7 +36,7 @@ public class BrandController {
     public String create(@ModelAttribute @Valid Brand brand, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
-            return getCreateBrandPage(brand);
+            return newBrand(brand);
         }
         brandService.create(brand);
 

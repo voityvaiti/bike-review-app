@@ -22,25 +22,25 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String getLogInPage() {
+    public String showLogInForm() {
         return "auth/login";
     }
 
     @GetMapping("/login-error")
-    public String getLogInErrorPage(Model model) {
+    public String showLogInErrorForm(Model model) {
 
         model.addAttribute("error", true);
         return "auth/login";
     }
 
     @GetMapping("/logout")
-    public String getLogOutPage() {
+    public String showLogOutPage() {
         return "auth/logout";
     }
 
 
     @GetMapping("/signup")
-    public String getSignUpPage(@ModelAttribute("user") User user) {
+    public String showSignUpForm(@ModelAttribute("user") User user) {
 
         return "auth/signup";
     }
@@ -54,7 +54,7 @@ public class AuthController {
         }
 
         if(bindingResult.hasErrors()) {
-            return getSignUpPage(user);
+            return showSignUpForm(user);
         }
         user.setRole(Role.CLIENT);
         user.setEnabled(true);

@@ -51,7 +51,7 @@ public class MotorcycleController {
     }
 
     @GetMapping("/admin/new")
-    public String getCreateMotorcyclePage(@ModelAttribute Motorcycle motorcycle, Model model) {
+    public String newMotorcycle(@ModelAttribute Motorcycle motorcycle, Model model) {
 
         model.addAttribute("brands", brandService.getAll());
         return "motorcycle/admin/new";
@@ -61,7 +61,7 @@ public class MotorcycleController {
     public String create(@ModelAttribute @Valid Motorcycle motorcycle, BindingResult bindingResult, Model model) {
 
         if(bindingResult.hasErrors()) {
-            return getCreateMotorcyclePage(motorcycle, model);
+            return newMotorcycle(motorcycle, model);
         }
         motorcycleService.create(motorcycle);
 

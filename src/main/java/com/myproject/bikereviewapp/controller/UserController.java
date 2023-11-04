@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/new")
-    public String getCreateUserPage(@ModelAttribute User user, Model model) {
+    public String newUser(@ModelAttribute User user, Model model) {
         model.addAttribute("roles", Role.values());
         return "user/admin/new";
     }
@@ -63,7 +62,7 @@ public class UserController {
         }
 
         if(bindingResult.hasErrors()) {
-            return getCreateUserPage(user, model);
+            return newUser(user, model);
         }
         userService.create(user);
 
