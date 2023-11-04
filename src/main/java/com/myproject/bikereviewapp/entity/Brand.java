@@ -44,6 +44,11 @@ public class Brand {
         this.country = country;
     }
 
+    public void setFields(Brand brand) {
+        this.name = brand.name;
+        this.country = brand.country;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
