@@ -47,7 +47,9 @@
                     <a th:href="@{/motorcycles/admin/edit/{id}(id=${motorcycle.getId()})}" class="btn btn-dark">Edit</a>
                 </th>
                 <th scope="row" sec:authorize="hasAuthority('ADMIN')">
-                    <a class="btn btn-dark">Delete</a>
+                    <form th:method="DELETE" th:action="@{/motorcycles/admin/{id}(id=${motorcycle.getId()})}">
+                        <button type="submit" class="btn btn-dark">Delete</button>
+                    </form>
                 </th>
             </tr>
 

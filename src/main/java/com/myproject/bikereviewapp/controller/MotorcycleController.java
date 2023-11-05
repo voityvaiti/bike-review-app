@@ -91,4 +91,11 @@ public class MotorcycleController {
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
+
+    @DeleteMapping("/admin/{id}")
+    public String delete(@PathVariable Long id) {
+
+        motorcycleService.delete(id);
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
+    }
 }

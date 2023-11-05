@@ -49,7 +49,6 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
     @Override
     public void delete(Long id) {
-
-        motorcycleRepository.deleteById(id);
+        motorcycleRepository.delete(getById(id));
     }
 }
