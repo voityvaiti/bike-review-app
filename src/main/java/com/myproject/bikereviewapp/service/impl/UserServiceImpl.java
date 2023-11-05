@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User getByUsername(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
         if (optionalUser.isEmpty()) {

@@ -44,7 +44,7 @@ public class ReviewController {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        review.setUser(userService.findByUsername(userDetails.getUsername()));
+        review.setUser(userService.getByUsername(userDetails.getUsername()));
         reviewService.create(review);
 
         return "redirect:/motorcycles/" + review.getMotorcycle().getId();

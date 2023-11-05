@@ -10,7 +10,7 @@ public interface UserService {
 
     List<User> getAll();
 
-    User findByUsername(String name);
+    User getByUsername(String name);
 
     User create(User user);
 

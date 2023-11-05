@@ -42,7 +42,7 @@ public class UserController {
         }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        model.addAttribute("user", userService.findByUsername(userDetails.getUsername()));
+        model.addAttribute("user", userService.getByUsername(userDetails.getUsername()));
 
         return "user/profile";
     }
