@@ -57,7 +57,9 @@
                     </form>
                 </th>
                 <th scope="row">
-                    <a class="btn btn-dark">Delete</a>
+                    <form th:method="DELETE" th:action="@{/users/admin/{id}(id=${user.getId()})}">
+                        <button type="submit" class="btn btn-dark">Delete</button>
+                    </form>
                 </th>
             </tr>
 

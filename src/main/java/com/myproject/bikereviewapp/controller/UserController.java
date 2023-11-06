@@ -76,4 +76,11 @@ public class UserController {
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
 
+    @DeleteMapping("/admin/{id}")
+    public String delete(@PathVariable Long id) {
+
+        userService.delete(id);
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
+    }
+
 }
