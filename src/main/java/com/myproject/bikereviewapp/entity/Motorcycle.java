@@ -1,6 +1,9 @@
 package com.myproject.bikereviewapp.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +26,13 @@ public class Motorcycle {
     private Long id;
 
     @Column(name = "model")
+    @NotBlank(message = "Model cannot be blank.")
+    @Size(max = 50, message = "Model cannot be longer then 50 characters.")
     private String model;
 
     @ManyToOne
     @JoinColumn(name = "brand_id")
+    @NotNull(message = "Brand must be selected.")
     private Brand brand;
 
     @OneToMany(mappedBy = "motorcycle")
@@ -37,6 +43,11 @@ public class Motorcycle {
         this.id = id;
         this.model = model;
         this.brand = brand;
+    }
+
+    public void setFields(Motorcycle motorcycle) {
+        this.brand = motorcycle.brand;
+        this.model = motorcycle.model;
     }
 
     @Override

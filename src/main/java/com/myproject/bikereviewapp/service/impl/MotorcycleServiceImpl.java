@@ -26,10 +26,9 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
     @Override
     public Motorcycle getById(Long id) {
-        Optional<Motorcycle> optionalMotorcycle = motorcycleRepository.findById(id);
-
-        return optionalMotorcycle.orElseThrow(()
-                -> new EntityNotFoundException("Motorcycle with id " + id + " not found."));
+        return motorcycleRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Motorcycle with id " + id + " not found.")
+        );
     }
 
     @Override
@@ -39,8 +38,17 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     }
 
     @Override
-    public void delete(Long id) {
+    public Motorcycle update(Long id, Motorcycle updatedMotorcycle) {
 
-        motorcycleRepository.deleteById(id);
+        Motorcycle currentMotorcycle = getById(id);
+
+        currentMotorcycle.setFields(updatedMotorcycle);
+
+        return motorcycleRepository.save(currentMotorcycle);
+    }
+
+    @Override
+    public void delete(Long id) {
+        motorcycleRepository.delete(getById(id));
     }
 }

@@ -32,7 +32,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User getById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User with id " + id + "not found")
+        );
+    }
+
+    @Override
+    public User getByUsername(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
         if (optionalUser.isEmpty()) {
@@ -56,8 +63,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void toggleStatus(Long id) {
 
-        userRepository.deleteById(id);
+        User currentUser = getById(id);
+
+        currentUser.setEnabled(!currentUser.isEnabled());
+
+        userRepository.save(currentUser);
+    }
+
+    @Override
+    public void delete(Long id) {
+        userRepository.delete(getById(id));
     }
 }

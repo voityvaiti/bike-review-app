@@ -8,7 +8,7 @@
     <title>Admin page: Brands</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
-    <link th:href="@{/main.css}" rel="stylesheet" />
+    <link th:href="@{/main.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -22,7 +22,7 @@
 
             <h1 class="text-center mb-4 mt-3">Brands</h1>
 
-            <a class="btn btn-dark">Create new Brand</a>
+            <a th:href="@{/brands/admin/new}" class="btn btn-dark">Create new Brand</a>
 
         </div>
 
@@ -42,10 +42,12 @@
                 <th scope="row" th:text="${brand.getName()}"></th>
                 <th scope="row" th:text="${brand.getCountry()}"></th>
                 <th scope="row" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
-                    <a class="btn btn-dark">Edit</a>
+                    <a th:href="@{/brands/admin/edit/{id}(id=${brand.getId()})}" class="btn btn-dark">Edit</a>
                 </th>
                 <th scope="row" sec:authorize="hasAuthority('ADMIN')">
-                    <a class="btn btn-dark">Delete</a>
+                    <form th:method="DELETE" th:action="@{/brands/admin/{id}(id=${brand.getId()})}">
+                        <button type="submit" class="btn btn-dark">Delete</button>
+                    </form>
                 </th>
             </tr>
 

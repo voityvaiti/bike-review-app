@@ -20,6 +20,11 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private static final String ADMIN = "ADMIN";
+
+    private static final String STUFF = "STUFF";
+
+
     private final DataSource dataSource;
 
     @Autowired
@@ -40,10 +45,15 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(antMatcher("/**/users/**/admin/**")).hasAuthority("ADMIN")
-                        .requestMatchers(antMatcher("/**/admin/**")).hasAnyAuthority("ADMIN", "STUFF")
+
+                        .requestMatchers(antMatcher(HttpMethod.DELETE, "/**")).hasAuthority(ADMIN)
+                        .requestMatchers(antMatcher("/**/users/**/admin/**")).hasAuthority(ADMIN)
+
+                        .requestMatchers(antMatcher("/**/admin/**")).hasAnyAuthority(ADMIN, STUFF)
+
                         .requestMatchers(antMatcher(HttpMethod.POST, "/reviews/**")).authenticated()
                         .anyRequest().permitAll())
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .failureUrl("/login-error"))

@@ -10,9 +10,13 @@ public interface UserService {
 
     List<User> getAll();
 
-    User findByUsername(String name);
+    User getById(Long id);
+
+    User getByUsername(String name);
 
     User create(User user);
+
+    void toggleStatus(Long id);
 
     void delete(Long id);
     

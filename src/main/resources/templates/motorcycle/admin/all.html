@@ -22,7 +22,7 @@
 
             <h1 class="text-center mb-4 mt-3">Motorcycles</h1>
 
-            <a class="btn btn-dark">Create new Motorcycle</a>
+            <a th:href="@{/motorcycles/admin/new}" class="btn btn-dark">Create new Motorcycle</a>
 
         </div>
 
@@ -44,10 +44,12 @@
                 <th scope="row" th:text="${motorcycle.getModel()}"></th>
                 <th scope="row" th:text="${motorcycle.getBrand().getCountry()}"></th>
                 <th scope="row" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
-                    <a class="btn btn-dark">Edit</a>
+                    <a th:href="@{/motorcycles/admin/edit/{id}(id=${motorcycle.getId()})}" class="btn btn-dark">Edit</a>
                 </th>
                 <th scope="row" sec:authorize="hasAuthority('ADMIN')">
-                    <a class="btn btn-dark">Delete</a>
+                    <form th:method="DELETE" th:action="@{/motorcycles/admin/{id}(id=${motorcycle.getId()})}">
+                        <button type="submit" class="btn btn-dark">Delete</button>
+                    </form>
                 </th>
             </tr>
 

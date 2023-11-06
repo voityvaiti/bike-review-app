@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit motorcycle</title>
+    <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
+    <th:block th:replace="~{fragments/font :: font-link}"></th:block>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar/admin/header :: content}"></div>
+
+<div class="d-flex justify-content-center mt-4">
+
+    <div class="w-25">
+
+        <form th:method="PUT" th:action="@{/motorcycles/admin/{id}(id=${motorcycle.getId()})}" th:object="${motorcycle}"
+              class="border border-black rounded p-4">
+
+            <h1 class="text-center">Edit Motorcycle</h1>
+
+            <div class="form-group mb-2">
+                <label for="brand">Brand</label>
+
+                <select class="form-select" id="brand" th:field="*{brand}">
+                    <option th:value="${null}" selected>--- Select brand ---</option>
+                    <option th:each="brand: ${brands}" th:value="${brand.getId()}"
+                            th:text="${brand.getName()}"></option>
+                </select>
+
+                <div th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}" class="form-text text-danger"></div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="model">Model</label>
+                <input type="text" class="form-control" id="model" th:field="*{model}" placeholder="Model">
+                <div th:if="${#fields.hasErrors('model')}" th:errors="*{model}" class="form-text text-danger"></div>
+            </div>
+
+            <button type="submit" class="btn btn-dark">Update</button>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

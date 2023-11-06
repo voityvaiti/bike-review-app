@@ -12,6 +12,8 @@ public interface MotorcycleService {
 
     Motorcycle create(Motorcycle motorcycle);
 
+    Motorcycle update(Long id, Motorcycle motorcycle);
+
     void delete(Long id);
 
 }

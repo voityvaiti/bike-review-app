@@ -1,6 +1,7 @@
 package com.myproject.bikereviewapp.service.impl;
 
 import com.myproject.bikereviewapp.entity.Brand;
+import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,30 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    public Brand getById(Long id) {
+        return brandRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Brand with id " + id + "not found")
+        );
+    }
+
+    @Override
     public Brand create(Brand brand) {
 
         return brandRepository.save(brand);
     }
 
     @Override
-    public void delete(Long id) {
+    public Brand update(Long id, Brand updatedBrand) {
 
-        brandRepository.deleteById(id);
+        Brand currentBrand = getById(id);
+
+        currentBrand.setFields(updatedBrand);
+
+        return brandRepository.save(currentBrand);
+    }
+
+    @Override
+    public void delete(Long id) {
+        brandRepository.delete(getById(id));
     }
 }

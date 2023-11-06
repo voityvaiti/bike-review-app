@@ -26,7 +26,7 @@ public class User {
     private Long id;
 
     @Column(name = "username")
-    @UniqueFieldValue(entityClass = User.class, fieldName = "username", message = "User with same username is already exists.")
+//    @UniqueFieldValue(entityClass = User.class, fieldName = "username", message = "User with same username is already exists.")
     @Size(min = 3, max = 19, message = "Username must be between 3 and 19 characters.")
     private String username;
 
@@ -43,6 +43,7 @@ public class User {
 
     @Column(name = "public_name")
     @NotBlank(message = "Public name is required.")
+    @Size(max = 30, message = "Public name cannot be longer then 30 characters.")
     private String publicName;
 
     @OneToMany(mappedBy = "user")
