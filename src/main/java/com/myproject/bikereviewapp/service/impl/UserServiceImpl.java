@@ -32,6 +32,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User with id " + id + "not found")
+        );
+    }
+
+    @Override
     public User getByUsername(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
@@ -53,6 +60,16 @@ public class UserServiceImpl implements UserService {
         user.setPassword(encodedPassword);
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public void toggleStatus(Long id) {
+
+        User currentUser = getById(id);
+
+        currentUser.setEnabled(!currentUser.isEnabled());
+
+        userRepository.save(currentUser);
     }
 
     @Override
