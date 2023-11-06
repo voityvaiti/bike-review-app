@@ -49,7 +49,12 @@
                     <span th:unless="${user.isEnabled()}" th:text="Disabled" class="text-danger"></span>
                 </th>
                 <th scope="row">
-                    <a class="btn btn-dark">Edit</a>
+                    <form th:method="PATCH" th:action="@{/users/admin/is-enabled/{id}(id=${user.getId()})}">
+                        <button type="submit" class="btn btn-dark">
+                            <span th:if="${user.isEnabled()}">Disable</span>
+                            <span th:if="${!user.isEnabled()}">Enable</span>
+                        </button>
+                    </form>
                 </th>
                 <th scope="row">
                     <a class="btn btn-dark">Delete</a>

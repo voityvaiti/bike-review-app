@@ -11,16 +11,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
-    private final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
+    private static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
+
+    private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/users/admin";
 
     private final UserService userService;
 
@@ -66,7 +65,15 @@ public class UserController {
         }
         userService.create(user);
 
-        return "redirect:/users/admin";
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
+    }
+
+    @PatchMapping ("/admin/is-enabled/{id}")
+    public String toggleStatus(@PathVariable Long id) {
+
+        userService.toggleStatus(id);
+
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
 
 }
