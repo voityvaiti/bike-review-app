@@ -7,7 +7,6 @@ import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MotorcycleServiceImpl implements MotorcycleService {
@@ -22,6 +21,11 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     @Override
     public List<Motorcycle> getAll() {
         return motorcycleRepository.findAll();
+    }
+
+    @Override
+    public List<Motorcycle> getAllSortedByIdAsc() {
+        return motorcycleRepository.getAllByOrderByIdAsc();
     }
 
     @Override

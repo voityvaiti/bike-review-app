@@ -23,6 +23,12 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    public List<Brand> getAllSortedByIdAsc() {
+        return brandRepository.findAllByOrderByIdAsc();
+    }
+
+
+    @Override
     public Brand getById(Long id) {
         return brandRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Brand with id " + id + "not found")

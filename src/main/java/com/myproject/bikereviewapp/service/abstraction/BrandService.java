@@ -8,6 +8,8 @@ public interface BrandService {
 
     List<Brand> getAll();
 
+    List<Brand> getAllSortedByIdAsc();
+
     Brand getById(Long id);
 
     Brand create(Brand brand);

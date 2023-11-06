@@ -38,7 +38,7 @@ public class MotorcycleController {
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model) {
-        model.addAttribute("motorcycles", motorcycleService.getAll());
+        model.addAttribute("motorcycles", motorcycleService.getAllSortedByIdAsc());
         return "motorcycle/admin/all";
     }
 

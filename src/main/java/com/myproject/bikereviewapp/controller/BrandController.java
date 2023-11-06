@@ -23,7 +23,7 @@ public class BrandController {
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model) {
 
-        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute("brands", brandService.getAllSortedByIdAsc());
         return "brand/admin/all";
     }
 
