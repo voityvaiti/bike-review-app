@@ -8,6 +8,7 @@ import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review create(Review review) {
 
+        review.setPublicationDate(LocalDate.now());
         return reviewRepository.save(review);
     }
 

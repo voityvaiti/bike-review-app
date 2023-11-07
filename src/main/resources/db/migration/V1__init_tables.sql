@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS review
     id BIGSERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     motorcycle_id INT NOT NULL,
-    body VARCHAR(1000),
+    body VARCHAR(1000) NOT NULL,
+    publication_date DATE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES usr(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (motorcycle_id) REFERENCES motorcycle(id) ON UPDATE CASCADE ON DELETE CASCADE
 );

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +26,9 @@ public class Review {
     @Column(name = "body")
     @Size(min = 5, max = 999, message = "Review must be between 5 and 999 characters.")
     private String body;
+
+    @Column(name = "publication_date")
+    private LocalDate publicationDate;
 
     @ManyToOne
     @JoinColumn(name = "motorcycle_id")
