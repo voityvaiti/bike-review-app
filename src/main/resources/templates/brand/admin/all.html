@@ -28,28 +28,47 @@
 
         <table class="table">
 
-            <thead>
+            <thead class="table-dark">
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">Country</th>
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
+            </tr>
             </thead>
 
+            <tbody>
             <tr th:each="brand: ${brands}">
+
                 <th scope="row" th:text="${brand.getId()}"></th>
-                <th scope="row" th:text="${brand.getName()}"></th>
-                <th scope="row" th:text="${brand.getCountry()}"></th>
-                <th scope="row" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
+
+                <th th:text="${brand.getName()}"></th>
+                <th th:text="${brand.getCountry()}"></th>
+                <th sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
                     <a th:href="@{/brands/admin/edit/{id}(id=${brand.getId()})}" class="btn btn-dark">Edit</a>
                 </th>
-                <th scope="row" sec:authorize="hasAuthority('ADMIN')">
-                    <form th:method="DELETE" th:action="@{/brands/admin/{id}(id=${brand.getId()})}">
-                        <button type="submit" class="btn btn-dark">Delete</button>
+
+                <th sec:authorize="hasAuthority('ADMIN')">
+
+                    <form th:with="isEmpty=${brand.getMotorcycles().isEmpty()}, size=${brand.getMotorcycles().size()}"
+                          th:method="DELETE" th:action="@{/brands/admin/{id}(id=${brand.getId()})}">
+
+                        <button th:disabled="${!isEmpty}" type="submit" class="btn btn-dark">Delete</button>
+                        <br>
+
+                        <small th:if="${isEmpty}" class="form-text text-success">Ready to be removed</small>
+
+                        <small th:unless="${isEmpty}" class="form-text text-danger">
+                            <span th:text="${size}"></span> motorcycle<span th:if="${size > 1}">s</span> associated
+                        </small>
+
                     </form>
+
                 </th>
+
             </tr>
+            </tbody>
 
         </table>
 

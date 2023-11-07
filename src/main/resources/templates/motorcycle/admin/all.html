@@ -28,7 +28,7 @@
 
         <table class="table">
 
-            <thead>
+            <thead class="table-dark">
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Brand</th>
@@ -36,22 +36,30 @@
                 <th scope="col">Country</th>
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
+            </tr>
             </thead>
 
+            <tbody>
             <tr th:each="motorcycle: ${motorcycles}">
+
                 <th scope="row" th:text="${motorcycle.getId()}"></th>
-                <th scope="row" th:text="${motorcycle.getBrand().getName()}"></th>
-                <th scope="row" th:text="${motorcycle.getModel()}"></th>
-                <th scope="row" th:text="${motorcycle.getBrand().getCountry()}"></th>
-                <th scope="row" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
+
+                <th th:text="${motorcycle.getBrand().getName()}"></th>
+                <th th:text="${motorcycle.getModel()}"></th>
+                <th th:text="${motorcycle.getBrand().getCountry()}"></th>
+
+                <th sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
                     <a th:href="@{/motorcycles/admin/edit/{id}(id=${motorcycle.getId()})}" class="btn btn-dark">Edit</a>
                 </th>
-                <th scope="row" sec:authorize="hasAuthority('ADMIN')">
+
+                <th sec:authorize="hasAuthority('ADMIN')">
                     <form th:method="DELETE" th:action="@{/motorcycles/admin/{id}(id=${motorcycle.getId()})}">
                         <button type="submit" class="btn btn-dark">Delete</button>
                     </form>
                 </th>
+
             </tr>
+            </tbody>
 
         </table>
 
