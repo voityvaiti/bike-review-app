@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS motorcycle
 CREATE TABLE IF NOT EXISTS usr
 (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(20) NOT NULL,
+    username VARCHAR(20) NOT NULL UNIQUE,
     password CHAR(60) NOT NULL,
     enabled BOOLEAN NOT NULL,
     role VARCHAR(20) NOT NULL,
