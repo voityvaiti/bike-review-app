@@ -35,7 +35,7 @@
 
         </form>
 
-        <h3 class="mt-3">Reviews:</h3>
+        <h3 class="mt-3">Reviews (<span th:text="${motorcycle.getReviews().size()}"></span>):</h3>
 
         <div th:each="review: ${reviews}" class="border border-black rounded p-2 mb-2">
             <strong th:text="${review.user.getPublicName()}"></strong> <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}" class="ms-2 text-muted"></small> <br>

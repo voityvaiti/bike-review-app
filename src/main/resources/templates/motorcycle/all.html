@@ -21,8 +21,18 @@
            th:each="motorcycle: ${motorcycles}" th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
             <div class="d-flex flex-column align-items-center p-2">
+
                 <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1" alt="motorcycle-img">
                 <span th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}" class="text-center"></span>
+
+                <div class="d-flex justify-content-end w-100">
+
+                    <small class="text-muted">
+                        <span th:text="${motorcycle.getReviews().size()}"></span> review<span th:if="${motorcycle.getReviews().size() != 1}">s</span>
+                    </small>
+
+                </div>
+
             </div>
 
         </a>
