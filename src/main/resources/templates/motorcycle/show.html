@@ -17,6 +17,8 @@
 <div class="d-flex justify-content-center mt-5">
     <div class="w-50">
 
+        <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1" alt="motorcycle-img">
+
         <h1 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"></h1>
         <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
 

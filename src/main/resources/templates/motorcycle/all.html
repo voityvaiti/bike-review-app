@@ -14,15 +14,15 @@
 
 <div th:replace="~{fragments/navbar/header :: content}"></div>
 
-<div class="container mt-4">
+<div class="container my-4">
 
     <div class="row gap-3">
         <a class="col-sm-12 col-md-4 col-lg-2 border border-black rounded d-flex align-items-center flex-column text-decoration-none text-black"
            th:each="motorcycle: ${motorcycles}" th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
-            <div class="d-flex flex-column align-items-center">
-                <p th:text="${motorcycle.getBrand().getName()}"></p>
-                <p th:text="${motorcycle.getModel()}"></p>
+            <div class="d-flex flex-column align-items-center p-2">
+                <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1" alt="motorcycle-img">
+                <span th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}" class="text-center"></span>
             </div>
 
         </a>
