@@ -22,11 +22,17 @@
         <h1 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"></h1>
         <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
 
-        <h4 class="mt-4">Describe your opinion:</h4>
+        <h4 class="mt-4">Your review:</h4>
 
         <form th:method="POST" th:action="@{/reviews}" th:object="${newReview}">
 
-            <textarea class="form-control" rows="5" cols="50" th:field="*{body}"></textarea>
+            <label for="rating">Rating: </label>
+            <input type="number" th:field="*{rating}" th:min="${newReview.MIN_RATING}" th:max="${newReview.MAX_RATING}"
+                   id="rating" placeholder="1 → 5" class="form-control" style="max-width: 90px;">
+            <div th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}" class="form-text text-danger mb-1"></div>
+
+            <label for="review-body">Describe your opinion: </label>
+            <textarea class="form-control" id="review-body" rows="5" cols="50" th:field="*{body}"></textarea>
             <div th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="form-text text-danger"></div>
 
             <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
@@ -40,9 +46,10 @@
         <div th:each="review: ${reviews}" class="border border-black rounded p-2 mb-2 d-flex">
             <img th:src="@{/img/user.png}" alt="User" class="user-icon me-2">
             <div>
-                <strong th:text="${review.user.getPublicName()}"></strong> <small
-                    th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                    class="ms-2 text-muted"></small> <br>
+                <strong th:text="${review.user.getPublicName()}"></strong>
+                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+                       class="ms-2 text-muted"></small> <br>
+                <p th:text="${'Rating - ' + review.getRating()}"></p>
                 <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
             </div>
         </div>

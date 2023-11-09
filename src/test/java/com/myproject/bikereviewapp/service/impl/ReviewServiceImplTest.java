@@ -36,9 +36,15 @@ class ReviewServiceImplTest {
         Long id = 7L;
         Motorcycle motorcycle = new Motorcycle(id, "someModel", new Brand());
 
+        Review review1 = new Review();
+        review1.setId(2L);
+        review1.setBody("somereview1");
+        Review review2 = new Review();
+        review1.setId(5L);
+        review2.setBody("somereview2");
+
         List<Review> reviewList = List.of(
-                new Review(2L, "somereview1", null, null, null),
-                new Review(5L, "somereview2", null, null, null)
+                review1, review2
         );
 
         when(motorcycleRepository.findById(id)).thenReturn(Optional.of(motorcycle));

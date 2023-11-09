@@ -2,6 +2,9 @@ package com.myproject.bikereviewapp.entity;
 
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +22,9 @@ import java.util.Objects;
 @Setter
 public class Review {
 
+    public static final short MIN_RATING = 1;
+    public static final short MAX_RATING = 5;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +35,12 @@ public class Review {
 
     @Column(name = "publication_date")
     private LocalDate publicationDate;
+
+    @Column(name = "rating")
+    @NotNull(message = "Rating is required.")
+    @Min(MIN_RATING)
+    @Max(MAX_RATING)
+    private Short rating;
 
     @ManyToOne
     @JoinColumn(name = "motorcycle_id")
