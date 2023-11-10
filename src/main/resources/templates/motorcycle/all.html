@@ -7,7 +7,7 @@
     <title>Motorcycles</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
-    <link th:href="@{/main.css}" rel="stylesheet"/>
+    <link th:href="@{/style/main.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -22,7 +22,7 @@
 
             <div class="d-flex flex-column align-items-center p-2">
 
-                <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1" alt="motorcycle-img">
+                <img th:src="@{/img/motorcycle.png}" class="img-thumbnail border-0 mb-1" alt="Motorcycle">
                 <span th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"
                       class="text-center"></span>
 
