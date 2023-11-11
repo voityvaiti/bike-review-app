@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -34,6 +36,17 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return reviewRepository.findAllByMotorcycle(optionalMotorcycle.get());
+    }
+
+    @Override
+    public Map<Long, Float> getMotorcycleIdToAvgRating() {
+
+        List<Object[]> motorcycleIdToAvgRatingObjects = reviewRepository.getMotorcycleIdToAvgRating();
+
+        return motorcycleIdToAvgRatingObjects.stream().collect(Collectors.toMap(
+                object -> (Long)object[0],
+                object -> ((Double)object[1]).floatValue()
+        ));
     }
 
     @Override

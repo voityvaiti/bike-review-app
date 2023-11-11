@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.repository;
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,5 +12,8 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findAllByMotorcycle(Motorcycle motorcycle);
+
+    @Query("SELECT m.id as motorcycleId, AVG(r.rating) as averageRating FROM Review r JOIN r.motorcycle m GROUP BY m.id")
+    List<Object[]> getMotorcycleIdToAvgRating();
 
 }
