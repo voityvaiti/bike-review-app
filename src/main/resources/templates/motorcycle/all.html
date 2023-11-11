@@ -8,6 +8,7 @@
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
     <link th:href="@{/style/main.css}" rel="stylesheet"/>
+    <link th:href="@{/style/stars-rating-read.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -26,7 +27,17 @@
                 <span th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"
                       class="text-center"></span>
 
-                <div class="d-flex justify-content-end w-100">
+                <div class="d-flex justify-content-between w-100">
+
+                    <div th:with="avgRating=${motorcycleIdToAvgRating.get(motorcycle.id)}"
+                         class="d-flex justify-content-start align-items-center">
+
+                        <small th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '0.0'}"
+                               class="text-muted me-1"></small>
+
+                        <meter class="average-rating d-flex align-items-center" min="0" max="5" th:value="${avgRating}"></meter>
+
+                    </div>
 
                     <small class="text-muted">
                         <span th:text="${motorcycle.getReviews().size()}"></span> review<span
@@ -42,5 +53,6 @@
 
 </div>
 
+<script th:src="@{/script/stars-rating-read.js}"></script>
 </body>
 </html>

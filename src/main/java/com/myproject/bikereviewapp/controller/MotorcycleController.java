@@ -2,6 +2,7 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
+import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
@@ -33,6 +34,7 @@ public class MotorcycleController {
     public String showAll(Model model) {
 
         model.addAttribute("motorcycles", motorcycleService.getAll());
+        model.addAttribute("motorcycleIdToAvgRating", reviewService.getMotorcycleIdToAvgRating());
         return "motorcycle/all";
     }
 
