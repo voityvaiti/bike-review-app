@@ -29,7 +29,7 @@ public class UserController {
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model) {
-        model.addAttribute("users", userService.getAll());
+        model.addAttribute("users", userService.getAllSortedByIdAsc());
         return "user/admin/all";
     }
 

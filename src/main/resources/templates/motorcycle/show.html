@@ -7,7 +7,9 @@
     <title>Motorcycle</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
-    <link th:href="@{/main.css}" rel="stylesheet" />
+    <link th:href="@{/style/main.css}" rel="stylesheet"/>
+    <link th:href="@{/style/stars-rating-select.css}" rel="stylesheet"/>
+    <link th:href="@{/style/stars-rating-read.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -17,14 +19,43 @@
 <div class="d-flex justify-content-center mt-5">
     <div class="w-50">
 
-        <h1 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"></h1>
-        <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
+        <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1 border-0" alt="motorcycle-img" draggable="false">
 
-        <h4 class="mt-4">Describe your opinion:</h4>
+        <div class="d-flex justify-content-between">
+            <div>
+                <h1 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"></h1>
+                <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
+            </div>
 
-        <form th:method="POST" th:action="@{/reviews}" th:object="${newReview}">
+            <div>
+                <small th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '0.0'}"
+                       class="text-muted me-1"></small>
+                <meter class="average-rating" min="0" max="5"
+                       th:value="${avgRating}"></meter>
+            </div>
+        </div>
 
-            <textarea class="form-control" rows="5" cols="50" th:field="*{body}"></textarea>
+
+        <form th:method="POST" th:action="@{/reviews}" th:object="${newReview}"
+              class="border border-black rounded p-3 border-2">
+
+            <h4>Your review:</h4>
+
+            <div class="d-flex justify-content-start">
+                <div class="d-flex flex-row-reverse">
+
+                    <th:block th:each="i: ${#numbers.sequence(newReview.MAX_RATING, newReview.MIN_RATING)}">
+                        <input th:field="*{rating}" class="radio-input" type="radio" th:id="${'star' + i}"
+                               name="star-input"
+                               th:value="${i}"/>
+                        <label class="radio-label" th:for="${'star' + i}"></label>
+                    </th:block>
+
+                </div>
+            </div>
+
+            <label for="review-body">Describe your opinion: </label>
+            <textarea class="form-control" id="review-body" rows="5" cols="50" th:field="*{body}"></textarea>
             <div th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="form-text text-danger"></div>
 
             <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
@@ -33,17 +64,28 @@
 
         </form>
 
-        <h3 class="mt-3">Reviews:</h3>
+        <h3 class="mt-4">Reviews (<span th:text="${motorcycle.getReviews().size()}"></span>):</h3>
 
-        <div th:each="review: ${reviews}" class="border border-black rounded p-2 mb-2">
-            <strong th:text="${review.user.getPublicName()}"></strong><br>
-            <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+        <div th:each="review: ${reviews}" class="border border-black rounded p-3 mb-2 d-flex">
 
+            <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
+
+            <div>
+                <strong th:text="${review.user.getPublicName()}"></strong>
+                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+                       class="ms-2 text-muted"></small> <br>
+
+                <meter class="average-rating" min="0" max="5"
+                       th:value="${review.getRating()}"></meter>
+
+                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+            </div>
         </div>
 
 
     </div>
 </div>
 
+<script th:src="@{/script/stars-rating-read.js}"></script>
 </body>
 </html>

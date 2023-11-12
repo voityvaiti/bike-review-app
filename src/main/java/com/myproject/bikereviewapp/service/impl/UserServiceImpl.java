@@ -32,6 +32,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllSortedByIdAsc() {
+        return userRepository.findAllByOrderByIdAsc();
+    }
+
+    @Override
     public User getById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("User with id " + id + "not found")

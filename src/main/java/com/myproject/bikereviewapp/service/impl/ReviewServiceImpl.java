@@ -8,8 +8,11 @@ import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -36,8 +39,25 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public Map<Long, Float> getMotorcycleIdToAvgRating() {
+
+        List<Object[]> motorcycleIdToAvgRatingObjects = reviewRepository.getMotorcycleIdToAvgRating();
+
+        return motorcycleIdToAvgRatingObjects.stream().collect(Collectors.toMap(
+                object -> (Long)object[0],
+                object -> ((Double)object[1]).floatValue()
+        ));
+    }
+
+    @Override
+    public Float getAvgRating(Long motorcycleId) {
+        return reviewRepository.getAvgRating(motorcycleId);
+    }
+
+    @Override
     public Review create(Review review) {
 
+        review.setPublicationDate(LocalDate.now());
         return reviewRepository.save(review);
     }
 

@@ -2,6 +2,7 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
+import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
@@ -33,12 +34,13 @@ public class MotorcycleController {
     public String showAll(Model model) {
 
         model.addAttribute("motorcycles", motorcycleService.getAll());
+        model.addAttribute("motorcycleIdToAvgRating", reviewService.getMotorcycleIdToAvgRating());
         return "motorcycle/all";
     }
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model) {
-        model.addAttribute("motorcycles", motorcycleService.getAll());
+        model.addAttribute("motorcycles", motorcycleService.getAllSortedByIdAsc());
         return "motorcycle/admin/all";
     }
 
@@ -47,6 +49,7 @@ public class MotorcycleController {
                        @ModelAttribute("newReview") Review newReview, Model model) {
 
         model.addAttribute("motorcycle", motorcycleService.getById(id));
+        model.addAttribute("avgRating", reviewService.getAvgRating(id));
         model.addAttribute("reviews", reviewService.getReviewsByMotorcycleId(id));
 
         return "motorcycle/show";

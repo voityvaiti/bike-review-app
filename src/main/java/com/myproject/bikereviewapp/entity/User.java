@@ -25,7 +25,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
 //    @UniqueFieldValue(entityClass = User.class, fieldName = "username", message = "User with same username is already exists.")
     @Size(min = 3, max = 19, message = "Username must be between 3 and 19 characters.")
     private String username;

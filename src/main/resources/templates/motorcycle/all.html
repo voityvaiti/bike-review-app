@@ -7,28 +7,52 @@
     <title>Motorcycles</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
-    <link th:href="@{/main.css}" rel="stylesheet" />
+    <link th:href="@{/style/main.css}" rel="stylesheet"/>
+    <link th:href="@{/style/stars-rating-read.css}" rel="stylesheet"/>
 </head>
 
 <body>
 
 <div th:replace="~{fragments/navbar/header :: content}"></div>
 
-<div class="container mt-4">
+<div class="container my-4">
 
-    <div class="row gap-3">
-        <a class="col-sm-12 col-md-4 col-lg-2 border border-black rounded d-flex align-items-center flex-column text-decoration-none text-black"
-           th:each="motorcycle: ${motorcycles}" th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-3 d-flex align-items-center flex-column p-2" th:each="motorcycle: ${motorcycles}">
 
-            <div class="d-flex flex-column align-items-center">
-                <p th:text="${motorcycle.getBrand().getName()}"></p>
-                <p th:text="${motorcycle.getModel()}"></p>
-            </div>
+            <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3"
+               th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
-        </a>
+                <img th:src="@{/img/motorcycle.png}" class="img-thumbnail border-0 mb-1" alt="Motorcycle" draggable="false">
+                <h4 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"
+                      class="text-center mb-1"></h4>
+
+                <div class="d-flex justify-content-between w-100">
+
+                    <div th:with="avgRating=${motorcycleIdToAvgRating.get(motorcycle.id)}"
+                         class="d-flex justify-content-start align-items-center">
+
+                        <small th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '0.0'}"
+                               class="text-muted me-1"></small>
+
+                        <meter class="average-rating d-flex align-items-center" min="0" max="5" th:value="${avgRating}"></meter>
+
+                    </div>
+
+                    <small class="text-muted">
+                        <span th:text="${motorcycle.getReviews().size()}"></span> review<span
+                            th:if="${motorcycle.getReviews().size() != 1}">s</span>
+                    </small>
+
+                </div>
+
+            </a>
+
+        </div>
     </div>
 
 </div>
 
+<script th:src="@{/script/stars-rating-read.js}"></script>
 </body>
 </html>
