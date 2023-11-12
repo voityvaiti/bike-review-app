@@ -19,7 +19,7 @@
 <div class="d-flex justify-content-center mt-5">
     <div class="w-50">
 
-        <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1 border-0" alt="motorcycle-img">
+        <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1 border-0" alt="motorcycle-img" draggable="false">
 
         <div class="d-flex justify-content-between">
             <div>
@@ -68,7 +68,7 @@
 
         <div th:each="review: ${reviews}" class="border border-black rounded p-3 mb-2 d-flex">
 
-            <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3">
+            <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
 
             <div>
                 <strong th:text="${review.user.getPublicName()}"></strong>

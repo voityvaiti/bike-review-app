@@ -17,15 +17,15 @@
 
 <div class="container my-4">
 
-    <div class="row gap-3">
-        <a class="col-sm-12 col-md-4 col-lg-2 border border-black rounded d-flex align-items-center flex-column text-decoration-none text-black"
-           th:each="motorcycle: ${motorcycles}" th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-3 d-flex align-items-center flex-column p-2" th:each="motorcycle: ${motorcycles}">
 
-            <div class="d-flex flex-column align-items-center p-2">
+            <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3"
+               th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
-                <img th:src="@{/img/motorcycle.png}" class="img-thumbnail border-0 mb-1" alt="Motorcycle">
-                <span th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"
-                      class="text-center"></span>
+                <img th:src="@{/img/motorcycle.png}" class="img-thumbnail border-0 mb-1" alt="Motorcycle" draggable="false">
+                <h4 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"
+                      class="text-center mb-1"></h4>
 
                 <div class="d-flex justify-content-between w-100">
 
@@ -46,9 +46,9 @@
 
                 </div>
 
-            </div>
+            </a>
 
-        </a>
+        </div>
     </div>
 
 </div>

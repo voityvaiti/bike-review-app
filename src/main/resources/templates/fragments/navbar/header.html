@@ -14,7 +14,7 @@
     </a>
 
     <a th:href="@{/users/profile}" sec:authorize="isAuthenticated()">
-        <img th:src="@{/img/user.png}" class="user-icon" alt="Profile"/>
+        <img th:src="@{/img/user.png}" class="user-icon" alt="Profile" draggable="false"/>
     </a>
     <div sec:authorize="isAnonymous()">
         <a th:href="@{/login}" class="btn btn-dark">Log In</a>
