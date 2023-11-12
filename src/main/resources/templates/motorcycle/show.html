@@ -21,8 +21,19 @@
 
         <img th:src="@{/img/motorcycle.png}" class="img-thumbnail mb-1 border-0" alt="motorcycle-img">
 
-        <h1 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"></h1>
-        <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
+        <div class="d-flex justify-content-between">
+            <div>
+                <h1 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"></h1>
+                <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
+            </div>
+
+            <div>
+                <small th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '0.0'}"
+                       class="text-muted me-1"></small>
+                <meter class="average-rating" min="0" max="5"
+                       th:value="${avgRating}"></meter>
+            </div>
+        </div>
 
 
         <form th:method="POST" th:action="@{/reviews}" th:object="${newReview}"
@@ -64,7 +75,8 @@
                 <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
                        class="ms-2 text-muted"></small> <br>
 
-                <meter class="average-rating" min="0" th:max="${review.MAX_RATING}" th:value="${review.getRating()}"></meter>
+                <meter class="average-rating" min="0" max="5"
+                       th:value="${review.getRating()}"></meter>
 
                 <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
             </div>

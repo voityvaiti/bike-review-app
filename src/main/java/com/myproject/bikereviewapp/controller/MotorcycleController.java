@@ -49,6 +49,7 @@ public class MotorcycleController {
                        @ModelAttribute("newReview") Review newReview, Model model) {
 
         model.addAttribute("motorcycle", motorcycleService.getById(id));
+        model.addAttribute("avgRating", reviewService.getAvgRating(id));
         model.addAttribute("reviews", reviewService.getReviewsByMotorcycleId(id));
 
         return "motorcycle/show";

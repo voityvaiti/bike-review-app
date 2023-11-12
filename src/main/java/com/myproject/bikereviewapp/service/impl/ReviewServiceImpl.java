@@ -50,6 +50,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public Float getAvgRating(Long motorcycleId) {
+        return reviewRepository.getAvgRating(motorcycleId);
+    }
+
+    @Override
     public Review create(Review review) {
 
         review.setPublicationDate(LocalDate.now());

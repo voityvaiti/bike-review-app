@@ -11,6 +11,8 @@ public interface ReviewService {
 
     Map<Long, Float> getMotorcycleIdToAvgRating();
 
+    Float getAvgRating(Long motorcycleId);
+
     Review create(Review review);
 
     void delete(Long id);
