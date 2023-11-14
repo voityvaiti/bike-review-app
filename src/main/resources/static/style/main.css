@@ -9,3 +9,13 @@ body {
     border: 1px solid #000000;
     padding: 5px;
 }
+
+.page-item.active .page-link {
+    color: #fff !important;
+    background: #000 !important;
+    border-color: #fff !important;
+}
+
+.page-link {
+    color: #000 !important;
+}
