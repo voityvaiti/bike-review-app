@@ -9,8 +9,10 @@ public class SortUtility {
 
     private SortUtility() {}
 
-    public static Sort parseSort(String[] sortFields) {
+    public static Sort parseSort(String sortExpression) {
         List<Sort.Order> orders = new ArrayList<>();
+
+        String[] sortFields = sortExpression.split(",");
 
         for (String sortField : sortFields) {
             String[] parts = sortField.split(":");

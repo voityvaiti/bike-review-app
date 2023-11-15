@@ -35,7 +35,7 @@ public class MotorcycleController {
     public String showAll(Model model,
                           @RequestParam(defaultValue = "0") Integer page,
                           @RequestParam(defaultValue = "16") Integer size,
-                          @RequestParam(defaultValue = "brand.name:asc, model:asc") String[] sort) {
+                          @RequestParam(defaultValue = "brand.name:asc, model:asc") String sort) {
 
         model.addAttribute("motorcyclePage", motorcycleService.getAll(PageRequest.of(page, size, SortUtility.parseSort(sort))));
 
