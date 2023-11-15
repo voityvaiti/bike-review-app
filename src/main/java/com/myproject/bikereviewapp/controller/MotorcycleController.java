@@ -2,11 +2,12 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
-import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
+import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,10 +32,18 @@ public class MotorcycleController {
     }
 
     @GetMapping
-    public String showAll(Model model) {
+    public String showAll(Model model,
+                          @RequestParam(defaultValue = "0") Integer page,
+                          @RequestParam(defaultValue = "16") Integer size,
+                          @RequestParam(defaultValue = "brand.name:asc, model:asc") String[] sort) {
 
-        model.addAttribute("motorcycles", motorcycleService.getAll());
+        model.addAttribute("motorcyclePage", motorcycleService.getAll(PageRequest.of(page, size, SortUtility.parseSort(sort))));
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("currentSort", sort);
+
         model.addAttribute("motorcycleIdToAvgRating", reviewService.getMotorcycleIdToAvgRating());
+
         return "motorcycle/all";
     }
 

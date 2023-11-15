@@ -18,7 +18,7 @@
 <div class="container my-4">
 
     <div class="row">
-        <div class="col-sm-12 col-md-4 col-lg-3 d-flex align-items-center flex-column p-2" th:each="motorcycle: ${motorcycles}">
+        <div class="col-sm-12 col-md-4 col-lg-3 d-flex align-items-center flex-column p-2" th:each="motorcycle: ${motorcyclePage.content}">
 
             <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3"
                th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
@@ -50,6 +50,48 @@
 
         </div>
     </div>
+
+    <nav class="d-flex justify-content-center mt-2">
+        <ul th:if="${motorcyclePage.totalPages > 0}" class="pagination">
+
+            <th:block th:with="hasPrevious=${motorcyclePage.hasPrevious()}">
+
+                <li th:class="${hasPrevious} ? 'page-item': 'page-item disabled'">
+                    <a th:href="@{/motorcycles(page=0, sort=${currentSort})}" class="page-link">❮❮</a>
+                </li>
+
+                <li th:class="${hasPrevious} ? 'page-item': 'page-item disabled'">
+                    <a th:href="@{/motorcycles(page=${currentPage - 1}, sort=${currentSort})}" class="page-link">❮</a>
+                </li>
+
+            </th:block>
+
+            <th:block th:with="startPage=${(currentPage > 5) ? (currentPage - 5) : 0}, endPage=${(startPage + 10 > motorcyclePage.totalPages - 1) ? motorcyclePage.totalPages - 1 : (startPage + 10)}">
+                <li th:if="${startPage > 0}" class="page-item disabled">
+                    <a class="page-link">...</a>
+                </li>
+                <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}" th:class="${pageNumber == currentPage} ? 'active page-item' : 'page-item'">
+                    <a th:href="@{/motorcycles(page=${pageNumber}, sort=${currentSort})}" th:text="${pageNumber + 1}" class="page-link"></a>
+                </li>
+                <li th:if="${endPage < motorcyclePage.totalPages - 1}" class="page-item disabled">
+                    <a class="page-link">...</a>
+                </li>
+            </th:block>
+
+            <th:block th:with="hasNext=${motorcyclePage.hasNext()}">
+
+            <li th:class="${hasNext} ? 'page-item': 'page-item disabled'">
+                <a th:href="@{/motorcycles(page=${currentPage + 1}, sort=${currentSort})}" class="page-link">❯</a>
+            </li>
+
+            <li th:class="${hasNext} ? 'page-item': 'page-item disabled'">
+                <a th:href="@{/motorcycles(page=${motorcyclePage.totalPages - 1}, sort=${currentSort})}" class="page-link">❯❯</a>
+            </li>
+
+            </th:block>
+
+        </ul>
+    </nav>
 
 </div>
 
