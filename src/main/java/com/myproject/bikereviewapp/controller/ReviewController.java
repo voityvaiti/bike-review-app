@@ -12,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import static com.myproject.bikereviewapp.controller.MotorcycleController.DEFAULT_REVIEWS_PAGE_NUMBER;
+import static com.myproject.bikereviewapp.controller.MotorcycleController.DEFAULT_REVIEWS_PAGE_SIZE;
+
 @Controller
 @RequestMapping("/reviews")
 public class ReviewController {
@@ -31,7 +34,9 @@ public class ReviewController {
 
     @PostMapping
     public String create(@ModelAttribute("newReview") @Valid Review review,
-                         BindingResult bindingResult, Authentication authentication, Model model) {
+                         BindingResult bindingResult, Authentication authentication, Model model,
+                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
+                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize) {
 
 
         if (authentication == null) {
@@ -39,7 +44,7 @@ public class ReviewController {
         }
 
         if (bindingResult.hasErrors()) {
-            return motorcycleController.show(review.getMotorcycle().getId(), review, model);
+            return motorcycleController.show(review.getMotorcycle().getId(), review, reviewPageNumber, reviewPageSize, model);
         }
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

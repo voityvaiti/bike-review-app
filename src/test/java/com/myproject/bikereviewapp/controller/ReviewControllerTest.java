@@ -59,7 +59,7 @@ class ReviewControllerTest {
         when(authentication.getPrincipal()).thenReturn(userDetails);
         when(userDetails.getUsername()).thenReturn(user.getUsername());
 
-        assertEquals("redirect:/motorcycles/" + motorcycleId, reviewController.create(review, mock(BindingResult.class), authentication, null));
+        assertEquals("redirect:/motorcycles/" + motorcycleId, reviewController.create(review, mock(BindingResult.class), authentication, null, null, null));
 
         verify(reviewService).create(review);
     }
@@ -69,7 +69,7 @@ class ReviewControllerTest {
 
         Review review = new Review();
 
-        assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, mock(BindingResult.class), null, null));
+        assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, mock(BindingResult.class), null, null, null, null));
 
         verify(reviewService, never()).create(any());
     }

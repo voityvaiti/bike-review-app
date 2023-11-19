@@ -53,6 +53,7 @@
 
                 </div>
             </div>
+            <div th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}" class="form-text text-danger mb-1 mt-0"></div>
 
             <label for="review-body">Describe your opinion: </label>
             <textarea class="form-control" id="review-body" rows="5" cols="50" th:field="*{body}"></textarea>
@@ -60,13 +61,15 @@
 
             <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
 
+            <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
+
             <input type="submit" class="btn btn-dark mt-2" value="Post review">
 
         </form>
 
         <h3 class="mt-4">Reviews (<span th:text="${motorcycle.getReviews().size()}"></span>):</h3>
 
-        <div th:each="review: ${reviews}" class="border border-black rounded p-3 mb-2 d-flex">
+        <div th:each="review: ${reviewPage.content}" class="border border-black rounded p-3 mb-2 d-flex">
 
             <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
 
@@ -81,6 +84,48 @@
                 <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
             </div>
         </div>
+
+        <nav class="d-flex justify-content-center mt-2">
+            <ul th:if="${reviewPage.totalPages > 0}" class="pagination">
+
+                <th:block th:with="hasPrevious=${reviewPage.hasPrevious()}">
+
+                    <li th:class="${hasPrevious} ? 'page-item': 'page-item disabled'">
+                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=0)}" class="page-link">❮❮</a>
+                    </li>
+
+                    <li th:class="${hasPrevious} ? 'page-item': 'page-item disabled'">
+                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${currentReviewPageNumber - 1})}" class="page-link">❮</a>
+                    </li>
+
+                </th:block>
+
+                <th:block th:with="startPage=${(currentReviewPageNumber > 5) ? (currentReviewPageNumber - 5) : 0}, endPage=${(startPage + 10 > reviewPage.totalPages - 1) ? reviewPage.totalPages - 1 : (startPage + 10)}">
+                    <li th:if="${startPage > 0}" class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                    <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}" th:class="${pageNumber == currentReviewPageNumber} ? 'active page-item' : 'page-item'">
+                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${pageNumber})}" th:text="${pageNumber + 1}" class="page-link"></a>
+                    </li>
+                    <li th:if="${endPage < reviewPage.totalPages - 1}" class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                </th:block>
+
+                <th:block th:with="hasNext=${reviewPage.hasNext()}">
+
+                    <li th:class="${hasNext} ? 'page-item': 'page-item disabled'">
+                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${currentReviewPageNumber + 1})}" class="page-link">❯</a>
+                    </li>
+
+                    <li th:class="${hasNext} ? 'page-item': 'page-item disabled'">
+                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${reviewPage.totalPages - 1})}" class="page-link">❯❯</a>
+                    </li>
+
+                </th:block>
+
+            </ul>
+        </nav>
 
 
     </div>

@@ -19,6 +19,10 @@ public class MotorcycleController {
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/motorcycles/admin";
 
+    protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
+
+    protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
+
     private final MotorcycleService motorcycleService;
 
     private final BrandService brandService;
@@ -55,11 +59,17 @@ public class MotorcycleController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long id,
-                       @ModelAttribute("newReview") Review newReview, Model model) {
+                       @ModelAttribute("newReview") Review newReview,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
+                       Model model) {
 
         model.addAttribute("motorcycle", motorcycleService.getById(id));
         model.addAttribute("avgRating", reviewService.getAvgRating(id));
-        model.addAttribute("reviews", reviewService.getReviewsByMotorcycleId(id));
+
+        model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize)));
+        model.addAttribute("currentReviewPageNumber", reviewPageNumber);
+
 
         return "motorcycle/show";
     }
