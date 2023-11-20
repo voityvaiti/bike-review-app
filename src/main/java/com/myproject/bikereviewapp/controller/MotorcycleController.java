@@ -23,6 +23,8 @@ public class MotorcycleController {
 
     protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
 
+    protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
+
     private final MotorcycleService motorcycleService;
 
     private final BrandService brandService;
@@ -62,13 +64,15 @@ public class MotorcycleController {
                        @ModelAttribute("newReview") Review newReview,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
                        Model model) {
 
         model.addAttribute("motorcycle", motorcycleService.getById(id));
         model.addAttribute("avgRating", reviewService.getAvgRating(id));
 
-        model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize)));
+        model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize, SortUtility.parseSort(reviewSort))));
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
+        model.addAttribute("currentReviewSort", reviewSort);
 
 
         return "motorcycle/show";
