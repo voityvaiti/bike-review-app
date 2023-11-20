@@ -20,8 +20,9 @@
     <div class="d-flex justify-content-end">
         <form th:method="GET" th:action="@{/motorcycles}" class="d-flex justify-content-end">
             <select class="form-select" name="sort">
-                <option value="brand.name:asc, model:asc" th:selected="${currentSort == 'brand.name:asc, model:asc'}">A-Z</option>
-                <option value="brand.name:desc, model:desc" th:selected="${currentSort == 'brand.name:desc, model:desc'}">Z-A</option>
+                <option th:value="${null}">--Sort type--</option>
+                <option value="brand.name:asc, model:asc" th:selected="${currentSort == 'brand.name:asc, model:asc'}">A→Z</option>
+                <option value="brand.name:desc, model:desc" th:selected="${currentSort == 'brand.name:desc, model:desc'}">Z→A</option>
             </select>
 
             <input type="hidden" name="pageNumber" th:value="${currentPageNumber}">
