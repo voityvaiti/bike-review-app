@@ -66,50 +66,7 @@
         </div>
     </div>
 
-    <nav th:if="${motorcyclePage.totalPages > 0}" class="d-flex justify-content-center mt-2">
-        <ul class="pagination">
-
-            <li th:class="${motorcyclePage.hasPrevious()} ? 'page-item': 'page-item disabled'">
-                <a th:href="@{/motorcycles(pageNumber=${currentPageNumber - 1}, sort=${currentSort})}"
-                   class="page-link">❮</a>
-            </li>
-
-            <th:block th:with="startPage=${(currentPageNumber > 5) ? (currentPageNumber - 4) : 0}, endPage=${(currentPageNumber < motorcyclePage.totalPages - 6) ? (currentPageNumber + 4) : (motorcyclePage.totalPages - 1)}">
-
-                <th:block th:if="${startPage > 0}">
-                    <li class="page-item">
-                        <a th:href="@{/motorcycles(pageNumber=0, sort=${currentSort})}" class="page-link">1</a>
-                    </li>
-
-                    <li class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-                </th:block>
-
-                <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}" th:class="${pageNumber == currentPageNumber} ? 'active page-item' : 'page-item'">
-                    <a th:href="@{/motorcycles(pageNumber=${pageNumber}, sort=${currentSort})}" th:text="${pageNumber + 1}" class="page-link"></a>
-                </li>
-
-                <th:block th:if="${endPage < motorcyclePage.totalPages - 1}">
-                    <li class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-
-                    <li class="page-item">
-                        <a th:href="@{/motorcycles(pageNumber=${motorcyclePage.totalPages - 1}, sort=${currentSort})}"
-                           th:text="${motorcyclePage.totalPages}" class="page-link"></a>
-                    </li>
-                </th:block>
-
-            </th:block>
-
-            <li th:class="${motorcyclePage.hasNext()} ? 'page-item': 'page-item disabled'">
-                <a th:href="@{/motorcycles(pageNumber=${currentPageNumber + 1}, sort=${currentSort})}"
-                   class="page-link">❯</a>
-            </li>
-
-        </ul>
-    </nav>
+    <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, '/motorcycles', 'pageNumber', 'sort')}"></div>
 
 </div>
 

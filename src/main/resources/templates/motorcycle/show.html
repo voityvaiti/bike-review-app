@@ -108,54 +108,7 @@
             </div>
         </div>
 
-        <nav class="d-flex justify-content-center mt-2">
-            <ul th:if="${reviewPage.totalPages > 0}" class="pagination">
-
-                <th:block th:with="hasPrevious=${reviewPage.hasPrevious()}">
-
-                    <li th:class="${hasPrevious} ? 'page-item': 'page-item disabled'">
-                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=0, reviewSort=${currentReviewSort})}"
-                           class="page-link">❮❮</a>
-                    </li>
-
-                    <li th:class="${hasPrevious} ? 'page-item': 'page-item disabled'">
-                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${currentReviewPageNumber - 1}, reviewSort=${currentReviewSort})}"
-                           class="page-link">❮</a>
-                    </li>
-
-                </th:block>
-
-                <th:block
-                        th:with="startPage=${(currentReviewPageNumber > 5) ? (currentReviewPageNumber - 5) : 0}, endPage=${(startPage + 10 > reviewPage.totalPages - 1) ? reviewPage.totalPages - 1 : (startPage + 10)}">
-                    <li th:if="${startPage > 0}" class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-                    <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
-                        th:class="${pageNumber == currentReviewPageNumber} ? 'active page-item' : 'page-item'">
-                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${pageNumber}, reviewSort=${currentReviewSort})}"
-                           th:text="${pageNumber + 1}" class="page-link"></a>
-                    </li>
-                    <li th:if="${endPage < reviewPage.totalPages - 1}" class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-                </th:block>
-
-                <th:block th:with="hasNext=${reviewPage.hasNext()}">
-
-                    <li th:class="${hasNext} ? 'page-item': 'page-item disabled'">
-                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${currentReviewPageNumber + 1}, reviewSort=${currentReviewSort})}"
-                           class="page-link">❯</a>
-                    </li>
-
-                    <li th:class="${hasNext} ? 'page-item': 'page-item disabled'">
-                        <a th:href="@{/motorcycles/{id}(id=${motorcycle.id}, reviewPageNumber=${reviewPage.totalPages - 1}, reviewSort=${currentReviewSort})}"
-                           class="page-link">❯❯</a>
-                    </li>
-
-                </th:block>
-
-            </ul>
-        </nav>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, ${'/motorcycles/' + motorcycle.getId()}, 'reviewPageNumber', 'reviewSort')}"></div>
 
 
     </div>
