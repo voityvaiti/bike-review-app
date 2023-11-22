@@ -17,10 +17,14 @@ public class SortUtility {
         for (String sortField : sortFields) {
             String[] parts = sortField.split(":");
             String field = parts[0].trim();
-            String direction = parts[1].trim();
+            String direction = "";
 
-            Sort.Order order = direction.equalsIgnoreCase("asc") ?
-                    Sort.Order.asc(field) : Sort.Order.desc(field);
+            if(parts.length > 1) {
+                direction = parts[1].trim();
+            }
+
+            Sort.Order order = direction.equalsIgnoreCase("desc") ?
+                    Sort.Order.desc(field) : Sort.Order.asc(field);
 
             orders.add(order);
         }
