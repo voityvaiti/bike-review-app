@@ -21,11 +21,6 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
 
     @Override
-    public List<Motorcycle> getAll() {
-        return motorcycleRepository.findAll();
-    }
-
-    @Override
     public Page<Motorcycle> getAll(Pageable pageable) {
         return motorcycleRepository.findAll(pageable);
     }

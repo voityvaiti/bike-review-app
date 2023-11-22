@@ -29,16 +29,7 @@ public class ReviewServiceImpl implements ReviewService {
         this.motorcycleRepository = motorcycleRepository;
     }
 
-    @Override
-    public List<Review> getReviewsByMotorcycleId(Long id) {
-        Optional<Motorcycle> optionalMotorcycle = motorcycleRepository.findById(id);
 
-        if(optionalMotorcycle.isEmpty()) {
-            throw new EntityNotFoundException("Motorcycle with id" + id + "not found");
-        }
-
-        return reviewRepository.findAllByMotorcycle(optionalMotorcycle.get());
-    }
 
     @Override
     public Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable) {

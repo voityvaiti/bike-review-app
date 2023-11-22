@@ -14,8 +14,6 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findAllByMotorcycle(Motorcycle motorcycle);
-
     Page<Review> findAllByMotorcycle(Motorcycle motorcycle, Pageable pageable);
 
     @Query("SELECT m.id as motorcycleId, AVG(r.rating) as averageRating FROM Review r JOIN r.motorcycle m GROUP BY m.id")

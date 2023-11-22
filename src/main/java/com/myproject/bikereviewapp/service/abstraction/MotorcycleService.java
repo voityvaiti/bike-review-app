@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface MotorcycleService {
 
-    List<Motorcycle> getAll();
-
     Page<Motorcycle> getAll(Pageable pageable);
 
     List<Motorcycle> getAllSortedByIdAsc();
