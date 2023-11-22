@@ -4,6 +4,8 @@ import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +21,10 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
 
     @Override
-    public List<Motorcycle> getAll() {
-        return motorcycleRepository.findAll();
+    public Page<Motorcycle> getAll(Pageable pageable) {
+        return motorcycleRepository.findAll(pageable);
     }
+
 
     @Override
     public List<Motorcycle> getAllSortedByIdAsc() {

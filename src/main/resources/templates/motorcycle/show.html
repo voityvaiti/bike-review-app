@@ -53,6 +53,8 @@
 
                 </div>
             </div>
+            <div th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"
+                 class="form-text text-danger mb-1 mt-0"></div>
 
             <label for="review-body">Describe your opinion: </label>
             <textarea class="form-control" id="review-body" rows="5" cols="50" th:field="*{body}"></textarea>
@@ -60,13 +62,37 @@
 
             <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
 
+            <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
+
             <input type="submit" class="btn btn-dark mt-2" value="Post review">
 
         </form>
 
-        <h3 class="mt-4">Reviews (<span th:text="${motorcycle.getReviews().size()}"></span>):</h3>
+        <div class="d-flex justify-content-between mt-4 mb-2">
 
-        <div th:each="review: ${reviews}" class="border border-black rounded p-3 mb-2 d-flex">
+            <h3 class="mb-0">Reviews (<span th:text="${motorcycle.getReviews().size()}"></span>):</h3>
+
+            <div class="d-flex justify-content-end">
+                <form th:method="GET" th:action="@{/motorcycles/{id}(id=${motorcycle.id})}" class="d-flex justify-content-end">
+
+                    <select class="form-select" name="reviewSort">
+                        <option th:value="${null}">--Sort type--</option>
+                        <option value="publicationDate:desc" th:selected="${currentReviewSort == 'publicationDate:desc'}">↓Date</option>
+                        <option value="publicationDate:asc" th:selected="${currentReviewSort == 'publicationDate:asc'}">↑Date</option>
+                        <option value="rating:desc" th:selected="${currentReviewSort == 'rating:desc'}">↓Rating</option>
+                        <option value="rating:asc" th:selected="${currentReviewSort == 'rating:asc'}">↑Rating</option>
+                    </select>
+
+                    <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
+
+                    <button type="submit" class="btn btn-dark ms-1">Sort</button>
+
+                </form>
+            </div>
+
+        </div>
+
+        <div th:each="review: ${reviewPage.content}" class="border border-black rounded p-3 mb-2 d-flex">
 
             <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
 
@@ -81,6 +107,8 @@
                 <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
             </div>
         </div>
+
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, ${'/motorcycles/' + motorcycle.getId()}, 'reviewPageNumber', 'reviewSort')}"></div>
 
 
     </div>

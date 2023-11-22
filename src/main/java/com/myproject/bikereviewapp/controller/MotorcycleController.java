@@ -2,11 +2,12 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
-import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
+import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class MotorcycleController {
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/motorcycles/admin";
+
+    protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
+
+    protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
+
+    protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
 
     private final MotorcycleService motorcycleService;
 
@@ -31,10 +38,18 @@ public class MotorcycleController {
     }
 
     @GetMapping
-    public String showAll(Model model) {
+    public String showAll(Model model,
+                          @RequestParam(defaultValue = "0") Integer pageNumber,
+                          @RequestParam(defaultValue = "16") Integer pageSize,
+                          @RequestParam(defaultValue = "brand.name:asc, model:asc") String sort) {
 
-        model.addAttribute("motorcycles", motorcycleService.getAll());
+        model.addAttribute("motorcyclePage", motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("currentSort", sort);
+
         model.addAttribute("motorcycleIdToAvgRating", reviewService.getMotorcycleIdToAvgRating());
+
         return "motorcycle/all";
     }
 
@@ -46,11 +61,19 @@ public class MotorcycleController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long id,
-                       @ModelAttribute("newReview") Review newReview, Model model) {
+                       @ModelAttribute("newReview") Review newReview,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
+                       Model model) {
 
         model.addAttribute("motorcycle", motorcycleService.getById(id));
         model.addAttribute("avgRating", reviewService.getAvgRating(id));
-        model.addAttribute("reviews", reviewService.getReviewsByMotorcycleId(id));
+
+        model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize, SortUtility.parseSort(reviewSort))));
+        model.addAttribute("currentReviewPageNumber", reviewPageNumber);
+        model.addAttribute("currentReviewSort", reviewSort);
+
 
         return "motorcycle/show";
     }

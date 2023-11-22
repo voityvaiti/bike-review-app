@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:fragment="paginationBar(page, currentPageNumber, currentSort, url, pageNumberParamName, sortParamName)">
+
+    <nav th:if="${page.totalPages > 0}" class="d-flex justify-content-center mt-2">
+        <ul class="pagination">
+
+            <li th:class="${page.hasPrevious()} ? 'page-item': 'page-item disabled'">
+                <a th:href="@{${url}(${pageNumberParamName}=${currentPageNumber - 1}, ${sortParamName}=${currentSort})}"
+                   class="page-link">❮</a>
+            </li>
+
+            <th:block
+                    th:with="startPage=${(currentPageNumber > 5) ? (currentPageNumber - 4) : 0}, endPage=${(currentPageNumber < page.totalPages - 6) ? (currentPageNumber + 4) : (page.totalPages - 1)}">
+
+                <th:block th:if="${startPage > 0}">
+                    <li class="page-item">
+                        <a th:href="@{${url}(${pageNumberParamName}=0, ${sortParamName}=${currentSort})}" class="page-link">1</a>
+                    </li>
+
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                </th:block>
+
+                <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+                    th:class="${pageNumber == currentPageNumber} ? 'active page-item' : 'page-item'">
+                    <a th:href="@{${url}(${pageNumberParamName}=${pageNumber}, ${sortParamName}=${currentSort})}"
+                       th:text="${pageNumber + 1}" class="page-link"></a>
+                </li>
+
+                <th:block th:if="${endPage < page.totalPages - 1}">
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+
+                    <li class="page-item">
+                        <a th:href="@{${url}(${pageNumberParamName}=${page.totalPages - 1}, ${sortParamName}=${currentSort})}"
+                           th:text="${page.totalPages}" class="page-link"></a>
+                    </li>
+                </th:block>
+
+            </th:block>
+
+            <li th:class="${page.hasNext()} ? 'page-item': 'page-item disabled'">
+                <a th:href="@{${url}(${pageNumberParamName}=${currentPageNumber + 1}, ${sortParamName}=${currentSort})}"
+                   class="page-link">❯</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+</body>
+</html>

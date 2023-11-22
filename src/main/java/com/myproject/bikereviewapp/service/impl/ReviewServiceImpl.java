@@ -6,6 +6,8 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundExce
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,15 +29,17 @@ public class ReviewServiceImpl implements ReviewService {
         this.motorcycleRepository = motorcycleRepository;
     }
 
+
+
     @Override
-    public List<Review> getReviewsByMotorcycleId(Long id) {
+    public Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable) {
         Optional<Motorcycle> optionalMotorcycle = motorcycleRepository.findById(id);
 
         if(optionalMotorcycle.isEmpty()) {
             throw new EntityNotFoundException("Motorcycle with id" + id + "not found");
         }
 
-        return reviewRepository.findAllByMotorcycle(optionalMotorcycle.get());
+        return reviewRepository.findAllByMotorcycle(optionalMotorcycle.get(), pageable);
     }
 
     @Override

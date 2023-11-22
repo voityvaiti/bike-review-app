@@ -8,9 +8,13 @@ import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +40,8 @@ class ReviewServiceImplTest {
         Long id = 7L;
         Motorcycle motorcycle = new Motorcycle(id, "someModel", new Brand());
 
+        Pageable pageable = Mockito.mock(Pageable.class);
+
         Review review1 = new Review();
         review1.setId(2L);
         review1.setBody("somereview1");
@@ -43,17 +49,17 @@ class ReviewServiceImplTest {
         review1.setId(5L);
         review2.setBody("somereview2");
 
-        List<Review> reviewList = List.of(
+        Page<Review> reviewPage = new PageImpl<>(List.of(
                 review1, review2
-        );
+        ));
 
         when(motorcycleRepository.findById(id)).thenReturn(Optional.of(motorcycle));
-        when(reviewRepository.findAllByMotorcycle(motorcycle)).thenReturn(reviewList);
+        when(reviewRepository.findAllByMotorcycle(motorcycle, pageable)).thenReturn(reviewPage);
 
-        assertEquals(reviewList, reviewService.getReviewsByMotorcycleId(id));
+        assertEquals(reviewPage, reviewService.getReviewsByMotorcycleId(id, pageable));
 
         verify(motorcycleRepository).findById(id);
-        verify(reviewRepository).findAllByMotorcycle(motorcycle);
+        verify(reviewRepository).findAllByMotorcycle(motorcycle, pageable);
     }
 
     @Test
@@ -62,9 +68,9 @@ class ReviewServiceImplTest {
 
         when(motorcycleRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> reviewService.getReviewsByMotorcycleId(id));
+        assertThrows(EntityNotFoundException.class, () -> reviewService.getReviewsByMotorcycleId(id, null));
 
         verify(motorcycleRepository).findById(id);
-        verify(reviewRepository, never()).findAllByMotorcycle(any());
+        verify(reviewRepository, never()).findAllByMotorcycle(any(), any());
     }
 }
