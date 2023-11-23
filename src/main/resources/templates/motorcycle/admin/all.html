@@ -8,7 +8,7 @@
     <title>Admin page: Motorcycles</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
-    <link th:href="@{/style/main.css}" rel="stylesheet" />
+    <link th:href="@{/style/main.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -62,6 +62,8 @@
             </tbody>
 
         </table>
+
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, '/motorcycles/admin', 'pageNumber', 'sort')}"></div>
 
     </div>
 </div>
