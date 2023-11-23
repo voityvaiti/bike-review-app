@@ -7,6 +7,7 @@ import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,8 +55,16 @@ public class MotorcycleController {
     }
 
     @GetMapping("/admin")
-    public String showAllInAdminPanel(Model model) {
-        model.addAttribute("motorcycles", motorcycleService.getAllSortedByIdAsc());
+    public String showAllInAdminPanel(Model model,
+                                      @RequestParam(defaultValue = "0") Integer pageNumber,
+                                      @RequestParam(defaultValue = "20") Integer pageSize,
+                                      @RequestParam(defaultValue = "id:asc") String sort) {
+
+        model.addAttribute("motorcyclePage", motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("currentSort", sort);
+
         return "motorcycle/admin/all";
     }
 
