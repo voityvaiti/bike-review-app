@@ -10,8 +10,6 @@ public interface MotorcycleService {
 
     Page<Motorcycle> getAll(Pageable pageable);
 
-    List<Motorcycle> getAllSortedByIdAsc();
-
     Motorcycle getById(Long id);
 
     Motorcycle create(Motorcycle motorcycle);
