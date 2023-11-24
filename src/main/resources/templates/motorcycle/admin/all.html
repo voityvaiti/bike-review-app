@@ -29,11 +29,10 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Brand</th>
-                <th scope="col">Model</th>
-                <th scope="col">Country</th>
+            <tr th:with="thNameArr=${ {'ID', 'Brand', 'Model', 'Country'} }, fieldParamArr=${ {'id', 'brand.name', 'model', 'brand.country'} }, url = '/motorcycles/admin', pageNumberParam = 'pageNumber', sortParam = 'sort'">
+
+                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParam}, ${sortParam})}"></th>
+
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
             </tr>
