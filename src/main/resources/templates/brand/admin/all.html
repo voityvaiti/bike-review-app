@@ -29,17 +29,17 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Country</th>
+            <tr th:with="thNameArr=${ {'ID', 'Name', 'Country'} }, fieldParamArr=${ {'id', 'name','country'} }, url = '/brands/admin', pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
+
+                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
+
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
             </tr>
             </thead>
 
             <tbody>
-            <tr th:each="brand: ${brands}">
+            <tr th:each="brand: ${brandPage.content}">
 
                 <th scope="row" th:text="${brand.getId()}"></th>
 
@@ -71,6 +71,8 @@
             </tbody>
 
         </table>
+
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${brandPage}, ${currentPageNumber}, ${currentSort}, '/brands/admin', 'pageNumber', 'sort')}"></div>
 
     </div>
 </div>
