@@ -29,19 +29,17 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Username</th>
-                <th scope="col">Public name</th>
-                <th scope="col">Role</th>
-                <th scope="col">Status</th>
+            <tr th:with="thNameArr=${ {'ID', 'Username', 'Public name', 'Role', 'Status'} }, fieldParamArr=${ {'id', 'username', 'publicName', 'role', 'enabled'} }, url = '/users/admin', pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
+
+                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
+
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
             </tr>
             </thead>
 
             <tbody>
-            <tr th:each="user: ${users}">
+            <tr th:each="user: ${userPage.content}">
 
                 <th scope="row" th:text="${user.getId()}"></th>
 
@@ -73,6 +71,8 @@
             </tbody>
 
         </table>
+
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${userPage}, ${currentPageNumber}, ${currentSort}, '/users/admin', 'pageNumber', 'sort')}"></div>
 
     </div>
 </div>
