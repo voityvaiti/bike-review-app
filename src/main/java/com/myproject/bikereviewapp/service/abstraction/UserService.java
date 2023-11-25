@@ -1,16 +1,14 @@
 package com.myproject.bikereviewapp.service.abstraction;
 
 import com.myproject.bikereviewapp.entity.User;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
     boolean exists(String username);
 
-    List<User> getAll();
-
-    List<User> getAllSortedByIdAsc();
+    Page<User> getAll(Pageable pageable);
 
     User getById(Long id);
 
