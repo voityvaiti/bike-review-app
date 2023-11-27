@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<th:block th:fragment="thWithSort(thNameArr, fieldParamArr, currentPageNumber, currentSort, url, pageNumberParamName, sortParamName)">
+
+    <th:block th:if="${#arrays.length(thNameArr) == #arrays.length(fieldParamArr)}" th:each="fieldParam, stat:${fieldParamArr}">
+
+    <th th:if="${fieldParam} + ':asc' != ${currentSort}" scope="col">
+        <a th:href="@{${url}(${pageNumberParamName}=${currentPageNumber}, ${sortParamName}=${fieldParam + ':asc'})}" th:text="${currentSort == fieldParam + ':desc' ? '↓'+thNameArr[stat.index]:thNameArr[stat.index]}" class="text-decoration-none text-white"></a>
+    </th>
+
+    <th th:unless="${fieldParam} + ':asc' != ${currentSort}" scope="col">
+        <a th:href="@{${url}(${pageNumberParamName}=${currentPageNumber}, ${sortParamName}=${fieldParam + ':desc'})}" th:text="${'↑'+thNameArr[stat.index]}" class="text-decoration-none text-white"></a>
+    </th>
+
+    </th:block>
+
+</th:block>
+
+</body>
+</html>

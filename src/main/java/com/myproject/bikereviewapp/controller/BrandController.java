@@ -2,7 +2,9 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
+import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,9 +23,16 @@ public class BrandController {
     }
 
     @GetMapping("/admin")
-    public String showAllInAdminPanel(Model model) {
+    public String showAllInAdminPanel(Model model,
+                                      @RequestParam(defaultValue = "0") Integer pageNumber,
+                                      @RequestParam(defaultValue = "20") Integer pageSize,
+                                      @RequestParam(defaultValue = "id:asc") String sort) {
 
-        model.addAttribute("brands", brandService.getAllSortedByIdAsc());
+        model.addAttribute("brandPage", brandService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("currentSort", sort);
+
         return "brand/admin/all";
     }
 

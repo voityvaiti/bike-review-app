@@ -8,7 +8,7 @@
     <title>Admin page: Motorcycles</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
-    <link th:href="@{/style/main.css}" rel="stylesheet" />
+    <link th:href="@{/style/main.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -29,18 +29,17 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Brand</th>
-                <th scope="col">Model</th>
-                <th scope="col">Country</th>
+            <tr th:with="thNameArr=${ {'ID', 'Brand', 'Model', 'Country'} }, fieldParamArr=${ {'id', 'brand.name', 'model', 'brand.country'} }, url = '/motorcycles/admin', pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
+
+                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
+
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
             </tr>
             </thead>
 
             <tbody>
-            <tr th:each="motorcycle: ${motorcycles}">
+            <tr th:each="motorcycle: ${motorcyclePage.content}">
 
                 <th scope="row" th:text="${motorcycle.getId()}"></th>
 
@@ -62,6 +61,8 @@
             </tbody>
 
         </table>
+
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, '/motorcycles/admin', 'pageNumber', 'sort')}"></div>
 
     </div>
 </div>

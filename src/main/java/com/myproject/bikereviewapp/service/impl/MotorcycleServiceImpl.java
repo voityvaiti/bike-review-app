@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class MotorcycleServiceImpl implements MotorcycleService {
 
@@ -23,12 +21,6 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     @Override
     public Page<Motorcycle> getAll(Pageable pageable) {
         return motorcycleRepository.findAll(pageable);
-    }
-
-
-    @Override
-    public List<Motorcycle> getAllSortedByIdAsc() {
-        return motorcycleRepository.getAllByOrderByIdAsc();
     }
 
     @Override

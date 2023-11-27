@@ -19,10 +19,12 @@ public class MotorcycleController {
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/motorcycles/admin";
 
+    private static final String MOTORCYCLE_ATTR = "motorcycle";
+    private static final String MOTORCYCLE_PAGE_ATTR = "motorcyclePage";
+    private static final String BRANDS_ATTR = "brands";
+
     protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
-
     protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
-
     protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
 
     private final MotorcycleService motorcycleService;
@@ -43,7 +45,7 @@ public class MotorcycleController {
                           @RequestParam(defaultValue = "16") Integer pageSize,
                           @RequestParam(defaultValue = "brand.name:asc, model:asc") String sort) {
 
-        model.addAttribute("motorcyclePage", motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);
@@ -54,8 +56,16 @@ public class MotorcycleController {
     }
 
     @GetMapping("/admin")
-    public String showAllInAdminPanel(Model model) {
-        model.addAttribute("motorcycles", motorcycleService.getAllSortedByIdAsc());
+    public String showAllInAdminPanel(Model model,
+                                      @RequestParam(defaultValue = "0") Integer pageNumber,
+                                      @RequestParam(defaultValue = "20") Integer pageSize,
+                                      @RequestParam(defaultValue = "id:asc") String sort) {
+
+        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("currentSort", sort);
+
         return "motorcycle/admin/all";
     }
 
@@ -67,7 +77,7 @@ public class MotorcycleController {
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
                        Model model) {
 
-        model.addAttribute("motorcycle", motorcycleService.getById(id));
+        model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
         model.addAttribute("avgRating", reviewService.getAvgRating(id));
 
         model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize, SortUtility.parseSort(reviewSort))));
@@ -81,7 +91,7 @@ public class MotorcycleController {
     @GetMapping("/admin/new")
     public String newMotorcycle(@ModelAttribute Motorcycle motorcycle, Model model) {
 
-        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute(BRANDS_ATTR, brandService.getAll());
         return "motorcycle/admin/new";
     }
 
@@ -99,10 +109,10 @@ public class MotorcycleController {
     @GetMapping("/admin/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
 
-        if (!model.containsAttribute("motorcycle")) {
-            model.addAttribute("motorcycle", motorcycleService.getById(id));
+        if (!model.containsAttribute(MOTORCYCLE_ATTR)) {
+            model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
         }
-        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute(BRANDS_ATTR, brandService.getAll());
 
         return "motorcycle/admin/edit";
     }

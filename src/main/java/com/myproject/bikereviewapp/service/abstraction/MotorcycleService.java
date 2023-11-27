@@ -4,13 +4,9 @@ import com.myproject.bikereviewapp.entity.Motorcycle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface MotorcycleService {
 
     Page<Motorcycle> getAll(Pageable pageable);
-
-    List<Motorcycle> getAllSortedByIdAsc();
 
     Motorcycle getById(Long id);
 

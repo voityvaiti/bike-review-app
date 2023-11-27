@@ -4,7 +4,9 @@ import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,8 +30,16 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    public String showAllInAdminPanel(Model model) {
-        model.addAttribute("users", userService.getAllSortedByIdAsc());
+    public String showAllInAdminPanel(Model model,
+                                      @RequestParam(defaultValue = "0") Integer pageNumber,
+                                      @RequestParam(defaultValue = "20") Integer pageSize,
+                                      @RequestParam(defaultValue = "id:asc") String sort) {
+
+        model.addAttribute("userPage", userService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("currentSort", sort);
+
         return "user/admin/all";
     }
 

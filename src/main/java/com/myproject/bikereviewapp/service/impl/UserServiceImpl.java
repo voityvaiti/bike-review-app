@@ -5,10 +5,11 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundExce
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserDuplicationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,13 +28,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public List<User> getAllSortedByIdAsc() {
-        return userRepository.findAllByOrderByIdAsc();
+    public Page<User> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override
