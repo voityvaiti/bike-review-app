@@ -7,7 +7,8 @@
     <title>Profile</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
-    <link th:href="@{/style/main.css}" rel="stylesheet" />
+    <link th:href="@{/style/main.css}" rel="stylesheet"/>
+    <link th:href="@{/style/stars-rating-read.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -41,5 +42,29 @@
     </div>
 </div>
 
+<div class="d-flex justify-content-center mt-3">
+    <div class="w-50">
+
+        <h3 class="mb-0 text-start">Your reviews (<span th:text="${user.getReviews().size()}"></span>):</h3>
+
+        <div th:each="review: ${user.getReviews()}" class="border border-black rounded p-3 mt-2 d-flex">
+
+            <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
+
+            <div>
+                <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
+                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+                       class="ms-2 text-muted"></small> <br>
+
+                <meter class="average-rating" min="0" max="5"
+                       th:value="${review.getRating()}"></meter>
+
+                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/script/stars-rating-read.js}"></script>
 </body>
 </html>
