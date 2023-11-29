@@ -10,6 +10,8 @@ public interface ReviewService {
 
     Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable);
 
+    Page<Review> getReviewsByUserId(Long id, Pageable pageable);
+
     Map<Long, Float> getMotorcycleIdToAvgRating();
 
     Float getAvgRating(Long motorcycleId);
