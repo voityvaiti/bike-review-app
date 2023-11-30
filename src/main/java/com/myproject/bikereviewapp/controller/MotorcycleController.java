@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import static com.myproject.bikereviewapp.controller.ReviewController.*;
+
 @Controller
 @RequestMapping("/motorcycles")
 public class MotorcycleController {
@@ -22,10 +24,6 @@ public class MotorcycleController {
     private static final String MOTORCYCLE_ATTR = "motorcycle";
     private static final String MOTORCYCLE_PAGE_ATTR = "motorcyclePage";
     private static final String BRANDS_ATTR = "brands";
-
-    protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
-    protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
-    protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
 
     private final MotorcycleService motorcycleService;
 
