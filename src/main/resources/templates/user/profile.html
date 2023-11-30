@@ -42,12 +42,34 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-center mt-3">
+<div th:with="reviews=${reviewPage.content}" class="d-flex justify-content-center mt-3">
     <div class="w-50">
 
-        <h3 class="mb-0 text-start">Your reviews (<span th:text="${user.getReviews().size()}"></span>):</h3>
+        <div class="d-flex justify-content-between mt-4 mb-2">
 
-        <div th:each="review: ${user.getReviews()}" class="border border-black rounded p-3 mt-2 d-flex">
+            <h3 class="mb-0">Reviews (<span th:text="${user.getReviews().size()}"></span>):</h3>
+
+            <div class="d-flex justify-content-end">
+                <form th:method="GET" th:action="@{/users/profile}" class="d-flex justify-content-end">
+
+                    <select class="form-select" name="reviewSort">
+                        <option th:value="${null}">--Sort type--</option>
+                        <option value="publicationDate:desc" th:selected="${currentReviewSort == 'publicationDate:desc'}">↓Date</option>
+                        <option value="publicationDate:asc" th:selected="${currentReviewSort == 'publicationDate:asc'}">↑Date</option>
+                        <option value="rating:desc" th:selected="${currentReviewSort == 'rating:desc'}">↓Rating</option>
+                        <option value="rating:asc" th:selected="${currentReviewSort == 'rating:asc'}">↑Rating</option>
+                    </select>
+
+                    <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
+
+                    <button type="submit" class="btn btn-dark ms-1">Sort</button>
+
+                </form>
+            </div>
+
+        </div>
+
+        <div th:each="review: ${reviews}" class="border border-black rounded p-3 mt-2 d-flex">
 
             <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
 
@@ -62,6 +84,9 @@
                 <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
             </div>
         </div>
+
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, ${'/users/profile'}, 'reviewPageNumber', 'reviewSort')}"></div>
+
     </div>
 </div>
 
