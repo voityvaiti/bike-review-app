@@ -12,12 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import static com.myproject.bikereviewapp.controller.UserController.USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE;
+
 
 @Controller
 @RequestMapping("/reviews")
 public class ReviewController {
-
-    final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
 
     protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
     protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";

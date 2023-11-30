@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.controller;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
+import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
@@ -15,18 +16,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import static com.myproject.bikereviewapp.controller.ReviewController.*;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
-    private static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
+    protected static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/users/admin";
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final ReviewService reviewService;
+
+    public UserController(UserService userService, ReviewService reviewService) {
         this.userService = userService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/admin")
@@ -44,14 +50,22 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String showCurrentUserProfile(Authentication authentication, Model model) {
+    public String showCurrentUserProfile(Authentication authentication, Model model,
+                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
+                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
+                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
         }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userService.getByUsername(userDetails.getUsername());
 
-        model.addAttribute("user", userService.getByUsername(userDetails.getUsername()));
+        model.addAttribute("user", currentUser);
+
+        model.addAttribute("reviewPage", reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, reviewPageSize, SortUtility.parseSort(reviewSort))));
+        model.addAttribute("currentReviewPageNumber", reviewPageNumber);
+        model.addAttribute("currentReviewSort", reviewSort);
 
         return "user/profile";
     }
