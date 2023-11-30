@@ -52,6 +52,7 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher("/**/admin/**")).hasAnyAuthority(ADMIN, STUFF)
 
                         .requestMatchers(antMatcher(HttpMethod.POST, "/reviews/**")).authenticated()
+                        .requestMatchers(antMatcher("/users/profile/**")).authenticated()
                         .anyRequest().permitAll())
 
                 .formLogin(form -> form
