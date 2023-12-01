@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, ${'/users/profile'}, 'reviewPageNumber', 'reviewSort')}"></div>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, @{/users/profile}, 'reviewPageNumber', 'reviewSort')}"></div>
 
     </div>
 </div>

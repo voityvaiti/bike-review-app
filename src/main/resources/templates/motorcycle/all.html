@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, '/motorcycles', 'pageNumber', 'sort')}"></div>
+    <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, @{/motorcycles}, 'pageNumber', 'sort')}"></div>
 
 </div>
 

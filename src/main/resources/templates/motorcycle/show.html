@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, ${'/motorcycles/' + motorcycle.getId()}, 'reviewPageNumber', 'reviewSort')}"></div>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, @{/motorcycles/{id}(id=${motorcycle.id})}, 'reviewPageNumber', 'reviewSort')}"></div>
 
 
     </div>
