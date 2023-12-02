@@ -26,7 +26,7 @@
         <div class="col-sm-12 col-md-4 col-lg-3 d-flex align-items-center flex-column p-2"
              th:each="motorcycle: ${motorcyclePage.content}">
 
-            <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3"
+            <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3 h-100"
                th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
                 <img th:src="@{/img/motorcycle.png}" class="img-thumbnail border-0 mb-1" alt="Motorcycle" draggable="false">
