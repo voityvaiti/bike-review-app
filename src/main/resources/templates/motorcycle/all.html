@@ -17,25 +17,16 @@
 
 <div class="container my-4">
 
-    <div class="d-flex justify-content-end">
-        <form th:method="GET" th:action="@{/motorcycles}" class="d-flex justify-content-end">
-            <select class="form-select" name="sort">
-                <option th:value="${null}">--Sort type--</option>
-                <option value="brand.name:asc, model:asc" th:selected="${currentSort == 'brand.name:asc, model:asc'}">A→Z</option>
-                <option value="brand.name:desc, model:desc" th:selected="${currentSort == 'brand.name:desc, model:desc'}">Z→A</option>
-            </select>
+    <div th:with="linkTextArr=${ {'A→Z', 'Z→A'} }, sortArr=${ {'brand.name:asc, model:asc', 'brand.name:desc, model:desc'} }, url = @{/motorcycles}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'" class="d-flex justify-content-end">
 
-            <input type="hidden" name="pageNumber" th:value="${currentPageNumber}">
-
-            <button type="submit" class="btn btn-dark ms-1">Sort</button>
-        </form>
+        <div th:replace="~{fragments/navbar/sort :: sortSelector(${linkTextArr}, ${sortArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></div>
     </div>
 
     <div class="row">
         <div class="col-sm-12 col-md-4 col-lg-3 d-flex align-items-center flex-column p-2"
              th:each="motorcycle: ${motorcyclePage.content}">
 
-            <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3"
+            <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3 h-100"
                th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
                 <img th:src="@{/img/motorcycle.png}" class="img-thumbnail border-0 mb-1" alt="Motorcycle" draggable="false">
@@ -66,7 +57,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, '/motorcycles', 'pageNumber', 'sort')}"></div>
+    <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, @{/motorcycles}, 'pageNumber', 'sort')}"></div>
 
 </div>
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<th:block th:fragment="sortSelector(optionTextArr, sortArr, currentPageNumber, currentSort, url, pageNumberParamName, sortParamName)">
+
+    <form th:if="${#arrays.length(optionTextArr) == #arrays.length(sortArr)}" th:method="GET" th:action="@{${url}}" class="d-flex justify-content-end">
+
+        <select class="form-select" th:name="${sortParamName}">
+            <option th:value="${null}">--Sort type--</option>
+            <th:block th:each="sort, stat: ${sortArr}">
+                <option th:value="${sort}" th:selected="${currentSort == sort}" th:text="${optionTextArr[stat.index]}"></option>
+            </th:block>
+        </select>
+
+        <input type="hidden" th:name="${pageNumberParamName}" th:value="${currentPageNumber}">
+
+        <button type="submit" class="btn btn-dark ms-1">Sort</button>
+
+    </form>
+
+</th:block>
+
+</body>
+</html>

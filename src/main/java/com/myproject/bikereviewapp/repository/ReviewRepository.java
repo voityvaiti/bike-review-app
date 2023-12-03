@@ -2,6 +2,7 @@ package com.myproject.bikereviewapp.repository;
 
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
+import com.myproject.bikereviewapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,8 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Page<Review> findAllByMotorcycle(Motorcycle motorcycle, Pageable pageable);
+
+    Page<Review> findAllByUser(User user, Pageable pageable);
 
     @Query("SELECT m.id as motorcycleId, AVG(r.rating) as averageRating FROM Review r JOIN r.motorcycle m GROUP BY m.id")
     List<Object[]> getMotorcycleIdToAvgRating();

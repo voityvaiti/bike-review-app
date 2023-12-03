@@ -29,7 +29,7 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr th:with="thNameArr=${ {'ID', 'Name', 'Country'} }, fieldParamArr=${ {'id', 'name','country'} }, url = '/brands/admin', pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
+            <tr th:with="thNameArr=${ {'ID', 'Name', 'Country'} }, fieldParamArr=${ {'id', 'name','country'} }, url = @{/brands/admin}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
 
                 <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
 
@@ -72,7 +72,7 @@
 
         </table>
 
-        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${brandPage}, ${currentPageNumber}, ${currentSort}, '/brands/admin', 'pageNumber', 'sort')}"></div>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${brandPage}, ${currentPageNumber}, ${currentSort}, @{/brands/admin}, 'pageNumber', 'sort')}"></div>
 
     </div>
 </div>

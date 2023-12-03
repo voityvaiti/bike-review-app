@@ -68,27 +68,11 @@
 
         </form>
 
-        <div class="d-flex justify-content-between mt-4 mb-2">
+        <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }, url = @{/motorcycles/{id}(id=${motorcycle.id})}, pageNumberParamName = 'reviewPageNumber', sortParamName = 'reviewSort'" class="d-flex justify-content-between mt-4 mb-2">
 
             <h3 class="mb-0">Reviews (<span th:text="${motorcycle.getReviews().size()}"></span>):</h3>
 
-            <div class="d-flex justify-content-end">
-                <form th:method="GET" th:action="@{/motorcycles/{id}(id=${motorcycle.id})}" class="d-flex justify-content-end">
-
-                    <select class="form-select" name="reviewSort">
-                        <option th:value="${null}">--Sort type--</option>
-                        <option value="publicationDate:desc" th:selected="${currentReviewSort == 'publicationDate:desc'}">↓Date</option>
-                        <option value="publicationDate:asc" th:selected="${currentReviewSort == 'publicationDate:asc'}">↑Date</option>
-                        <option value="rating:desc" th:selected="${currentReviewSort == 'rating:desc'}">↓Rating</option>
-                        <option value="rating:asc" th:selected="${currentReviewSort == 'rating:asc'}">↑Rating</option>
-                    </select>
-
-                    <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
-
-                    <button type="submit" class="btn btn-dark ms-1">Sort</button>
-
-                </form>
-            </div>
+            <div th:replace="~{fragments/navbar/sort :: sortSelector(${linkTextArr}, ${sortArr}, ${currentReviewPageNumber}, ${currentReviewSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></div>
 
         </div>
 
@@ -108,7 +92,7 @@
             </div>
         </div>
 
-        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, ${'/motorcycles/' + motorcycle.getId()}, 'reviewPageNumber', 'reviewSort')}"></div>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, @{/motorcycles/{id}(id=${motorcycle.id})}, 'reviewPageNumber', 'reviewSort')}"></div>
 
 
     </div>
