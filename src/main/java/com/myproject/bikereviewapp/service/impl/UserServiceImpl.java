@@ -17,6 +17,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public boolean isCorrectCredentials(String username, String password) {
 
         User user = getByUsername(username);
-        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+        String encryptedPassword = passwordEncoder.encode(password);
 
         return user.getPassword().equals(encryptedPassword);
     }
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
             throw new UserDuplicationException("User with username " + user.getUsername() + " already exists");
         }
 
-        String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
         return userRepository.save(user);
@@ -81,6 +83,17 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(currentUser);
     }
+
+    @Override
+    public User updatePassword(Long id, String password) {
+
+        User user = getById(id);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return userRepository.save(user);
+    }
+
 
     @Override
     public void delete(Long id) {

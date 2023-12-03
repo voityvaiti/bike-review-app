@@ -20,6 +20,8 @@ public interface UserService {
 
     void toggleStatus(Long id);
 
+    User updatePassword(Long id, String password);
+
     void delete(Long id);
     
 }
