@@ -28,6 +28,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isCorrectCredentials(String username, String password) {
+
+        User user = getByUsername(username);
+        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+
+        return user.getPassword().equals(encryptedPassword);
+    }
+
+    @Override
     public Page<User> getAll(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
