@@ -33,9 +33,8 @@ public class UserServiceImpl implements UserService {
     public boolean isCorrectCredentials(String username, String password) {
 
         User user = getByUsername(username);
-        String encryptedPassword = passwordEncoder.encode(password);
 
-        return user.getPassword().equals(encryptedPassword);
+        return passwordEncoder.matches(password, user.getPassword());
     }
 
     @Override
@@ -89,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
         User user = getById(id);
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(password));
 
         return userRepository.save(user);
     }
