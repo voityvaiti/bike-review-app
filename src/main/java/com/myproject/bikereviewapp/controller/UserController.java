@@ -2,11 +2,12 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
+import com.myproject.bikereviewapp.entity.dto.PasswordUpdateDto;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
-import jakarta.validation.Valid;
+import jakarta.validation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
@@ -25,6 +28,8 @@ public class UserController {
     protected static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/users/admin";
+
+    private static final String PASSWORD_EDIT_PAGE = "user/password-edit";
 
     private final UserService userService;
 
@@ -98,6 +103,48 @@ public class UserController {
         userService.toggleStatus(id);
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
+    }
+
+
+
+    @GetMapping("/profile/password-edit")
+    public String editCurrentUserPassword(Model model) {
+
+        model.addAttribute("passwordUpdateDto", new PasswordUpdateDto());
+        return PASSWORD_EDIT_PAGE;
+    }
+
+    @PatchMapping("/password")
+    public String updateCurrentUserPassword(@ModelAttribute PasswordUpdateDto passwordUpdateDto, Authentication authentication, BindingResult bindingResult) {
+
+        if (authentication == null) {
+            throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
+        }
+        String username = authentication.getName();
+
+
+        if (!userService.isCorrectCredentials(username, passwordUpdateDto.getOldPassword())) {
+            bindingResult.rejectValue("oldPassword", "passwordUpdateDto.oldPassword", "Wrong old password.");
+        }
+        User currentUser = userService.getByUsername(username);
+
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<User>> violations = validator.validateValue(User.class, "password", passwordUpdateDto.getNewPassword());
+
+            violations.forEach(violation ->
+                    bindingResult.rejectValue("newPassword", "passwordUpdateDto.newPassword", violation.getMessage())
+            );
+        }
+
+        if(bindingResult.hasErrors()) {
+            return PASSWORD_EDIT_PAGE;
+        }
+
+
+        userService.updatePassword(currentUser.getId(), passwordUpdateDto.getNewPassword());
+
+        return "redirect:/users/profile";
     }
 
     @DeleteMapping("/admin/{id}")
