@@ -34,6 +34,8 @@
 
             <p th:text="${'Role: ' + user.getRole()}"></p>
 
+            <a th:href="@{/users/profile/password-edit}" class="text-black">Change password</a>
+
             <div class="d-flex justify-content-center">
                 <a th:href="@{/logout}" class="btn btn-dark">Log Out</a>
             </div>
