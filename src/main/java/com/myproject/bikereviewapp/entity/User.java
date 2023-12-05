@@ -1,8 +1,8 @@
 package com.myproject.bikereviewapp.entity;
 
 import com.myproject.bikereviewapp.validation.annotation.UniqueFieldValue;
+import com.myproject.bikereviewapp.validation.annotation.UserPublicName;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,8 +42,7 @@ public class User {
     private Role role;
 
     @Column(name = "public_name")
-    @NotBlank(message = "Public name is required.")
-    @Size(max = 30, message = "Public name cannot be longer then 30 characters.")
+    @UserPublicName
     private String publicName;
 
     @OneToMany(mappedBy = "user")
