@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.controller;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.entity.dto.PasswordUpdateDto;
+import com.myproject.bikereviewapp.entity.dto.PublicNameUpdateDto;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
@@ -143,6 +144,36 @@ public class UserController {
 
 
         userService.updatePassword(currentUser.getId(), passwordUpdateDto.getNewPassword());
+
+        return "redirect:/users/profile";
+    }
+
+
+    @GetMapping("/profile/public-name-edit")
+    public String editCurrentUserPublicName(Model model, Authentication authentication) {
+
+        if (authentication == null) {
+            throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
+        }
+        User currentUser = userService.getByUsername(authentication.getName());
+
+        model.addAttribute("publicNameUpdateDto", new PublicNameUpdateDto(currentUser.getPublicName()));
+        return "user/public-name-edit";
+    }
+
+    @PatchMapping("/public-name")
+    public String updateCurrentUserPublicName(@ModelAttribute @Valid PublicNameUpdateDto publicNameUpdateDto, BindingResult bindingResult, Authentication authentication) {
+
+        if (authentication == null) {
+            throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
+        }
+        if (bindingResult.hasErrors()) {
+            return "user/public-name-edit";
+        }
+
+        User currentUser = userService.getByUsername(authentication.getName());
+
+        userService.updatePublicName(currentUser.getId(), publicNameUpdateDto.getPublicName());
 
         return "redirect:/users/profile";
     }
