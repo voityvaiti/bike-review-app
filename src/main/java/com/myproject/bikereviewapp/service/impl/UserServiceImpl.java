@@ -93,6 +93,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    public User updatePublicName(Long id, String publicName) {
+
+        User user = getById(id);
+
+        user.setPublicName(publicName);
+
+        return userRepository.save(user);
+    }
+
 
     @Override
     public void delete(Long id) {

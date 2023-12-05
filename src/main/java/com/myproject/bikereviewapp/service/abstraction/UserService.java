@@ -22,6 +22,8 @@ public interface UserService {
 
     User updatePassword(Long id, String password);
 
+    User updatePublicName(Long id, String publicName);
+
     void delete(Long id);
     
 }
