@@ -113,7 +113,7 @@ public class UserController {
         return PASSWORD_EDIT_PAGE;
     }
 
-    @PatchMapping("/password")
+    @PatchMapping("/profile/password")
     public String updateCurrentUserPassword(@ModelAttribute @Valid PasswordUpdateDto passwordUpdateDto, BindingResult bindingResult, Authentication authentication) {
 
         if (authentication == null) {
@@ -148,7 +148,7 @@ public class UserController {
         return "user/public-name-edit";
     }
 
-    @PatchMapping("/public-name")
+    @PatchMapping("/profile/public-name")
     public String updateCurrentUserPublicName(@ModelAttribute @Valid PublicNameUpdateDto publicNameUpdateDto, BindingResult bindingResult, Authentication authentication) {
 
         if (authentication == null) {
