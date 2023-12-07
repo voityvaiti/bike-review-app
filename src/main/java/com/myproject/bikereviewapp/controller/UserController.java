@@ -18,8 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
-
 import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
@@ -116,34 +114,23 @@ public class UserController {
     }
 
     @PatchMapping("/password")
-    public String updateCurrentUserPassword(@ModelAttribute PasswordUpdateDto passwordUpdateDto, Authentication authentication, BindingResult bindingResult) {
+    public String updateCurrentUserPassword(@ModelAttribute @Valid PasswordUpdateDto passwordUpdateDto, BindingResult bindingResult, Authentication authentication) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
-        }
-        String username = authentication.getName();
-
-
-        if (!userService.isCorrectCredentials(username, passwordUpdateDto.getOldPassword())) {
-            bindingResult.rejectValue("oldPassword", "passwordUpdateDto.oldPassword", "Wrong old password.");
-        }
-        User currentUser = userService.getByUsername(username);
-
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            Validator validator = factory.getValidator();
-            Set<ConstraintViolation<User>> violations = validator.validateValue(User.class, "password", passwordUpdateDto.getNewPassword());
-
-            violations.forEach(violation ->
-                    bindingResult.rejectValue("newPassword", "passwordUpdateDto.newPassword", violation.getMessage())
-            );
         }
 
         if(bindingResult.hasErrors()) {
             return PASSWORD_EDIT_PAGE;
         }
 
+        String username = authentication.getName();
+        if (!userService.isCorrectCredentials(username, passwordUpdateDto.getOldPassword())) {
+            bindingResult.rejectValue("oldPassword", "passwordUpdateDto.oldPassword", "Wrong old password.");
+            return PASSWORD_EDIT_PAGE;
+        }
 
-        userService.updatePassword(currentUser.getId(), passwordUpdateDto.getNewPassword());
+        userService.updatePassword(userService.getByUsername(username).getId(), passwordUpdateDto.getNewPassword());
 
         return "redirect:/users/profile";
     }
