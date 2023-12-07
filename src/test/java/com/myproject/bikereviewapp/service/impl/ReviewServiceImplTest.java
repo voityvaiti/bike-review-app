@@ -6,6 +6,7 @@ import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.repository.ReviewRepository;
+import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,6 +31,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     ReviewRepository reviewRepository;
+
+    @MockBean
+    UserRepository userRepository;
 
     @Autowired
     ReviewService reviewService;
