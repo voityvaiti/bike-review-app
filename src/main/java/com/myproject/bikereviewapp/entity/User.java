@@ -1,6 +1,7 @@
 package com.myproject.bikereviewapp.entity;
 
 import com.myproject.bikereviewapp.validation.annotation.UniqueFieldValue;
+import com.myproject.bikereviewapp.validation.annotation.UserPassword;
 import com.myproject.bikereviewapp.validation.annotation.UserPublicName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -31,7 +32,7 @@ public class User {
     private String username;
 
     @Column(name = "password")
-    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters.")
+    @UserPassword
     private String password;
 
     @Column(name = "enabled")
