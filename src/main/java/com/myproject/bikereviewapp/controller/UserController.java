@@ -11,8 +11,6 @@ import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -62,8 +60,7 @@ public class UserController {
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
         }
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User currentUser = userService.getByUsername(userDetails.getUsername());
+        User currentUser = userService.getByUsername(authentication.getName());
 
         model.addAttribute("user", currentUser);
 
