@@ -30,9 +30,14 @@
 
             <p th:text="${'Username: ' + user.getUsername()}"></p>
 
-            <p th:text="${'Public name: ' + user.getPublicName()}"></p>
+            <p>
+                <span th:text="${'Public name: ' + user.getPublicName()}"></span>
+                <a th:href="@{/users/profile/public-name-edit}" class="text-black ms-1">Edit</a>
+            </p>
 
             <p th:text="${'Role: ' + user.getRole()}"></p>
+
+            <a th:href="@{/users/profile/password-edit}" class="text-black">Change password</a>
 
             <div class="d-flex justify-content-center">
                 <a th:href="@{/logout}" class="btn btn-dark">Log Out</a>

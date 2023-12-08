@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +42,6 @@ class ReviewControllerTest {
         motorcycle.setId(motorcycleId);
 
         Authentication authentication = mock(Authentication.class);
-        UserDetails userDetails = mock(UserDetails.class);
 
         User user = new User();
         user.setUsername("testUser");
@@ -56,8 +54,7 @@ class ReviewControllerTest {
 
         review.setUser(user);
 
-        when(authentication.getPrincipal()).thenReturn(userDetails);
-        when(userDetails.getUsername()).thenReturn(user.getUsername());
+        when(authentication.getName()).thenReturn(user.getUsername());
 
         assertEquals("redirect:/motorcycles/" + motorcycleId, reviewController.create(review, mock(BindingResult.class), authentication, null, null,null, null));
 

@@ -8,6 +8,8 @@ public interface UserService {
 
     boolean exists(String username);
 
+    boolean isCorrectCredentials(String username, String password);
+
     Page<User> getAll(Pageable pageable);
 
     User getById(Long id);
@@ -17,6 +19,10 @@ public interface UserService {
     User create(User user);
 
     void toggleStatus(Long id);
+
+    User updatePassword(Long id, String password);
+
+    User updatePublicName(Long id, String publicName);
 
     void delete(Long id);
     

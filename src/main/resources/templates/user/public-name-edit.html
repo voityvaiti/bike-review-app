@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Change public name</title>
+    <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
+    <th:block th:replace="~{fragments/font :: font-link}"></th:block>
+    <link th:href="@{/style/main.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar/header :: content}"></div>
+
+<div class="d-flex justify-content-center mt-4">
+
+    <div class="w-25">
+
+        <form th:method="PATCH" th:action="@{/users/profile/public-name}"
+              class="border border-black rounded p-4" th:object="${publicNameUpdateDto}">
+
+            <h1 class="text-center">Change public name</h1>
+
+            <div class="form-group mb-2">
+                <label for="public-name">Public name:</label>
+                <input type="text" class="form-control" id="public-name" name="publicName" th:field="*{publicName}" placeholder="Public name">
+                <div th:if="${#fields.hasErrors('publicName')}" th:errors="*{publicName}" class="form-text text-danger"></div>
+            </div>
+
+            <button type="submit" class="btn btn-dark">Update</button>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

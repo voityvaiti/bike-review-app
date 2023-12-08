@@ -6,7 +6,6 @@ import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,9 +49,7 @@ public class ReviewController {
             return motorcycleController.show(review.getMotorcycle().getId(), review, reviewPageNumber, reviewPageSize, reviewSort, model);
         }
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-        review.setUser(userService.getByUsername(userDetails.getUsername()));
+        review.setUser(userService.getByUsername(authentication.getName()));
         reviewService.create(review);
 
         return "redirect:/motorcycles/" + review.getMotorcycle().getId();
