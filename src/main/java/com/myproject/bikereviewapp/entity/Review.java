@@ -2,10 +2,7 @@ package com.myproject.bikereviewapp.entity;
 
 import jakarta.persistence.*;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +27,7 @@ public class Review {
     private Long id;
 
     @Column(name = "body")
+    @NotBlank(message = "Review is blank.")
     @Size(min = 5, max = 999, message = "Review must be between 5 and 999 characters.")
     private String body;
 
