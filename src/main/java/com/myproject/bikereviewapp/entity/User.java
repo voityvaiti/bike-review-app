@@ -1,6 +1,5 @@
 package com.myproject.bikereviewapp.entity;
 
-import com.myproject.bikereviewapp.validation.annotation.UniqueFieldValue;
 import com.myproject.bikereviewapp.validation.annotation.UserPassword;
 import com.myproject.bikereviewapp.validation.annotation.UserPublicName;
 import jakarta.persistence.*;
@@ -28,7 +27,6 @@ public class User {
     private Long id;
 
     @Column(name = "username", unique = true)
-//    @UniqueFieldValue(entityClass = User.class, fieldName = "username", message = "User with same username is already exists.")
     @NotBlank(message = "Username is required.")
     @Size(min = 3, max = 19, message = "Username must be between 3 and 19 characters.")
     private String username;
