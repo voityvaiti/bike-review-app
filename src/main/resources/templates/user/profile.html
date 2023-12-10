@@ -63,7 +63,9 @@
             <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
 
             <div>
-                <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
+                <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}" class="text-black text-decoration-none">
+                    <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
+                </a>
                 <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
                        class="ms-2 text-muted"></small> <br>
 
