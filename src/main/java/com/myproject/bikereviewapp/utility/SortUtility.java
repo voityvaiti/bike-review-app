@@ -4,12 +4,21 @@ import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class SortUtility {
 
-    private SortUtility() {}
+    private static final String SORT_FIELD_REGEX = "^\\s*[A-Za-z.]+\\s*(:\\s*((asc|desc)|))?$";
+
+    private SortUtility() {
+    }
 
     public static Sort parseSort(String sortExpression) {
+
+        if (!isValidSortExpression(sortExpression)) {
+            return getDefaultSort();
+        }
+
         List<Sort.Order> orders = new ArrayList<>();
 
         String[] sortFields = sortExpression.split(",");
@@ -19,7 +28,7 @@ public class SortUtility {
             String field = parts[0].trim();
             String direction = "";
 
-            if(parts.length > 1) {
+            if (parts.length > 1) {
                 direction = parts[1].trim();
             }
 
@@ -30,5 +39,25 @@ public class SortUtility {
         }
 
         return Sort.by(orders);
+    }
+
+    private static Sort getDefaultSort() {
+        return Sort.by(Sort.Order.asc("id"));
+    }
+
+    private static boolean isValidSortExpression(String sortExpression) {
+
+        if (sortExpression != null && !sortExpression.isBlank()) {
+
+            String[] sortFields = sortExpression.split(",");
+
+            for (String sortField: sortFields) {
+                if(!Pattern.matches(SORT_FIELD_REGEX, sortField)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }
