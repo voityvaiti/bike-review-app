@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,12 @@ public class Motorcycle {
     @JoinColumn(name = "brand_id")
     @NotNull(message = "Brand must be selected.")
     private Brand brand;
+
+    @Formula("(SELECT COUNT(r.id) FROM Review r WHERE r.motorcycle_id = id)")
+    private Integer reviewsAmount;
+
+    @Formula("(SELECT AVG(r.rating) FROM Review r WHERE r.motorcycle_id = id)")
+    private Float avgRating;
 
     @OneToMany(mappedBy = "motorcycle")
     private List<Review> reviews = new ArrayList<>();
