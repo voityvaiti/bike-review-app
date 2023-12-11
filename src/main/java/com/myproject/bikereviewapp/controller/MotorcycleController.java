@@ -41,14 +41,12 @@ public class MotorcycleController {
     public String showAll(Model model,
                           @RequestParam(defaultValue = "0") Integer pageNumber,
                           @RequestParam(defaultValue = "16") Integer pageSize,
-                          @RequestParam(defaultValue = "brand.name:asc, model:asc") String sort) {
+                          @RequestParam(defaultValue = "reviewsAmount:desc") String sort) {
 
         model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);
-
-        model.addAttribute("motorcycleIdToAvgRating", reviewService.getMotorcycleIdToAvgRating());
 
         return "motorcycle/all";
     }
@@ -76,7 +74,6 @@ public class MotorcycleController {
                        Model model) {
 
         model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
-        model.addAttribute("avgRating", reviewService.getAvgRating(id));
 
         model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize, SortUtility.parseSort(reviewSort))));
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);

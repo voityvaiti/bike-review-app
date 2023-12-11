@@ -28,10 +28,10 @@
             </div>
 
             <div>
-                <small th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '0.0'}"
+                <small th:text="${motorcycle.getAvgRating() != null ? #numbers.formatDecimal(motorcycle.getAvgRating(), 1, 1) : '0.0'}"
                        class="text-muted me-1"></small>
                 <meter class="average-rating" min="0" max="5"
-                       th:value="${avgRating}"></meter>
+                       th:value="${motorcycle.getAvgRating()}"></meter>
             </div>
         </div>
 
@@ -70,7 +70,7 @@
 
         <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }, url = @{/motorcycles/{id}(id=${motorcycle.id})}, pageNumberParamName = 'reviewPageNumber', sortParamName = 'reviewSort'" class="d-flex justify-content-between mt-4 mb-2">
 
-            <h3 class="mb-0">Reviews (<span th:text="${motorcycle.getReviews().size()}"></span>):</h3>
+            <h3 class="mb-0">Reviews (<span th:text="${motorcycle.getReviewsAmount()}"></span>):</h3>
 
             <div th:replace="~{fragments/navbar/sort :: sortSelector(${linkTextArr}, ${sortArr}, ${currentReviewPageNumber}, ${currentReviewSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></div>
 

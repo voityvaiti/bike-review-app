@@ -17,7 +17,7 @@
 
 <div class="container my-4">
 
-    <div th:with="linkTextArr=${ {'A→Z', 'Z→A'} }, sortArr=${ {'brand.name:asc, model:asc', 'brand.name:desc, model:desc'} }, url = @{/motorcycles}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'" class="d-flex justify-content-end">
+    <div th:with="linkTextArr=${ {'Popularity', 'Rating', 'A→Z', 'Z→A'} }, sortArr=${ {'reviewsAmount:desc', 'avgRating:desc', 'brand.name:asc, model:asc', 'brand.name:desc, model:desc'} }, url = @{/motorcycles}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'" class="d-flex justify-content-end">
 
         <div th:replace="~{fragments/navbar/sort :: sortSelector(${linkTextArr}, ${sortArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></div>
     </div>
@@ -35,19 +35,18 @@
 
                 <div class="d-flex justify-content-between w-100">
 
-                    <div th:with="avgRating=${motorcycleIdToAvgRating.get(motorcycle.id)}"
-                         class="d-flex justify-content-start align-items-center">
+                    <div class="d-flex justify-content-start align-items-center">
 
-                        <small th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '0.0'}"
+                        <small th:text="${motorcycle.getAvgRating() != null ? #numbers.formatDecimal(motorcycle.getAvgRating(), 1, 1) : '0.0'}"
                                class="text-muted me-1"></small>
 
-                        <meter class="average-rating d-flex align-items-center" min="0" max="5" th:value="${avgRating}"></meter>
+                        <meter class="average-rating d-flex align-items-center" min="0" max="5" th:value="${motorcycle.getAvgRating()}"></meter>
 
                     </div>
 
                     <small class="text-muted">
-                        <span th:text="${motorcycle.getReviews().size()}"></span> review<span
-                            th:if="${motorcycle.getReviews().size() != 1}">s</span>
+                        <span th:text="${motorcycle.getReviewsAmount()}"></span> review<span
+                            th:if="${motorcycle.getReviewsAmount() != 1}">s</span>
                     </small>
 
                 </div>
