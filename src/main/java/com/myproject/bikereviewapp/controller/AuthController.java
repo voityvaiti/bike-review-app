@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.controller;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import com.myproject.bikereviewapp.validation.validator.UserUniquenessValidator;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,10 +49,8 @@ public class AuthController {
     @PostMapping("/signup")
     public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
 
-        //Temp solution to check username for uniqueness
-        if(userService.exists(user.getUsername())) {
-            bindingResult.rejectValue("username", "error.user", "User with same username is already exists.");
-        }
+        UserUniquenessValidator uniquenessValidator = new UserUniquenessValidator(userService);
+        uniquenessValidator.validate(user, bindingResult);
 
         if(bindingResult.hasErrors()) {
             return showSignUpForm(user);

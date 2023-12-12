@@ -29,7 +29,7 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr th:with="thNameArr=${ {'ID', 'Brand', 'Model', 'Country'} }, fieldParamArr=${ {'id', 'brand.name', 'model', 'brand.country'} }, url = @{/motorcycles/admin}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
+            <tr th:with="thNameArr=${ {'ID', 'Brand', 'Model', 'Country', 'Avarage rating', 'Reviews'} }, fieldParamArr=${ {'id', 'brand.name', 'model', 'brand.country', 'avgRating', 'reviewsAmount'} }, url = @{/motorcycles/admin}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
 
                 <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
 
@@ -46,6 +46,8 @@
                 <th th:text="${motorcycle.getBrand().getName()}"></th>
                 <th th:text="${motorcycle.getModel()}"></th>
                 <th th:text="${motorcycle.getBrand().getCountry()}"></th>
+                <th th:text="${motorcycle.getAvgRating() != null ? #numbers.formatDecimal(motorcycle.getAvgRating(), 1, 2) : 'No reviews'}"}></th>
+                <th th:text="${motorcycle.getReviewsAmount()}"></th>
 
                 <th sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')">
                     <a th:href="@{/motorcycles/admin/edit/{id}(id=${motorcycle.getId()})}" class="btn btn-dark">Edit</a>

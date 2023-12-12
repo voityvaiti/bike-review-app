@@ -19,10 +19,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Page<Review> findAllByUser(User user, Pageable pageable);
 
-    @Query("SELECT m.id as motorcycleId, AVG(r.rating) as averageRating FROM Review r JOIN r.motorcycle m GROUP BY m.id")
-    List<Object[]> getMotorcycleIdToAvgRating();
-
-    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.motorcycle.id = :motorcycleId")
-    Float getAvgRating(@Param("motorcycleId") Long motorcycleId);
-
 }

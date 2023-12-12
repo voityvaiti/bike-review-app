@@ -8,6 +8,7 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorize
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
+import com.myproject.bikereviewapp.validation.validator.UserUniquenessValidator;
 import jakarta.validation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -80,10 +81,8 @@ public class UserController {
     @PostMapping("/admin")
     public String create(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
 
-        //Temp solution to check username for uniqueness
-        if(userService.exists(user.getUsername())) {
-            bindingResult.rejectValue("username", "error.user", "User with same username is already exists.");
-        }
+        UserUniquenessValidator uniquenessValidator = new UserUniquenessValidator(userService);
+        uniquenessValidator.validate(user, bindingResult);
 
         if(bindingResult.hasErrors()) {
             return newUser(user, model);

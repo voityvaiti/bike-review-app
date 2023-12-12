@@ -12,10 +12,6 @@ public interface ReviewService {
 
     Page<Review> getReviewsByUserId(Long id, Pageable pageable);
 
-    Map<Long, Float> getMotorcycleIdToAvgRating();
-
-    Float getAvgRating(Long motorcycleId);
-
     Review create(Review review);
 
     void delete(Long id);
