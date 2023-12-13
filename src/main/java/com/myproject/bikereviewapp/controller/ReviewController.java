@@ -55,4 +55,11 @@ public class ReviewController {
         return "redirect:/motorcycles/" + review.getMotorcycle().getId();
 
     }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, @RequestParam Long motorcycleId) {
+
+        reviewService.delete(id);
+        return "redirect:/motorcycles/" + motorcycleId;
+    }
 }
