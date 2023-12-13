@@ -39,6 +39,14 @@ public class GlobalExceptionHandler {
         return handleException(exception, model, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({RuntimeException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleRuntimeException(
+            RuntimeException exception, Model model
+    ) {
+        return handleException(exception, model, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     private String handleException(
             RuntimeException exception, Model model, HttpStatus httpStatus
