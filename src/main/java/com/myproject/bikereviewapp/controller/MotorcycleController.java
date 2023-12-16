@@ -7,7 +7,9 @@ import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,12 +43,23 @@ public class MotorcycleController {
     public String showAll(Model model,
                           @RequestParam(defaultValue = "0") Integer pageNumber,
                           @RequestParam(defaultValue = "16") Integer pageSize,
-                          @RequestParam(defaultValue = "reviewsAmount:desc") String sort) {
+                          @RequestParam(defaultValue = "reviewsAmount:desc") String sort,
+                          @RequestParam(required = false, name = "q") String query) {
 
-        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+        Page<Motorcycle> motorcyclePage;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort));
+
+        if (query != null && !query.isBlank()) {
+            motorcyclePage = motorcycleService.getAllByQuery(query, pageable);
+        } else {
+            motorcyclePage = motorcycleService.getAll(pageable);
+        }
+
+        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcyclePage);
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);
+        model.addAttribute("currentQuery", query);
 
         return "motorcycle/all";
     }

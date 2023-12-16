@@ -10,11 +10,17 @@
 
 <div th:fragment="paginationBar(page, currentPageNumber, currentSort, url, pageNumberParamName, sortParamName)">
 
-    <nav th:if="${page.totalPages > 0}" class="d-flex justify-content-center mt-2">
+    <th:block th:replace="~{fragments/navbar/pagination :: paginationBarWithQueryParam(${page}, ${currentPageNumber}, ${currentSort}, ${null}, ${url}, ${pageNumberParamName}, ${sortParamName}, 'q')}"></th:block>
+
+</div>
+
+<div th:fragment="paginationBarWithQueryParam(page, currentPageNumber, currentSort, currentQuery, url, pageNumberParamName, sortParamName, queryParamName)">
+
+    <nav th:if="${page.totalPages > 0}" th:with="urlWithParams=@{${url}(${sortParamName}=${currentSort}, ${queryParamName}=${currentQuery})}" class="d-flex justify-content-center mt-2">
         <ul class="pagination">
 
             <li th:class="${page.hasPrevious()} ? 'page-item': 'page-item disabled'">
-                <a th:href="@{${url}(${pageNumberParamName}=${currentPageNumber - 1}, ${sortParamName}=${currentSort})}"
+                <a th:href="@{${urlWithParams}(${pageNumberParamName}=${currentPageNumber - 1})}"
                    class="page-link">❮</a>
             </li>
 
@@ -23,7 +29,7 @@
 
                 <th:block th:if="${startPage > 0}">
                     <li class="page-item">
-                        <a th:href="@{${url}(${pageNumberParamName}=0, ${sortParamName}=${currentSort})}" class="page-link">1</a>
+                        <a th:href="@{${urlWithParams}(${pageNumberParamName} = 0)}" class="page-link">1</a>
                     </li>
 
                     <li class="page-item disabled">
@@ -31,10 +37,8 @@
                     </li>
                 </th:block>
 
-                <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
-                    th:class="${pageNumber == currentPageNumber} ? 'active page-item' : 'page-item'">
-                    <a th:href="@{${url}(${pageNumberParamName}=${pageNumber}, ${sortParamName}=${currentSort})}"
-                       th:text="${pageNumber + 1}" class="page-link"></a>
+                <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}" th:class="${pageNumber == currentPageNumber} ? 'active page-item' : 'page-item'">
+                    <a th:href="@{${urlWithParams}(${pageNumberParamName}=${pageNumber})}" th:text="${pageNumber + 1}" class="page-link"></a>
                 </li>
 
                 <th:block th:if="${endPage < page.totalPages - 1}">
@@ -43,7 +47,7 @@
                     </li>
 
                     <li class="page-item">
-                        <a th:href="@{${url}(${pageNumberParamName}=${page.totalPages - 1}, ${sortParamName}=${currentSort})}"
+                        <a th:href="@{${urlWithParams}(${pageNumberParamName}=${page.totalPages - 1})}"
                            th:text="${page.totalPages}" class="page-link"></a>
                     </li>
                 </th:block>
@@ -51,7 +55,7 @@
             </th:block>
 
             <li th:class="${page.hasNext()} ? 'page-item': 'page-item disabled'">
-                <a th:href="@{${url}(${pageNumberParamName}=${currentPageNumber + 1}, ${sortParamName}=${currentSort})}"
+                <a th:href="@{${urlWithParams}(${pageNumberParamName}=${currentPageNumber + 1})}"
                    class="page-link">❯</a>
             </li>
 
