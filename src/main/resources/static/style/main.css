@@ -17,6 +17,11 @@ body {
     padding: 5px;
 }
 
+.search-icon {
+    max-width: 20px;
+    max-height: 20px;
+}
+
 .page-item.active .page-link {
     color: #fff !important;
     background: #000 !important;
