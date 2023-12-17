@@ -5,6 +5,7 @@
 - Search
 - Stars rating
 - Authentication & authorization
+- Admin panel: data and users management
 - User profile with ability to change password and nickname
 - Adaptive interface for users with different roles
 ### Technology stack:
