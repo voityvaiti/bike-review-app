@@ -5,8 +5,12 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundExce
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Service
 public class MotorcycleServiceImpl implements MotorcycleService {
@@ -21,6 +25,15 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     @Override
     public Page<Motorcycle> getAll(Pageable pageable) {
         return motorcycleRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Motorcycle> getAllByQuery(String query, Pageable pageable) {
+
+        if(query != null && !query.isBlank()) {
+            return motorcycleRepository.getAllByModelContainingIgnoreCaseOrBrandNameContainingIgnoreCase(query, query, pageable);
+        }
+        return new PageImpl<>(Collections.emptyList());
     }
 
     @Override

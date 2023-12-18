@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Motorcycle</title>
@@ -80,11 +80,20 @@
 
             <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
 
-            <div>
-                <strong th:text="${review.user.getPublicName()}"></strong>
-                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                       class="ms-2 text-muted"></small> <br>
+            <div class="w-100">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong th:text="${review.user.getPublicName()}"></strong>
+                        <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+                               class="ms-2 text-muted"></small> <br>
+                    </div>
 
+                    <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:method="DELETE" th:action="@{/reviews/{id}(id=${review.getId()})}">
+                        <input type="hidden" name="motorcycleId" th:value="${motorcycle.getId()}">
+                        <button type="submit" class="btn-close"></button>
+                    </form>
+
+                </div>
                 <meter class="average-rating" min="0" max="5"
                        th:value="${review.getRating()}"></meter>
 

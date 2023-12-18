@@ -8,6 +8,8 @@ public interface MotorcycleService {
 
     Page<Motorcycle> getAll(Pageable pageable);
 
+    Page<Motorcycle> getAllByQuery(String query, Pageable pageable);
+
     Motorcycle getById(Long id);
 
     Motorcycle create(Motorcycle motorcycle);

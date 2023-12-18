@@ -17,9 +17,20 @@
 
 <div class="container my-4">
 
-    <div th:with="linkTextArr=${ {'Popularity', 'Rating', 'A→Z', 'Z→A'} }, sortArr=${ {'reviewsAmount:desc', 'avgRating:desc', 'brand.name:asc, model:asc', 'brand.name:desc, model:desc'} }, url = @{/motorcycles}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'" class="d-flex justify-content-end">
+    <div th:with="linkTextArr=${ {'Popularity', 'Rating', 'A→Z', 'Z→A'} }, sortArr=${ {'reviewsAmount:desc', 'avgRating:desc', 'brand.name:asc, model:asc', 'brand.name:desc, model:desc'} }, url = @{/motorcycles}" class="d-flex justify-content-between">
 
-        <div th:replace="~{fragments/navbar/sort :: sortSelector(${linkTextArr}, ${sortArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></div>
+        <form method="GET" th:action="@{/motorcycles}" class="d-flex align-items-center">
+            <input type="text" name="q" th:value="${currentQuery}" class="form-control" placeholder="Search">
+
+            <input type="hidden" name="pageNumber" th:value="${0}">
+            <input type="hidden" name="sort" th:value="${currentSort}">
+
+            <button type="submit" class="btn btn-dark ms-1">
+                <img src="/img/search.png" class="search-icon" alt="Search Icon">
+            </button>
+        </form>
+
+        <div th:replace="~{fragments/navbar/sort :: sortSelectorWithQueryParam(${linkTextArr}, ${sortArr}, ${currentPageNumber}, ${currentSort}, ${currentQuery}, ${url}, 'pageNumber', 'sort', 'q')}"></div>
     </div>
 
     <div class="row">
@@ -56,7 +67,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, @{/motorcycles}, 'pageNumber', 'sort')}"></div>
+    <div th:replace="~{fragments/navbar/pagination :: paginationBarWithQueryParam(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, ${currentQuery}, @{/motorcycles}, 'pageNumber', 'sort', 'q')}"></div>
 
 </div>
 
