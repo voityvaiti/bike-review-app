@@ -52,11 +52,6 @@ public class Motorcycle {
         this.brand = brand;
     }
 
-    public void setFields(Motorcycle motorcycle) {
-        this.brand = motorcycle.brand;
-        this.model = motorcycle.model;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
