@@ -30,6 +30,47 @@ class UserServiceImplTest {
     @Autowired
     UserService userService;
 
+
+    @Test
+    void isCorrectCredentials_shouldReturnTrue_ifPasswordsMatches() {
+        Long id = 10L;
+        String username = "someUsername";
+        String password = "somePassword";
+        String encodedPassword = "encodedPassword";
+
+        User user = new User(id, username, encodedPassword, true, Role.CLIENT, "somePublicName");
+
+        UserService spyUserService = spy(userService);
+        doReturn(user).when(spyUserService).getByUsername(username);
+
+        when(passwordEncoder.matches(password, encodedPassword)).thenReturn(true);
+
+        assertTrue(spyUserService.isCorrectCredentials(username, password));
+
+        verify(spyUserService).getByUsername(username);
+        verify(passwordEncoder).matches(password, encodedPassword);
+    }
+
+    @Test
+    void isCorrectCredentials_shouldReturnFalse_ifPasswordsMismatches() {
+        Long id = 10L;
+        String username = "someUsername";
+        String password = "somePassword";
+        String encodedPassword = "encodedPassword";
+
+        User user = new User(id, username, encodedPassword, true, Role.CLIENT, "somePublicName");
+
+        UserService spyUserService = spy(userService);
+        doReturn(user).when(spyUserService).getByUsername(username);
+
+        when(passwordEncoder.matches(password, encodedPassword)).thenReturn(false);
+
+        assertFalse(spyUserService.isCorrectCredentials(username, password));
+
+        verify(spyUserService).getByUsername(username);
+        verify(passwordEncoder).matches(password, encodedPassword);
+    }
+
     @Test
     void getById_shouldReturnUser_whenUserWasFound() {
         Long id = 8L;
@@ -122,6 +163,111 @@ class UserServiceImplTest {
 
         verify(userRepository).existsUserByUsername(username);
         verify(userRepository, never()).save(any());
+    }
+
+
+    @Test
+    void toggleStatus_shouldGetAndSaveUser() {
+        Long id = 12L;
+
+        User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+
+        UserService spyUserService = spy(userService);
+        doReturn(user).when(spyUserService).getById(id);
+
+        spyUserService.toggleStatus(id);
+
+        verify(spyUserService).getById(id);
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void toggleStatus_shouldGetAndSaveUserWithToggledStatus() {
+        Long id = 12L;
+
+        User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+        User expectedUser = new User(user.getId(), user.getUsername(), user.getPassword(), !user.isEnabled(), user.getRole(), user.getPublicName());
+
+        UserService spyUserService = spy(userService);
+        doReturn(user).when(spyUserService).getById(id);
+
+        spyUserService.toggleStatus(id);
+
+        verify(spyUserService).getById(id);
+        verify(userRepository).save(expectedUser);
+    }
+
+    @Test
+    void updatePassword_shouldGetAndSaveUser() {
+        Long id = 12L;
+        String updatedPassword = "updatedPassword";
+
+        User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+
+        UserService spyUserService = spy(userService);
+        doReturn(user).when(spyUserService).getById(id);
+
+        spyUserService.updatePassword(id, updatedPassword);
+
+        verify(spyUserService).getById(id);
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void updatePassword_shouldGetAndSaveUserWithUpdatedAndEncodedPassword() {
+        Long id = 12L;
+
+        String updatedPassword = "updatedPassword";
+        String encodedUpdatedPassword = "encodedUpdatedPassword";
+
+        User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+        User expectedUser = new User(id, "someUsername", encodedUpdatedPassword, true, Role.CLIENT, "somePublicName");
+
+        UserService spyUserService = spy(userService);
+
+        doReturn(user).when(spyUserService).getById(id);
+        when(passwordEncoder.encode(updatedPassword)).thenReturn(encodedUpdatedPassword);
+
+        spyUserService.updatePassword(id, updatedPassword);
+
+        verify(spyUserService).getById(id);
+        verify(userRepository).save(expectedUser);
+    }
+
+
+    @Test
+    void updatePublicName_shouldGetAndSaveUser() {
+        Long id = 12L;
+        String updatedPublicName = "updatedPublicName";
+
+        User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+
+        UserService spyUserService = spy(userService);
+        doReturn(user).when(spyUserService).getById(id);
+
+        spyUserService.updatePublicName(id, updatedPublicName);
+
+        verify(spyUserService).getById(id);
+        verify(userRepository).save(any(User.class));
+    }
+
+
+    @Test
+    void updatePublicName_shouldGetAndSaveUserWithUpdatedPublicName() {
+        Long id = 12L;
+
+        String updatedPublicName = "updatedPublicName";
+
+        User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+        User expectedUser = new User(user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getRole(), updatedPublicName);
+
+        UserService spyUserService = spy(userService);
+        doReturn(user).when(spyUserService).getById(id);
+
+        spyUserService.updatePublicName(id, updatedPublicName);
+
+        verify(spyUserService).getById(id);
+        verify(userRepository).save(expectedUser);
     }
 
 }
