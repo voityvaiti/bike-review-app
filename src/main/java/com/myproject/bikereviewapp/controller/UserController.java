@@ -33,9 +33,12 @@ public class UserController {
 
     private final ReviewService reviewService;
 
-    public UserController(UserService userService, ReviewService reviewService) {
+    private final UserUniquenessValidator uniquenessValidator;
+
+    public UserController(UserService userService, ReviewService reviewService, UserUniquenessValidator uniquenessValidator) {
         this.userService = userService;
         this.reviewService = reviewService;
+        this.uniquenessValidator = uniquenessValidator;
     }
 
     @GetMapping("/admin")
@@ -81,7 +84,6 @@ public class UserController {
     @PostMapping("/admin")
     public String create(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
 
-        UserUniquenessValidator uniquenessValidator = new UserUniquenessValidator(userService);
         uniquenessValidator.validate(user, bindingResult);
 
         if(bindingResult.hasErrors()) {

@@ -18,8 +18,11 @@ public class AuthController {
 
     private final UserService userService;
 
-    public AuthController(UserService userService) {
+    private final UserUniquenessValidator uniquenessValidator;
+
+    public AuthController(UserService userService, UserUniquenessValidator uniquenessValidator) {
         this.userService = userService;
+        this.uniquenessValidator = uniquenessValidator;
     }
 
     @GetMapping("/login")
@@ -49,7 +52,6 @@ public class AuthController {
     @PostMapping("/signup")
     public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
 
-        UserUniquenessValidator uniquenessValidator = new UserUniquenessValidator(userService);
         uniquenessValidator.validate(user, bindingResult);
 
         if(bindingResult.hasErrors()) {
