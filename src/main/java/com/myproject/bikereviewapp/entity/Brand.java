@@ -49,7 +49,7 @@ public class Brand {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Brand brand = (Brand) o;
-        return id.equals(brand.id) && Objects.equals(name, brand.name) && Objects.equals(country, brand.country);
+        return Objects.equals(id, brand.id) && Objects.equals(name, brand.name) && Objects.equals(country, brand.country);
     }
 
     @Override

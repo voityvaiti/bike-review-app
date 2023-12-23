@@ -64,7 +64,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return enabled == user.enabled && id.equals(user.id) && username.equals(user.username) && password.equals(user.password) && role == user.role && Objects.equals(publicName, user.publicName);
+        return enabled == user.enabled && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && role == user.role && Objects.equals(publicName, user.publicName);
     }
 
     @Override
