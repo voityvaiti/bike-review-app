@@ -35,10 +35,13 @@ public class UserController {
 
     private final UserUniquenessValidator uniquenessValidator;
 
-    public UserController(UserService userService, ReviewService reviewService, UserUniquenessValidator uniquenessValidator) {
+    private final SortUtility sortUtility;
+
+    public UserController(UserService userService, ReviewService reviewService, UserUniquenessValidator uniquenessValidator, SortUtility sortUtility) {
         this.userService = userService;
         this.reviewService = reviewService;
         this.uniquenessValidator = uniquenessValidator;
+        this.sortUtility = sortUtility;
     }
 
     @GetMapping("/admin")
@@ -47,7 +50,7 @@ public class UserController {
                                       @RequestParam(defaultValue = "20") Integer pageSize,
                                       @RequestParam(defaultValue = "id:asc") String sort) {
 
-        model.addAttribute("userPage", userService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+        model.addAttribute("userPage", userService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);
@@ -68,7 +71,7 @@ public class UserController {
 
         model.addAttribute("user", currentUser);
 
-        model.addAttribute("reviewPage", reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, reviewPageSize, SortUtility.parseSort(reviewSort))));
+        model.addAttribute("reviewPage", reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
         model.addAttribute("currentReviewSort", reviewSort);
 
