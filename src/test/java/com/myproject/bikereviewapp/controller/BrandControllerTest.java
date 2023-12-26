@@ -13,18 +13,21 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BrandController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class BrandControllerTest {
+
+    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     BrandService brandService;
@@ -34,6 +37,9 @@ class BrandControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    BrandController brandController;
 
 
     @Test
@@ -128,5 +134,82 @@ class BrandControllerTest {
                 .andExpect(model().attributeExists("currentPageNumber"))
                 .andExpect(model().attributeExists("currentSort"));
     }
+
+    @Test
+    void create_shouldCreateBrand_ifBrandIsValid() {
+
+        Brand brand = new Brand(null, "someName", "someCountry");
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        BrandController spyBrandController = spy(brandController);
+
+        doReturn(SAMPLE_VIEW).when(spyBrandController).newBrand(any(Brand.class));
+        when(brandService.create(any(Brand.class))).thenReturn(new Brand());
+
+        when(mockBindingResult.hasErrors()).thenReturn(false);
+
+        spyBrandController.create(brand, mockBindingResult);
+
+        verify(brandService).create(brand);
+    }
+
+    @Test
+    void create_shouldNeverCreateBrand_ifBrandIsInvalid() {
+
+        Brand brand = new Brand(null, "someName", "someCountry");
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        BrandController spyBrandController = spy(brandController);
+
+        doReturn(SAMPLE_VIEW).when(spyBrandController).newBrand(any(Brand.class));
+        when(brandService.create(any(Brand.class))).thenReturn(new Brand());
+
+        when(mockBindingResult.hasErrors()).thenReturn(true);
+
+        spyBrandController.create(brand, mockBindingResult);
+
+        verify(brandService, never()).create(any(Brand.class));
+    }
+
+    @Test
+    void update_shouldUpdateBrand_ifBrandIsValid() {
+
+        Long id = 10L;
+        Brand brand = new Brand(id, "someName", "someCountry");
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        Model mockModel = mock(Model.class);
+        BrandController spyBrandController = spy(brandController);
+
+        doReturn(SAMPLE_VIEW).when(spyBrandController).edit(anyLong(), any(Model.class));
+        when(brandService.update(anyLong(), any(Brand.class))).thenReturn(new Brand());
+
+        when(mockBindingResult.hasErrors()).thenReturn(false);
+
+        spyBrandController.update(id, brand, mockBindingResult, mockModel);
+
+        verify(brandService).update(id, brand);
+    }
+
+    @Test
+    void update_shouldNeverUpdateBrand_ifBrandIsInvalid() {
+
+        Long id = 10L;
+        Brand brand = new Brand(id, "someName", "someCountry");
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        Model mockModel = mock(Model.class);
+        BrandController spyBrandController = spy(brandController);
+
+        doReturn(SAMPLE_VIEW).when(spyBrandController).edit(anyLong(), any(Model.class));
+        when(brandService.update(anyLong(), any(Brand.class))).thenReturn(new Brand());
+
+        when(mockBindingResult.hasErrors()).thenReturn(true);
+
+        spyBrandController.update(id, brand, mockBindingResult, mockModel);
+
+        verify(brandService, never()).update(anyLong(), any(Brand.class));
+    }
+
 
 }
