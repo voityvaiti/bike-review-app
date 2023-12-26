@@ -76,7 +76,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void showAllInAdminPanel_shouldMakePageRequestByProperPageNumberAndSort_whenQueryContainAppropriateParams() throws Exception {
+    void showAllInAdminPanel_shouldMakePageRequestByProperPageNumberAndSort_whenRequestContainAppropriateParams() throws Exception {
         int pageNumber = 5;
         int pageSize = 15;
         String sortStr = "name:asc";
@@ -99,7 +99,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenQueryContainAppropriateParams() throws Exception {
+    void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
         int pageNumber = 5;
         int pageSize = 15;
         String sortStr = "name:asc";
@@ -121,7 +121,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void showAllInAdminPanel_shouldAddDefaultPageNumberAndSortModelAttributes_whenQueryDoesNotContainAppropriateParams() throws Exception {
+    void showAllInAdminPanel_shouldAddDefaultPageNumberAndSortModelAttributes_whenRequestDoesNotContainAppropriateParams() throws Exception {
 
         Sort sampleSort = Sort.by(Sort.Direction.ASC, "name");
         Page<Brand> brandPage = Page.empty();
