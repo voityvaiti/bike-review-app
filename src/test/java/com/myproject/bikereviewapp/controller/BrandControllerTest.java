@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.controller;
 import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.utility.SortUtility;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,13 +43,32 @@ class BrandControllerTest {
     BrandController brandController;
 
 
+    private static Page<Brand> brandPage;
+    private static Brand brand;
+    private static Sort sort;
+    private static String sortStr;
+
+
+    @BeforeAll
+    static void init() {
+        brandPage = new PageImpl<>(Arrays.asList(
+                new Brand(1L, "somename1", "somecountry1"),
+                new Brand(2L, "somename2", "somecountry2"),
+                new Brand(3L, "somename3", "somecountry3")
+        ));
+
+        brand = new Brand(null, "someName", "someCountry");
+
+        sort = Sort.by(Sort.Direction.ASC, "id");
+
+        sortStr = "id:asc";
+    }
+
+
     @Test
     void showAllInAdminPanel_shouldReturnAppropriateView() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "name");
-        Page<Brand> brandPage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(brandService.getAll(any(PageRequest.class))).thenReturn(brandPage);
 
         mockMvc.perform(get("/brands/admin"))
@@ -59,15 +79,7 @@ class BrandControllerTest {
     @Test
     void showAllInAdminPanel_shouldAddBrandPageModelAttribute() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "name");
-
-        Page<Brand> brandPage = new PageImpl<>(Arrays.asList(
-                new Brand(1L, "somename1", "somecountry1"),
-                new Brand(2L, "somename2", "somecountry2"),
-                new Brand(3L, "somename3", "somecountry3")
-        ));
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(brandService.getAll(any(PageRequest.class))).thenReturn(brandPage);
 
         mockMvc.perform(get("/brands/admin"))
@@ -79,10 +91,6 @@ class BrandControllerTest {
     void showAllInAdminPanel_shouldMakePageRequestByProperPageNumberAndSort_whenRequestContainAppropriateParams() throws Exception {
         int pageNumber = 5;
         int pageSize = 15;
-        String sortStr = "name:asc";
-        Sort sort = Sort.by(Sort.Direction.ASC, "name");
-
-        Page<Brand> brandPage = Page.empty();
 
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
         when(brandService.getAll(any(PageRequest.class))).thenReturn(brandPage);
@@ -102,12 +110,8 @@ class BrandControllerTest {
     void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
         int pageNumber = 5;
         int pageSize = 15;
-        String sortStr = "name:asc";
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "name");
 
-        Page<Brand> brandPage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(brandService.getAll(any(PageRequest.class))).thenReturn(brandPage);
 
 
@@ -123,10 +127,7 @@ class BrandControllerTest {
     @Test
     void showAllInAdminPanel_shouldAddDefaultPageNumberAndSortModelAttributes_whenRequestDoesNotContainAppropriateParams() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "name");
-        Page<Brand> brandPage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(brandService.getAll(any(PageRequest.class))).thenReturn(brandPage);
 
         mockMvc.perform(get("/brands/admin"))
@@ -137,8 +138,6 @@ class BrandControllerTest {
 
     @Test
     void create_shouldCreateBrand_ifBrandIsValid() {
-
-        Brand brand = new Brand(null, "someName", "someCountry");
 
         BindingResult mockBindingResult = mock(BindingResult.class);
         BrandController spyBrandController = spy(brandController);
@@ -155,8 +154,6 @@ class BrandControllerTest {
 
     @Test
     void create_shouldNeverCreateBrand_ifBrandIsInvalid() {
-
-        Brand brand = new Brand(null, "someName", "someCountry");
 
         BindingResult mockBindingResult = mock(BindingResult.class);
         BrandController spyBrandController = spy(brandController);
@@ -175,7 +172,6 @@ class BrandControllerTest {
     void update_shouldUpdateBrand_ifBrandIsValid() {
 
         Long id = 10L;
-        Brand brand = new Brand(id, "someName", "someCountry");
 
         BindingResult mockBindingResult = mock(BindingResult.class);
         Model mockModel = mock(Model.class);
@@ -195,7 +191,6 @@ class BrandControllerTest {
     void update_shouldNeverUpdateBrand_ifBrandIsInvalid() {
 
         Long id = 10L;
-        Brand brand = new Brand(id, "someName", "someCountry");
 
         BindingResult mockBindingResult = mock(BindingResult.class);
         Model mockModel = mock(Model.class);
