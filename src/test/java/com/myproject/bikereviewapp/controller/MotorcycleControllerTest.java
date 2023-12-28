@@ -19,13 +19,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -33,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(MotorcycleController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class MotorcycleControllerTest {
+
+    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     MotorcycleService motorcycleService;
@@ -45,6 +48,9 @@ class MotorcycleControllerTest {
 
     @MockBean
     SortUtility sortUtility;
+
+    @MockBean
+    Model model;
 
     @Autowired
     MockMvc mockMvc;
@@ -320,6 +326,75 @@ class MotorcycleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("currentReviewPageNumber"))
                 .andExpect(model().attributeExists("currentReviewSort"));
+    }
+
+
+    @Test
+    void create_shouldCreateMotorcycle_ifMotorcycleIsValid() {
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        MotorcycleController spyMotorcycleController = spy(motorcycleController);
+
+        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).newMotorcycle(any(Motorcycle.class), any(Model.class));
+        when(motorcycleService.create(any(Motorcycle.class))).thenReturn(new Motorcycle());
+
+        when(mockBindingResult.hasErrors()).thenReturn(false);
+
+        spyMotorcycleController.create(motorcycle, mockBindingResult, model);
+
+        verify(motorcycleService).create(motorcycle);
+    }
+
+    @Test
+    void create_shouldNeverCreateMotorcycle_ifMotorcycleIsInvalid() {
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        MotorcycleController spyMotorcycleController = spy(motorcycleController);
+
+        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).newMotorcycle(any(Motorcycle.class), any(Model.class));
+        when(motorcycleService.create(any(Motorcycle.class))).thenReturn(new Motorcycle());
+
+        when(mockBindingResult.hasErrors()).thenReturn(true);
+
+        spyMotorcycleController.create(motorcycle, mockBindingResult, model);
+
+        verify(motorcycleService, never()).create(any(Motorcycle.class));
+    }
+
+    @Test
+    void update_shouldUpdateMotorcycle_ifMotorcycleIsValid() {
+
+        Long id = 10L;
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        MotorcycleController spyMotorcycleController = spy(motorcycleController);
+
+        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).edit(anyLong(), any(Model.class));
+        when(motorcycleService.update(anyLong(), any(Motorcycle.class))).thenReturn(new Motorcycle());
+
+        when(mockBindingResult.hasErrors()).thenReturn(false);
+
+        spyMotorcycleController.update(id, motorcycle, mockBindingResult, model);
+
+        verify(motorcycleService).update(id, motorcycle);
+    }
+
+    @Test
+    void update_shouldNeverUpdateMotorcycle_ifMotorcycleIsInvalid() {
+
+        Long id = 10L;
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        MotorcycleController spyMotorcycleController = spy(motorcycleController);
+
+        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).edit(anyLong(), any(Model.class));
+        when(motorcycleService.update(anyLong(), any(Motorcycle.class))).thenReturn(new Motorcycle());
+
+        when(mockBindingResult.hasErrors()).thenReturn(true);
+
+        spyMotorcycleController.update(id, motorcycle, mockBindingResult, model);
+
+        verify(motorcycleService, never()).update(anyLong(), any(Motorcycle.class));
     }
 
 }
