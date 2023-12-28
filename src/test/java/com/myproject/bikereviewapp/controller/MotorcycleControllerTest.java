@@ -2,10 +2,13 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.entity.Motorcycle;
+import com.myproject.bikereviewapp.entity.Review;
+import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.utility.SortUtility;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,11 +20,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,13 +52,47 @@ class MotorcycleControllerTest {
     @Autowired
     MotorcycleController motorcycleController;
 
+
+    private static Long id;
+    private static Page<Motorcycle> motorcyclePage;
+    private static Page<Review> reviewPage;
+    private static Motorcycle motorcycle;
+    private static int pageNumber;
+    private static int pageSize;
+    private static Sort sort;
+    private static String sortStr;
+
+    @BeforeAll
+    static void init() {
+        id = 8L;
+
+        motorcyclePage = new PageImpl<>(Arrays.asList(
+                new Motorcycle(1L, "model1", new Brand()),
+                new Motorcycle(2L, "model2", new Brand()),
+                new Motorcycle(3L, "model3", new Brand())
+        ));
+
+        reviewPage = new PageImpl<>(Arrays.asList(
+                new Review(1L, "body1", LocalDate.of(2000, 1, 1), (short) 1, new Motorcycle(), new User()),
+                new Review(2L, "body2", LocalDate.of(2010, 2, 2), (short) 2, new Motorcycle(), new User()),
+                new Review(3L, "body3", LocalDate.of(2020, 3, 3), (short) 3, new Motorcycle(), new User())
+        ));
+
+        motorcycle = new Motorcycle(id, "model", new Brand());
+
+        pageNumber = 2;
+
+        pageSize = 10;
+
+        sort = Sort.by(Sort.Direction.ASC, "id");
+
+        sortStr = "id:asc";
+    }
+
     @Test
     void showAll_shouldReturnAppropriateView() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
-        Page<Motorcycle> motorcyclePage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
         mockMvc.perform(get("/motorcycles"))
@@ -67,15 +103,7 @@ class MotorcycleControllerTest {
     @Test
     void showAll_shouldAddMotorcyclePageModelAttribute() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
-
-        Page<Motorcycle> motorcyclePage = new PageImpl<>(Arrays.asList(
-                new Motorcycle(1L, "model1", new Brand()),
-                new Motorcycle(2L, "model2", new Brand()),
-                new Motorcycle(3L, "model3", new Brand())
-        ));
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
         mockMvc.perform(get("/motorcycles"))
@@ -85,12 +113,6 @@ class MotorcycleControllerTest {
 
     @Test
     void showAll_shouldMakePageRequestByProperPageNumberAndSort_whenRequestContainAppropriateParams() throws Exception {
-        int pageNumber = 2;
-        int pageSize = 20;
-        String sortStr = "model:asc";
-        Sort sort = Sort.by(Sort.Direction.ASC, "model");
-
-        Page<Motorcycle> motorcyclePage = Page.empty();
 
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
@@ -108,14 +130,8 @@ class MotorcycleControllerTest {
 
     @Test
     void showAll_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
-        int pageNumber = 2;
-        int pageSize = 20;
-        String sortStr = "name:asc";
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
 
-        Page<Motorcycle> motorcyclePage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
 
@@ -131,10 +147,7 @@ class MotorcycleControllerTest {
     @Test
     void showAll_shouldAddDefaultPageNumberAndSortModelAttributes_whenRequestDoesNotContainAppropriateParams() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
-        Page<Motorcycle> motorcyclePage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
         mockMvc.perform(get("/motorcycles"))
@@ -146,10 +159,7 @@ class MotorcycleControllerTest {
     @Test
     void showAllInAdminPanel_shouldReturnAppropriateView() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
-        Page<Motorcycle> motorcyclePage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
         mockMvc.perform(get("/motorcycles/admin"))
@@ -160,15 +170,7 @@ class MotorcycleControllerTest {
     @Test
     void showAllInAdminPanel_shouldAddMotorcyclePageModelAttribute() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
-
-        Page<Motorcycle> motorcyclePage = new PageImpl<>(Arrays.asList(
-                new Motorcycle(1L, "model1", new Brand()),
-                new Motorcycle(2L, "model2", new Brand()),
-                new Motorcycle(3L, "model3", new Brand())
-        ));
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
         mockMvc.perform(get("/motorcycles/admin"))
@@ -177,13 +179,7 @@ class MotorcycleControllerTest {
     }
 
     @Test
-    void showAllInAdminPanel_shouldMakePageRequestByProperPageNumberAndSort_whenRequestContainAppropriateParams() throws Exception {
-        int pageNumber = 2;
-        int pageSize = 20;
-        String sortStr = "model:asc";
-        Sort sort = Sort.by(Sort.Direction.ASC, "model");
-
-        Page<Motorcycle> motorcyclePage = Page.empty();
+    void showAllInAdminPanel_shouldMakePageRequestByProperParams_whenRequestContainAppropriateParams() throws Exception {
 
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
@@ -201,14 +197,8 @@ class MotorcycleControllerTest {
 
     @Test
     void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
-        int pageNumber = 2;
-        int pageSize = 20;
-        String sortStr = "name:asc";
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
 
-        Page<Motorcycle> motorcyclePage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
 
@@ -224,16 +214,112 @@ class MotorcycleControllerTest {
     @Test
     void showAllInAdminPanel_shouldAddDefaultPageNumberAndSortModelAttributes_whenRequestDoesNotContainAppropriateParams() throws Exception {
 
-        Sort sampleSort = Sort.by(Sort.Direction.ASC, "model");
-        Page<Motorcycle> motorcyclePage = Page.empty();
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sampleSort);
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
         when(motorcycleService.getAll(any(PageRequest.class))).thenReturn(motorcyclePage);
 
         mockMvc.perform(get("/motorcycles/admin"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("currentPageNumber"))
                 .andExpect(model().attributeExists("currentSort"));
+    }
+
+
+    @Test
+    void show_shouldReturnAppropriateView() throws Exception {
+
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(motorcycleService.getById(anyLong())).thenReturn(motorcycle);
+        when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
+
+        mockMvc.perform(get("/motorcycles/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(view().name("motorcycle/show"));
+    }
+
+    @Test
+    void show_shouldAddMotorcycleModelAttribute() throws Exception {
+
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(motorcycleService.getById(anyLong())).thenReturn(motorcycle);
+        when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
+
+        mockMvc.perform(get("/motorcycles/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("motorcycle", motorcycle));
+    }
+
+    @Test
+    void show_shouldGetMotorcycleByProperId() throws Exception {
+
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(motorcycleService.getById(id)).thenReturn(motorcycle);
+        when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
+
+        mockMvc.perform(get("/motorcycles/{id}", id))
+                .andExpect(status().isOk());
+
+        verify(motorcycleService).getById(id);
+    }
+
+    @Test
+    void show_shouldAddReviewPageModelAttribute() throws Exception {
+
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(motorcycleService.getById(anyLong())).thenReturn(motorcycle);
+        when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
+
+        mockMvc.perform(get("/motorcycles/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("reviewPage", reviewPage));
+    }
+
+    @Test
+    void show_shouldGetReviewPageByProperMotorcycleIdAndPageRequest_whenRequestContainAppropriateParams() throws Exception {
+
+        when(sortUtility.parseSort(sortStr)).thenReturn(sort);
+        when(motorcycleService.getById(anyLong())).thenReturn(motorcycle);
+        when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
+
+
+        mockMvc.perform(get("/motorcycles/{id}", id)
+                        .param("reviewPageNumber", String.valueOf(pageNumber))
+                        .param("reviewPageSize", String.valueOf(pageSize))
+                        .param("reviewSort", sortStr))
+                .andExpect(status().isOk());
+
+        verify(sortUtility).parseSort(sortStr);
+        verify(reviewService).getReviewsByMotorcycleId(id, PageRequest.of(pageNumber, pageSize, sort));
+    }
+
+    @Test
+    void show_shouldAddReviewPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
+
+        when(sortUtility.parseSort(sortStr)).thenReturn(sort);
+        when(motorcycleService.getById(anyLong())).thenReturn(motorcycle);
+        when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
+
+
+        mockMvc.perform(get("/motorcycles/{id}", id)
+                        .param("reviewPageNumber", String.valueOf(pageNumber))
+                        .param("reviewPageSize", String.valueOf(pageSize))
+                        .param("reviewSort", sortStr))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("currentReviewPageNumber", pageNumber))
+                .andExpect(model().attribute("currentReviewSort", sortStr));
+    }
+
+    @Test
+    void show_shouldAddDefaultReviewPageNumberAndSortModelAttributes_whenRequestDoesNotContainAppropriateParams() throws Exception {
+
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(motorcycleService.getById(anyLong())).thenReturn(motorcycle);
+        when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
+
+
+        mockMvc.perform(get("/motorcycles/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("currentReviewPageNumber"))
+                .andExpect(model().attributeExists("currentReviewSort"));
     }
 
 }
