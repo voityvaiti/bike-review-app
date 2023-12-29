@@ -6,6 +6,7 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +22,8 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc(addFilters = false)
 class ReviewControllerTest {
 
+    private static final String SAMPLE_VIEW = "some/view";
+
     @MockBean
     ReviewService reviewService;
 
@@ -34,29 +37,38 @@ class ReviewControllerTest {
     ReviewController reviewController;
 
 
-    @Test
-    void create_shouldCreateReview_ifUserIsAuthenticated() {
+    private static Review review;
+    private static User user;
+    private static Authentication mockAuthentication;
+    private static BindingResult mockBindingResult;
 
-        Long motorcycleId = 10L;
+    @BeforeAll
+    static void init() {
         Motorcycle motorcycle = new Motorcycle();
-        motorcycle.setId(motorcycleId);
+        motorcycle.setId(10L);
 
-        Authentication authentication = mock(Authentication.class);
+        user = new User();
+        user.setId(12L);
+        user.setUsername("someUsername");
 
-        User user = new User();
-        user.setUsername("testUser");
-
-        Long reviewId = 5L;
-        Review review = new Review();
-        review.setId(reviewId);
+        review = new Review();
+        review.setId(5L);
         review.setMotorcycle(motorcycle);
         review.setBody("somereview");
 
-        review.setUser(user);
+        mockAuthentication = mock(Authentication.class);
+        when(mockAuthentication.getName()).thenReturn(user.getUsername());
 
-        when(authentication.getName()).thenReturn(user.getUsername());
+        mockBindingResult = mock(BindingResult.class);
+    }
 
-        assertEquals("redirect:/motorcycles/" + motorcycleId, reviewController.create(review, mock(BindingResult.class), authentication, null, null,null, null));
+
+    @Test
+    void create_shouldCreateReview_ifUserIsAuthenticated() {
+
+        when(userService.getByUsername(user.getUsername())).thenReturn(user);
+
+        assertEquals("redirect:/motorcycles/" + review.getMotorcycle().getId(), reviewController.create(review, mock(BindingResult.class), mockAuthentication, null, null, null, null));
 
         verify(reviewService).create(review);
     }
@@ -64,10 +76,44 @@ class ReviewControllerTest {
     @Test
     void create_shouldThrowException_ifUserIsNotAuthenticated() {
 
-        Review review = new Review();
-
         assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, mock(BindingResult.class), null, null, null, null, null));
 
         verify(reviewService, never()).create(any());
+    }
+
+    @Test
+    void create_shouldCreateReview_ifReviewIsValid() {
+
+        MotorcycleController spyMotorcycleController = spy(motorcycleController);
+        ReviewController spyReviewController = spy(new ReviewController(reviewService, userService, spyMotorcycleController));
+
+
+        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).show(any(), any(), any(), any(), any(), any());
+        when(userService.getByUsername(user.getUsername())).thenReturn(user);
+        when(reviewService.create(any(Review.class))).thenReturn(new Review());
+
+        when(mockBindingResult.hasErrors()).thenReturn(false);
+
+        spyReviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
+
+        verify(reviewService).create(review);
+    }
+
+    @Test
+    void create_shouldNeverCreateReview_ifReviewIsInvalid() {
+
+        MotorcycleController spyMotorcycleController = spy(motorcycleController);
+        ReviewController spyReviewController = spy(new ReviewController(reviewService, userService, spyMotorcycleController));
+
+
+        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).show(any(), any(), any(), any(), any(), any());
+        when(userService.getByUsername(user.getUsername())).thenReturn(user);
+        when(reviewService.create(any(Review.class))).thenReturn(new Review());
+
+        when(mockBindingResult.hasErrors()).thenReturn(true);
+
+        spyReviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
+
+        verify(reviewService, never()).create(any(Review.class));
     }
 }
