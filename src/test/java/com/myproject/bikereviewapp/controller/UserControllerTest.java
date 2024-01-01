@@ -1,7 +1,10 @@
 package com.myproject.bikereviewapp.controller;
 
+import com.myproject.bikereviewapp.entity.Brand;
+import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
+import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
@@ -16,14 +19,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -31,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
+
+    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     UserService userService;
@@ -47,12 +54,19 @@ class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    UserController userController;
+
 
     private static Page<User> userPage;
+    private static User user;
     private static int pageNumber;
     private static int pageSize;
     private static Sort sort;
     private static String sortStr;
+    private static Authentication mockAuthentication;
+    private static Model mockModel;
+
 
 
     @BeforeAll
@@ -63,6 +77,8 @@ class UserControllerTest {
                 new User(3L, "username3", "password3", true, Role.CLIENT, "publicName3")
                 ));
 
+        user = new User(8L, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+
         pageNumber = 5;
 
         pageSize = 12;
@@ -70,6 +86,10 @@ class UserControllerTest {
         sort = Sort.by(Sort.Direction.ASC, "id");
 
         sortStr = "id:asc";
+
+        mockAuthentication = mock(Authentication.class);
+
+        mockModel = mock(Model.class);
     }
 
 
@@ -138,6 +158,38 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("currentPageNumber"))
                 .andExpect(model().attributeExists("currentSort"));
+    }
+
+    @Test
+    void create_shouldCreateUser_ifUserIsValid() {
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        UserController spyUserController = spy(userController);
+
+        doReturn(SAMPLE_VIEW).when(spyUserController).newUser(any(User.class), any(Model.class));
+        when(userService.create(any(User.class))).thenReturn(new User());
+
+        when(mockBindingResult.hasErrors()).thenReturn(false);
+
+        spyUserController.create(user, mockBindingResult, mockModel);
+
+        verify(userService).create(user);
+    }
+
+    @Test
+    void create_shouldNeverCreateUser_ifUserIsInvalid() {
+
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        UserController spyUserController = spy(userController);
+
+        doReturn(SAMPLE_VIEW).when(spyUserController).newUser(any(User.class), any(Model.class));
+        when(userService.create(any(User.class))).thenReturn(new User());
+
+        when(mockBindingResult.hasErrors()).thenReturn(true);
+
+        spyUserController.create(user, mockBindingResult, mockModel);
+
+        verify(userService, never()).create(any(User.class));
     }
 
 }
