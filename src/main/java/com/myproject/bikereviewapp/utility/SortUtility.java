@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 @Component
 public class SortUtility {
 
-    private static final String ORDER_EXPRESSION_REGEX = "^\\s*[A-Za-z.]+\\s*(:\\s*((asc|desc)|))?$";
+    private static final String ORDER_EXPRESSION_REGEX = "^\\s*[A-Za-z.]+\\s*(:\\s*((asc|desc)|)\\s*)?$";
 
     private static final String SORT_EXPRESSION_DELIMITER = ",";
 
@@ -49,7 +49,7 @@ public class SortUtility {
         return Sort.by(orders);
     }
 
-    private static Sort getDefaultSort() {
+    public static Sort getDefaultSort() {
         return DEFAULT_SORT;
     }
 
