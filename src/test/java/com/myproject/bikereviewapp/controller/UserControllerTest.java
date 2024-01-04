@@ -1,10 +1,7 @@
 package com.myproject.bikereviewapp.controller;
 
-import com.myproject.bikereviewapp.entity.Brand;
-import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
-import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
@@ -19,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -64,7 +60,6 @@ class UserControllerTest {
     private static int pageSize;
     private static Sort sort;
     private static String sortStr;
-    private static Authentication mockAuthentication;
     private static Model mockModel;
 
 
@@ -86,8 +81,6 @@ class UserControllerTest {
         sort = Sort.by(Sort.Direction.ASC, "id");
 
         sortStr = "id:asc";
-
-        mockAuthentication = mock(Authentication.class);
 
         mockModel = mock(Model.class);
     }

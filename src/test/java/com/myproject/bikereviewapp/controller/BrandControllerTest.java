@@ -142,9 +142,6 @@ class BrandControllerTest {
         BindingResult mockBindingResult = mock(BindingResult.class);
         BrandController spyBrandController = spy(brandController);
 
-        doReturn(SAMPLE_VIEW).when(spyBrandController).newBrand(any(Brand.class));
-        when(brandService.create(any(Brand.class))).thenReturn(new Brand());
-
         when(mockBindingResult.hasErrors()).thenReturn(false);
 
         spyBrandController.create(brand, mockBindingResult);
@@ -157,9 +154,7 @@ class BrandControllerTest {
 
         BindingResult mockBindingResult = mock(BindingResult.class);
         BrandController spyBrandController = spy(brandController);
-
         doReturn(SAMPLE_VIEW).when(spyBrandController).newBrand(any(Brand.class));
-        when(brandService.create(any(Brand.class))).thenReturn(new Brand());
 
         when(mockBindingResult.hasErrors()).thenReturn(true);
 
@@ -177,9 +172,6 @@ class BrandControllerTest {
         Model mockModel = mock(Model.class);
         BrandController spyBrandController = spy(brandController);
 
-        doReturn(SAMPLE_VIEW).when(spyBrandController).edit(anyLong(), any(Model.class));
-        when(brandService.update(anyLong(), any(Brand.class))).thenReturn(new Brand());
-
         when(mockBindingResult.hasErrors()).thenReturn(false);
 
         spyBrandController.update(id, brand, mockBindingResult, mockModel);
@@ -195,9 +187,7 @@ class BrandControllerTest {
         BindingResult mockBindingResult = mock(BindingResult.class);
         Model mockModel = mock(Model.class);
         BrandController spyBrandController = spy(brandController);
-
         doReturn(SAMPLE_VIEW).when(spyBrandController).edit(anyLong(), any(Model.class));
-        when(brandService.update(anyLong(), any(Brand.class))).thenReturn(new Brand());
 
         when(mockBindingResult.hasErrors()).thenReturn(true);
 

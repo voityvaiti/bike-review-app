@@ -335,9 +335,6 @@ class MotorcycleControllerTest {
         BindingResult mockBindingResult = mock(BindingResult.class);
         MotorcycleController spyMotorcycleController = spy(motorcycleController);
 
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).newMotorcycle(any(Motorcycle.class), any(Model.class));
-        when(motorcycleService.create(any(Motorcycle.class))).thenReturn(new Motorcycle());
-
         when(mockBindingResult.hasErrors()).thenReturn(false);
 
         spyMotorcycleController.create(motorcycle, mockBindingResult, model);
@@ -352,7 +349,6 @@ class MotorcycleControllerTest {
         MotorcycleController spyMotorcycleController = spy(motorcycleController);
 
         doReturn(SAMPLE_VIEW).when(spyMotorcycleController).newMotorcycle(any(Motorcycle.class), any(Model.class));
-        when(motorcycleService.create(any(Motorcycle.class))).thenReturn(new Motorcycle());
 
         when(mockBindingResult.hasErrors()).thenReturn(true);
 
@@ -364,13 +360,8 @@ class MotorcycleControllerTest {
     @Test
     void update_shouldUpdateMotorcycle_ifMotorcycleIsValid() {
 
-        Long id = 10L;
-
         BindingResult mockBindingResult = mock(BindingResult.class);
         MotorcycleController spyMotorcycleController = spy(motorcycleController);
-
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).edit(anyLong(), any(Model.class));
-        when(motorcycleService.update(anyLong(), any(Motorcycle.class))).thenReturn(new Motorcycle());
 
         when(mockBindingResult.hasErrors()).thenReturn(false);
 
@@ -382,13 +373,10 @@ class MotorcycleControllerTest {
     @Test
     void update_shouldNeverUpdateMotorcycle_ifMotorcycleIsInvalid() {
 
-        Long id = 10L;
-
         BindingResult mockBindingResult = mock(BindingResult.class);
         MotorcycleController spyMotorcycleController = spy(motorcycleController);
 
         doReturn(SAMPLE_VIEW).when(spyMotorcycleController).edit(anyLong(), any(Model.class));
-        when(motorcycleService.update(anyLong(), any(Motorcycle.class))).thenReturn(new Motorcycle());
 
         when(mockBindingResult.hasErrors()).thenReturn(true);
 
