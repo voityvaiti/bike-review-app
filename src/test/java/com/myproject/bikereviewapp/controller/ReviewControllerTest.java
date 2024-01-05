@@ -7,6 +7,7 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorize
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,7 +39,7 @@ class ReviewControllerTest {
 
 
     private static Review review;
-    private static User user;
+    private static BindingResult mockBindingResult;
     private static Authentication mockAuthentication;
 
     @BeforeAll
@@ -46,7 +47,7 @@ class ReviewControllerTest {
         Motorcycle motorcycle = new Motorcycle();
         motorcycle.setId(10L);
 
-        user = new User();
+        User user = new User();
         user.setId(12L);
         user.setUsername("someUsername");
 
@@ -55,16 +56,19 @@ class ReviewControllerTest {
         review.setMotorcycle(motorcycle);
         review.setBody("somereview");
 
+        mockBindingResult = mock(BindingResult.class);
         mockAuthentication = mock(Authentication.class);
         when(mockAuthentication.getName()).thenReturn(user.getUsername());
+    }
+
+    @BeforeEach
+    void setUp() {
+        when(mockBindingResult.hasErrors()).thenReturn(false);
     }
 
 
     @Test
     void create_shouldCreateReview_ifUserIsAuthenticated() {
-
-        BindingResult mockBindingResult = mock(BindingResult.class);
-        when(mockBindingResult.hasErrors()).thenReturn(false);
 
         reviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
 
@@ -74,9 +78,6 @@ class ReviewControllerTest {
     @Test
     void create_shouldNeverCreateReview_ifUserIsNotAuthenticated() {
 
-        BindingResult mockBindingResult = mock(BindingResult.class);
-        when(mockBindingResult.hasErrors()).thenReturn(false);
-
         assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, mockBindingResult, null, null, null, null, null));
 
         verify(reviewService, never()).create(any());
@@ -85,15 +86,7 @@ class ReviewControllerTest {
     @Test
     void create_shouldCreateReview_ifReviewIsValid() {
 
-        BindingResult mockBindingResult = mock(BindingResult.class);
-        MotorcycleController spyMotorcycleController = spy(motorcycleController);
-        ReviewController spyReviewController = spy(new ReviewController(reviewService, userService, spyMotorcycleController));
-
-        when(userService.getByUsername(user.getUsername())).thenReturn(user);
-
-        when(mockBindingResult.hasErrors()).thenReturn(false);
-
-        spyReviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
+        reviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
 
         verify(reviewService).create(review);
     }
@@ -101,10 +94,8 @@ class ReviewControllerTest {
     @Test
     void create_shouldNeverCreateReview_ifReviewIsInvalid() {
 
-        BindingResult mockBindingResult = mock(BindingResult.class);
         MotorcycleController spyMotorcycleController = spy(motorcycleController);
         ReviewController spyReviewController = spy(new ReviewController(reviewService, userService, spyMotorcycleController));
-
         doReturn(SAMPLE_VIEW).when(spyMotorcycleController).show(any(), any(), any(), any(), any(), any());
 
         when(mockBindingResult.hasErrors()).thenReturn(true);

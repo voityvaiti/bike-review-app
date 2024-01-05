@@ -1,5 +1,7 @@
+
 package com.myproject.bikereviewapp.controller;
 
+import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
@@ -7,6 +9,7 @@ import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import com.myproject.bikereviewapp.validation.validator.UserUniquenessValidator;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -55,11 +58,14 @@ class UserControllerTest {
 
 
     private static Page<User> userPage;
+    private static Page<Review> reviewPage;
     private static User user;
+    private static final String USERNAME = "someUsername";
     private static int pageNumber;
     private static int pageSize;
     private static Sort sort;
     private static String sortStr;
+    private static BindingResult mockBindingResult;
     private static Model mockModel;
 
 
@@ -70,27 +76,34 @@ class UserControllerTest {
                 new User(1L, "username1", "password1", true, Role.CLIENT, "publicName1"),
                 new User(2L, "username2", "password2", true, Role.CLIENT, "publicName2"),
                 new User(3L, "username3", "password3", true, Role.CLIENT, "publicName3")
-                ));
+        ));
 
-        user = new User(8L, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
+        reviewPage = new PageImpl<>(List.of(
+                new Review(),
+                new Review()
+        ));
+
+        user = new User(8L, USERNAME, "somePassword", true, Role.CLIENT, "somePublicName");
 
         pageNumber = 5;
-
         pageSize = 12;
-
         sort = Sort.by(Sort.Direction.ASC, "id");
-
         sortStr = "id:asc";
-
+        mockBindingResult = mock(BindingResult.class);
         mockModel = mock(Model.class);
+    }
+
+    @BeforeEach
+    void setUp() {
+        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(userService.getAll(any(PageRequest.class))).thenReturn(userPage);
+
+        when(mockBindingResult.hasErrors()).thenReturn(false);
     }
 
 
     @Test
     void showAllInAdminPanel_shouldReturnAppropriateView() throws Exception {
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(userService.getAll(any(PageRequest.class))).thenReturn(userPage);
 
         mockMvc.perform(get("/users/admin"))
                 .andExpect(status().isOk())
@@ -99,9 +112,6 @@ class UserControllerTest {
 
     @Test
     void showAllInAdminPanel_shouldAddUserPageModelAttribute() throws Exception {
-
-        when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(userService.getAll(any(PageRequest.class))).thenReturn(userPage);
 
         mockMvc.perform(get("/users/admin"))
                 .andExpect(status().isOk())
@@ -112,8 +122,6 @@ class UserControllerTest {
     void showAllInAdminPanel_shouldMakePageRequestByProperParams_whenRequestContainAppropriateParams() throws Exception {
 
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
-        when(userService.getAll(any(PageRequest.class))).thenReturn(userPage);
-
 
         mockMvc.perform(get("/users/admin")
                         .param("pageNumber", String.valueOf(pageNumber))
@@ -128,10 +136,6 @@ class UserControllerTest {
     @Test
     void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
-        when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(userService.getAll(any(PageRequest.class))).thenReturn(userPage);
-
-
         mockMvc.perform(get("/users/admin")
                         .param("pageNumber", String.valueOf(pageNumber))
                         .param("pageSize", String.valueOf(pageSize))
@@ -144,9 +148,6 @@ class UserControllerTest {
     @Test
     void showAllInAdminPanel_shouldAddDefaultPageNumberAndSortModelAttributes_whenRequestDoesNotContainAppropriateParams() throws Exception {
 
-        when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(userService.getAll(any(PageRequest.class))).thenReturn(userPage);
-
         mockMvc.perform(get("/users/admin"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("currentPageNumber"))
@@ -156,15 +157,7 @@ class UserControllerTest {
     @Test
     void create_shouldCreateUser_ifUserIsValid() {
 
-        BindingResult mockBindingResult = mock(BindingResult.class);
-        UserController spyUserController = spy(userController);
-
-        doReturn(SAMPLE_VIEW).when(spyUserController).newUser(any(User.class), any(Model.class));
-        when(userService.create(any(User.class))).thenReturn(new User());
-
-        when(mockBindingResult.hasErrors()).thenReturn(false);
-
-        spyUserController.create(user, mockBindingResult, mockModel);
+        userController.create(user, mockBindingResult, mockModel);
 
         verify(userService).create(user);
     }
@@ -172,11 +165,8 @@ class UserControllerTest {
     @Test
     void create_shouldNeverCreateUser_ifUserIsInvalid() {
 
-        BindingResult mockBindingResult = mock(BindingResult.class);
         UserController spyUserController = spy(userController);
-
         doReturn(SAMPLE_VIEW).when(spyUserController).newUser(any(User.class), any(Model.class));
-        when(userService.create(any(User.class))).thenReturn(new User());
 
         when(mockBindingResult.hasErrors()).thenReturn(true);
 

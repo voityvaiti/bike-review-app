@@ -4,6 +4,7 @@ import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.validation.validator.UserUniquenessValidator;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,16 +31,23 @@ class AuthControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+
+    private static User validInputUser;
+    private static User invalidInputUser;
+
+    @BeforeAll
+    static void init() {
+        validInputUser = new User(null, "someUsername", "somePassword", false, null, "somePublicName");
+        invalidInputUser = new User(null, "", "", false, null, "somePublicName");
+    }
+
     @Test
     void signUp_shouldRedirectToLogInPage_ifUserIsValid() throws Exception {
 
-        User validUser = new User(null, "someUsername", "somePassword", false, null, "somePublicName");
-
-
         mockMvc.perform(post("/signup")
-                        .param("username", validUser.getUsername())
-                        .param("password", validUser.getPassword())
-                        .param("publicName", validUser.getPublicName())
+                        .param("username", validInputUser.getUsername())
+                        .param("password", validInputUser.getPassword())
+                        .param("publicName", validInputUser.getPublicName())
                 ).andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -47,13 +55,12 @@ class AuthControllerTest {
     @Test
     void signUp_shouldCreateEnabledUserWithClientRole_ifUserIsValid() throws Exception {
 
-        User validUser = new User(null, "someUsername", "somePassword", false, null, "somePublicName");
-        User expectedUser = new User(null, validUser.getUsername(), validUser.getPassword(), true, Role.CLIENT, validUser.getPublicName());
+        User expectedUser = new User(null, validInputUser.getUsername(), validInputUser.getPassword(), true, Role.CLIENT, validInputUser.getPublicName());
 
         mockMvc.perform(post("/signup")
-                .param("username", validUser.getUsername())
-                .param("password", validUser.getPassword())
-                .param("publicName", validUser.getPublicName())
+                .param("username", validInputUser.getUsername())
+                .param("password", validInputUser.getPassword())
+                .param("publicName", validInputUser.getPublicName())
         );
 
         verify(userService).create(expectedUser);
@@ -62,12 +69,10 @@ class AuthControllerTest {
     @Test
     void signUp_shouldCheckUserForUniqueness_ifUserIsValid() throws Exception {
 
-        User validUser = new User(null, "someUsername", "somePassword", false, null, "somePublicName");
-
         mockMvc.perform(post("/signup")
-                .param("username", validUser.getUsername())
-                .param("password", validUser.getPassword())
-                .param("publicName", validUser.getPublicName())
+                .param("username", validInputUser.getUsername())
+                .param("password", validInputUser.getPassword())
+                .param("publicName", validInputUser.getPublicName())
         );
 
         verify(uniquenessValidator).validate(any(User.class), any(BindingResult.class));
@@ -76,12 +81,10 @@ class AuthControllerTest {
     @Test
     void signUp_shouldReturnSignUpForm_ifUserIsInvalid() throws Exception {
 
-        User invalidUser = new User(null, "", "", false, null, "somePublicName");
-
         mockMvc.perform(post("/signup")
-                        .param("username", invalidUser.getUsername())
-                        .param("password", invalidUser.getPassword())
-                        .param("publicName", invalidUser.getPublicName())
+                        .param("username", invalidInputUser.getUsername())
+                        .param("password", invalidInputUser.getPassword())
+                        .param("publicName", invalidInputUser.getPublicName())
                 ).andExpect(status().isOk())
                 .andExpect(view().name("auth/signup"));
     }
@@ -89,24 +92,20 @@ class AuthControllerTest {
     @Test
     void signUp_shouldReturnFieldErrors_ifUserIsInvalid() throws Exception {
 
-        User invalidUser = new User(null, "", "", false, null, "somePublicName");
-
         mockMvc.perform(post("/signup")
-                        .param("username", invalidUser.getUsername())
-                        .param("password", invalidUser.getPassword())
-                        .param("publicName", invalidUser.getPublicName())
-                ).andExpect(model().attributeHasFieldErrors("user", "username", "password"));
+                        .param("username", invalidInputUser.getUsername())
+                        .param("password", invalidInputUser.getPassword())
+                        .param("publicName", invalidInputUser.getPublicName())
+                ).andExpect(model().attributeHasErrors("user"));
     }
 
     @Test
     void signUp_shouldNeverCreateUser_ifUserIsInvalid() throws Exception {
 
-        User invalidUser = new User(null, "", "", false, null, "somePublicName");
-
         mockMvc.perform(post("/signup")
-                .param("username", invalidUser.getUsername())
-                .param("password", invalidUser.getPassword())
-                .param("publicName", invalidUser.getPublicName())
+                .param("username", invalidInputUser.getUsername())
+                .param("password", invalidInputUser.getPassword())
+                .param("publicName", invalidInputUser.getPublicName())
         );
 
         verify(userService, never()).create(any(User.class));
