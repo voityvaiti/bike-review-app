@@ -2,6 +2,7 @@
 package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.*;
+import com.myproject.bikereviewapp.entity.dto.PublicNameUpdateDto;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
@@ -58,6 +59,7 @@ class UserControllerTest {
     private static Page<Review> reviewPage;
     private static User user;
     private static final String USERNAME = "someUsername";
+    private static PublicNameUpdateDto publicNameUpdateDto;
     private static int pageNumber;
     private static int pageSize;
     private static Sort sort;
@@ -82,6 +84,7 @@ class UserControllerTest {
         ));
 
         user = new User(8L, USERNAME, "somePassword", true, Role.CLIENT, "somePublicName");
+        publicNameUpdateDto = new PublicNameUpdateDto(user.getPublicName());
 
         pageNumber = 5;
         pageSize = 12;
@@ -158,7 +161,7 @@ class UserControllerTest {
     }
 
     @Test
-    void showCurrentUserProfile_shouldReturnAppropriateView_ifUserIsAuthenticated() throws Exception {
+    void showCurrentUserProfile_shouldReturnAppropriateView() throws Exception {
 
         mockMvc.perform(get("/users/profile")
                         .principal(mockAuthentication))
@@ -264,6 +267,45 @@ class UserControllerTest {
         spyUserController.create(user, mockBindingResult, mockModel);
 
         verify(userService, never()).create(any(User.class));
+    }
+
+    @Test
+    void editCurrentUserPublicName_shouldReturnAppropriateView() throws Exception {
+
+        mockMvc.perform(get("/users/profile/public-name-edit")
+                        .principal(mockAuthentication))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/public-name-edit"));
+    }
+
+    @Test
+    void editCurrentUserPublicName_shouldAddProperDtoModelAttribute() throws Exception {
+
+        mockMvc.perform(get("/users/profile/public-name-edit")
+                        .principal(mockAuthentication))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("publicNameUpdateDto", publicNameUpdateDto));
+    }
+
+    @Test
+    void editCurrentUserPublicName_shouldShouldGetUserByProperUsername() throws Exception {
+
+        when(userService.getByUsername(USERNAME)).thenReturn(user);
+
+        mockMvc.perform(get("/users/profile/public-name-edit")
+                        .principal(mockAuthentication))
+                .andExpect(status().isOk());
+
+        verify(userService).getByUsername(USERNAME);
+    }
+
+    @Test
+    void editCurrentUserPublicName_shouldForbidRequest_whenUserIsNotAuthenticated() throws Exception {
+
+        mockMvc.perform(get("/users/profile/public-name-edit"))
+                .andExpect(status().isUnauthorized());
+
+        verify(userService, never()).getByUsername(anyString());
     }
 
 }
