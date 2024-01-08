@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -290,8 +291,6 @@ class UserControllerTest {
     @Test
     void editCurrentUserPublicName_shouldShouldGetUserByProperUsername() throws Exception {
 
-        when(userService.getByUsername(USERNAME)).thenReturn(user);
-
         mockMvc.perform(get("/users/profile/public-name-edit")
                         .principal(mockAuthentication))
                 .andExpect(status().isOk());
@@ -308,4 +307,65 @@ class UserControllerTest {
         verify(userService, never()).getByUsername(anyString());
     }
 
+    @Test
+    void updateCurrentUserPublicName_shouldRedirectToAppropriateUrl() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/public-name")
+                        .flashAttr("publicNameUpdateDto", publicNameUpdateDto)
+                        .principal(mockAuthentication))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/profile"));
+    }
+
+    @Test
+    void updateCurrentUserPublicName_shouldShouldGetUserByProperUsername() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/public-name")
+                        .flashAttr("publicNameUpdateDto", publicNameUpdateDto)
+                        .principal(mockAuthentication))
+                .andExpect(status().is3xxRedirection());
+
+        verify(userService).getByUsername(USERNAME);
+    }
+
+    @Test
+    void updateCurrentUserPublicName_shouldProperlyUpdatePublicName() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/public-name")
+                        .flashAttr("publicNameUpdateDto", publicNameUpdateDto)
+                        .principal(mockAuthentication))
+                .andExpect(status().is3xxRedirection());
+
+        verify(userService).updatePublicName(user.getId(), publicNameUpdateDto.getPublicName());
+    }
+
+    @Test
+    void updateCurrentUserPublicName_shouldForbidRequest_whenUserIsNotAuthenticated() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/public-name")
+                        .flashAttr("publicNameUpdateDto", publicNameUpdateDto))
+                .andExpect(status().isUnauthorized());
+
+        verify(userService, never()).updatePublicName(anyLong(), any());
+    }
+
+    @Test
+    void updateCurrentUserPublicName_shouldReturnAppropriateView_whenPublicNameIsInvalid() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/public-name")
+                        .flashAttr("publicNameUpdateDto", new PublicNameUpdateDto(" "))
+                        .principal(mockAuthentication))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/public-name-edit"));
+    }
+
+    @Test
+    void updateCurrentUserPublicName_shouldNeverUpdatePublicName_whenPublicNameIsInvalid() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/public-name")
+                        .flashAttr("publicNameUpdateDto", new PublicNameUpdateDto(" "))
+                        .principal(mockAuthentication));
+
+        verify(userService, never()).updatePublicName(anyLong(), any());
+    }
 }
