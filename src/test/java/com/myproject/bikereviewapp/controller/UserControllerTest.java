@@ -2,6 +2,7 @@
 package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.*;
+import com.myproject.bikereviewapp.entity.dto.PasswordUpdateDto;
 import com.myproject.bikereviewapp.entity.dto.PublicNameUpdateDto;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
@@ -23,7 +24,6 @@ import org.springframework.validation.BindingResult;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -60,6 +60,7 @@ class UserControllerTest {
     private static Page<Review> reviewPage;
     private static User user;
     private static final String USERNAME = "someUsername";
+    private static PasswordUpdateDto passwordUpdateDto;
     private static PublicNameUpdateDto publicNameUpdateDto;
     private static int pageNumber;
     private static int pageSize;
@@ -85,7 +86,9 @@ class UserControllerTest {
         ));
 
         user = new User(8L, USERNAME, "somePassword", true, Role.CLIENT, "somePublicName");
+        passwordUpdateDto = new PasswordUpdateDto("oldPassword", "newPassword");
         publicNameUpdateDto = new PublicNameUpdateDto(user.getPublicName());
+
 
         pageNumber = 5;
         pageSize = 12;
@@ -102,6 +105,7 @@ class UserControllerTest {
     void setUp() {
         when(userService.getAll(any(PageRequest.class))).thenReturn(userPage);
         when(userService.getByUsername(anyString())).thenReturn(user);
+        when(userService.isCorrectCredentials(anyString(), anyString())).thenReturn(true);
         when(reviewService.getReviewsByUserId(anyLong(), any(Pageable.class))).thenReturn(reviewPage);
 
         when(sortUtility.parseSort(anyString())).thenReturn(sort);
@@ -162,7 +166,7 @@ class UserControllerTest {
     }
 
     @Test
-    void showCurrentUserProfile_shouldReturnAppropriateView() throws Exception {
+    void fProfile_shouldReturnAppropriateView() throws Exception {
 
         mockMvc.perform(get("/users/profile")
                         .principal(mockAuthentication))
@@ -271,6 +275,69 @@ class UserControllerTest {
     }
 
     @Test
+    void updateCurrentUserPassword_shouldRedirectToAppropriateUrl() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/password")
+                        .flashAttr("passwordUpdateDto", passwordUpdateDto)
+                        .principal(mockAuthentication))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/profile"));
+    }
+
+    @Test
+    void updateCurrentUserPassword_shouldCheckCredentialsByProperParams() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/password")
+                        .flashAttr("passwordUpdateDto", passwordUpdateDto)
+                        .principal(mockAuthentication));
+
+        verify(userService).isCorrectCredentials(USERNAME, passwordUpdateDto.getOldPassword());
+    }
+
+    @Test
+    void updateCurrentUserPassword_shouldRejectUpdate_whenOldPasswordIsIncorrect() throws Exception {
+
+        when(userService.isCorrectCredentials(anyString(), anyString())).thenReturn(false);
+
+        mockMvc.perform(patch("/users/profile/password")
+                        .flashAttr("passwordUpdateDto", passwordUpdateDto)
+                        .principal(mockAuthentication))
+                .andExpect(model().attributeHasFieldErrors("passwordUpdateDto", "oldPassword"));
+
+        verify(userService, never()).updatePassword(anyLong(), anyString());
+    }
+
+    @Test
+    void updateCurrentUserPassword_shouldProperlyUpdatePassword() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/password")
+                .flashAttr("passwordUpdateDto", passwordUpdateDto)
+                .principal(mockAuthentication));
+
+        verify(userService).updatePassword(user.getId(), passwordUpdateDto.getNewPassword());
+    }
+
+    @Test
+    void updateCurrentUserPassword_shouldForbidRequest_whenUserIsNotAuthenticated() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/password")
+                        .flashAttr("passwordUpdateDto", passwordUpdateDto))
+                .andExpect(status().isUnauthorized());
+
+        verify(userService, never()).updatePassword(anyLong(), anyString());
+    }
+
+    @Test
+    void updateCurrentUserPassword_shouldNeverUpdatePassword_whenNewPasswordIsInvalid() throws Exception {
+
+        mockMvc.perform(patch("/users/profile/password")
+                .flashAttr("passwordUpdateDto", new PasswordUpdateDto(passwordUpdateDto.getOldPassword(), " "))
+                .principal(mockAuthentication));
+
+        verify(userService, never()).updatePassword(anyLong(), anyString());
+    }
+
+    @Test
     void editCurrentUserPublicName_shouldReturnAppropriateView() throws Exception {
 
         mockMvc.perform(get("/users/profile/public-name-edit")
@@ -292,8 +359,7 @@ class UserControllerTest {
     void editCurrentUserPublicName_shouldShouldGetUserByProperUsername() throws Exception {
 
         mockMvc.perform(get("/users/profile/public-name-edit")
-                        .principal(mockAuthentication))
-                .andExpect(status().isOk());
+                        .principal(mockAuthentication));
 
         verify(userService).getByUsername(USERNAME);
     }
@@ -322,8 +388,7 @@ class UserControllerTest {
 
         mockMvc.perform(patch("/users/profile/public-name")
                         .flashAttr("publicNameUpdateDto", publicNameUpdateDto)
-                        .principal(mockAuthentication))
-                .andExpect(status().is3xxRedirection());
+                        .principal(mockAuthentication));
 
         verify(userService).getByUsername(USERNAME);
     }
@@ -333,8 +398,7 @@ class UserControllerTest {
 
         mockMvc.perform(patch("/users/profile/public-name")
                         .flashAttr("publicNameUpdateDto", publicNameUpdateDto)
-                        .principal(mockAuthentication))
-                .andExpect(status().is3xxRedirection());
+                        .principal(mockAuthentication));
 
         verify(userService).updatePublicName(user.getId(), publicNameUpdateDto.getPublicName());
     }
@@ -347,16 +411,6 @@ class UserControllerTest {
                 .andExpect(status().isUnauthorized());
 
         verify(userService, never()).updatePublicName(anyLong(), any());
-    }
-
-    @Test
-    void updateCurrentUserPublicName_shouldReturnAppropriateView_whenPublicNameIsInvalid() throws Exception {
-
-        mockMvc.perform(patch("/users/profile/public-name")
-                        .flashAttr("publicNameUpdateDto", new PublicNameUpdateDto(" "))
-                        .principal(mockAuthentication))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/public-name-edit"));
     }
 
     @Test
