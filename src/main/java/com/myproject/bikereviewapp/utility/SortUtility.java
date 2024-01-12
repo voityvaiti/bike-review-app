@@ -1,14 +1,16 @@
 package com.myproject.bikereviewapp.utility;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Component
 public class SortUtility {
 
-    private static final String ORDER_EXPRESSION_REGEX = "^\\s*[A-Za-z.]+\\s*(:\\s*((asc|desc)|))?$";
+    private static final String ORDER_EXPRESSION_REGEX = "^\\s*[A-Za-z.]+\\s*(:\\s*((asc|desc)|)\\s*)?$";
 
     private static final String SORT_EXPRESSION_DELIMITER = ",";
 
@@ -18,10 +20,8 @@ public class SortUtility {
 
     private static final Sort DEFAULT_SORT = Sort.by(Sort.Order.asc("id"));
 
-    private SortUtility() {
-    }
 
-    public static Sort parseSort(String sortExpression) {
+    public Sort parseSort(String sortExpression) {
 
         if (!isValidSortExpression(sortExpression)) {
             return getDefaultSort();
@@ -49,7 +49,7 @@ public class SortUtility {
         return Sort.by(orders);
     }
 
-    private static Sort getDefaultSort() {
+    public static Sort getDefaultSort() {
         return DEFAULT_SORT;
     }
 

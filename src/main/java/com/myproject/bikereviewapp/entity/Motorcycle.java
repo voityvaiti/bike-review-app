@@ -52,17 +52,12 @@ public class Motorcycle {
         this.brand = brand;
     }
 
-    public void setFields(Motorcycle motorcycle) {
-        this.brand = motorcycle.brand;
-        this.model = motorcycle.model;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Motorcycle that = (Motorcycle) o;
-        return id.equals(that.id) && Objects.equals(model, that.model) && Objects.equals(brand, that.brand);
+        return Objects.equals(id, that.id) && Objects.equals(model, that.model) && Objects.equals(brand, that.brand);
     }
 
     @Override

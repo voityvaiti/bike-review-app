@@ -54,7 +54,8 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
         Motorcycle currentMotorcycle = getById(id);
 
-        currentMotorcycle.setFields(updatedMotorcycle);
+        currentMotorcycle.setBrand(updatedMotorcycle.getBrand());
+        currentMotorcycle.setModel(updatedMotorcycle.getModel());
 
         return motorcycleRepository.save(currentMotorcycle);
     }

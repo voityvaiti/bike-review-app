@@ -2,14 +2,13 @@ package com.myproject.bikereviewapp.entity.dto;
 
 import com.myproject.bikereviewapp.validation.annotation.UserPublicName;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class PublicNameUpdateDto {
 
     @UserPublicName

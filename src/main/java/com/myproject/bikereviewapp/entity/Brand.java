@@ -44,17 +44,12 @@ public class Brand {
         this.country = country;
     }
 
-    public void setFields(Brand brand) {
-        this.name = brand.name;
-        this.country = brand.country;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Brand brand = (Brand) o;
-        return id.equals(brand.id) && Objects.equals(name, brand.name) && Objects.equals(country, brand.country);
+        return Objects.equals(id, brand.id) && Objects.equals(name, brand.name) && Objects.equals(country, brand.country);
     }
 
     @Override

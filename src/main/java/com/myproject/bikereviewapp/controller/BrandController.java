@@ -18,8 +18,11 @@ public class BrandController {
 
     private final BrandService brandService;
 
-    public BrandController(BrandService brandService) {
+    private final SortUtility sortUtility;
+
+    public BrandController(BrandService brandService, SortUtility sortUtility) {
         this.brandService = brandService;
+        this.sortUtility = sortUtility;
     }
 
     @GetMapping("/admin")
@@ -28,7 +31,7 @@ public class BrandController {
                                       @RequestParam(defaultValue = "20") Integer pageSize,
                                       @RequestParam(defaultValue = "id:asc") String sort) {
 
-        model.addAttribute("brandPage", brandService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+        model.addAttribute("brandPage", brandService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);

@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String DEFAULT_MESSAGE = "Oops! Something went wrong.";
+
     @ExceptionHandler({EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFoundExceptions(
@@ -24,11 +26,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({UserIsNotAuthorizedException.class})
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String handleForbiddenExceptions(
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleUnauthorizedExceptions(
             RuntimeException exception, Model model
     ) {
-        return handleException(exception, model, HttpStatus.FORBIDDEN);
+        return handleException(exception, model, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({UserDuplicationException.class})
@@ -41,10 +43,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({RuntimeException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleRuntimeException(
-            RuntimeException exception, Model model
-    ) {
-        return handleException(exception, model, HttpStatus.INTERNAL_SERVER_ERROR);
+    public String handleRuntimeException(Model model) {
+
+        model.addAttribute("errorDetails",
+                new ErrorDetailsDto(HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now(), DEFAULT_MESSAGE));
+        return "error/error_page";
     }
 
 

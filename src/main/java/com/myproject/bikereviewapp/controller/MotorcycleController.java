@@ -33,10 +33,13 @@ public class MotorcycleController {
 
     private final ReviewService reviewService;
 
-    public MotorcycleController(MotorcycleService motorcycleService, BrandService brandService, ReviewService reviewService) {
+    private final SortUtility sortUtility;
+
+    public MotorcycleController(MotorcycleService motorcycleService, BrandService brandService, ReviewService reviewService, SortUtility sortUtility) {
         this.motorcycleService = motorcycleService;
         this.brandService = brandService;
         this.reviewService = reviewService;
+        this.sortUtility = sortUtility;
     }
 
     @GetMapping
@@ -47,7 +50,7 @@ public class MotorcycleController {
                           @RequestParam(required = false, name = "q") String query) {
 
         Page<Motorcycle> motorcyclePage;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort));
 
         if (query != null && !query.isBlank()) {
             motorcyclePage = motorcycleService.getAllByQuery(query, pageable);
@@ -70,7 +73,7 @@ public class MotorcycleController {
                                       @RequestParam(defaultValue = "20") Integer pageSize,
                                       @RequestParam(defaultValue = "id:asc") String sort) {
 
-        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, SortUtility.parseSort(sort))));
+        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);
@@ -88,7 +91,7 @@ public class MotorcycleController {
 
         model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
 
-        model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize, SortUtility.parseSort(reviewSort))));
+        model.addAttribute("reviewPage", reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
         model.addAttribute("currentReviewSort", reviewSort);
 
