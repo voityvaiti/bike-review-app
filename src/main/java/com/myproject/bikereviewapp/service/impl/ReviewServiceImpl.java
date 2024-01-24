@@ -8,6 +8,8 @@ import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReviewServiceImpl.class);
 
     private final ReviewRepository reviewRepository;
 
@@ -35,6 +39,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable) {
+
+        LOGGER.debug("Page request received: {}, by Motorcycle with ID: {}", pageable, id);
+
         Optional<Motorcycle> optionalMotorcycle = motorcycleRepository.findById(id);
 
         if(optionalMotorcycle.isEmpty()) {
@@ -46,6 +53,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<Review> getReviewsByUserId(Long id, Pageable pageable) {
+
+        LOGGER.debug("Page request received: {}, by User with ID: {}", pageable, id);
+
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isEmpty()) {
@@ -59,11 +69,16 @@ public class ReviewServiceImpl implements ReviewService {
     public Review create(Review review) {
 
         review.setPublicationDate(LocalDate.now());
+
+        LOGGER.debug("Saving new Review: {}", review);
+
         return reviewRepository.save(review);
     }
 
     @Override
     public void delete(Long id) {
+
+        LOGGER.debug("Removing Review with ID: {}", id);
 
         reviewRepository.deleteById(id);
     }
