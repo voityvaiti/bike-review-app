@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class BrandController {
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/brands/admin";
+    
+    private static final String BRAND_ATTR = "brand";
+    private static final String BRAND_PAGE_ATTR = "brandPage";
 
     private final BrandService brandService;
 
@@ -31,7 +34,7 @@ public class BrandController {
                                       @RequestParam(defaultValue = "20") Integer pageSize,
                                       @RequestParam(defaultValue = "id:asc") String sort) {
 
-        model.addAttribute("brandPage", brandService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
+        model.addAttribute(BRAND_PAGE_ATTR, brandService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);
@@ -59,8 +62,8 @@ public class BrandController {
     @GetMapping("/admin/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
 
-        if (!model.containsAttribute("brand")) {
-            model.addAttribute("brand", brandService.getById(id));
+        if (!model.containsAttribute(BRAND_ATTR)) {
+            model.addAttribute(BRAND_ATTR, brandService.getById(id));
         }
         return "brand/admin/edit";
     }

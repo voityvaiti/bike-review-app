@@ -22,6 +22,8 @@ public class ReviewController {
     protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
     protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
 
+    protected static final String REVIEW_PAGE_ATTR = "reviewPage";
+
     private final ReviewService reviewService;
     private final UserService userService;
     private final MotorcycleController motorcycleController;
