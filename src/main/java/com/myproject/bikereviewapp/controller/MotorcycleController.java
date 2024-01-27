@@ -7,6 +7,7 @@ import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,28 +20,24 @@ import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
 @RequestMapping("/motorcycles")
+@RequiredArgsConstructor
 public class MotorcycleController {
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/motorcycles/admin";
+
 
     private static final String MOTORCYCLE_ATTR = "motorcycle";
     private static final String MOTORCYCLE_PAGE_ATTR = "motorcyclePage";
     private static final String BRANDS_ATTR = "brands";
 
+
     private final MotorcycleService motorcycleService;
-
     private final BrandService brandService;
-
     private final ReviewService reviewService;
 
     private final SortUtility sortUtility;
 
-    public MotorcycleController(MotorcycleService motorcycleService, BrandService brandService, ReviewService reviewService, SortUtility sortUtility) {
-        this.motorcycleService = motorcycleService;
-        this.brandService = brandService;
-        this.reviewService = reviewService;
-        this.sortUtility = sortUtility;
-    }
+
 
     @GetMapping
     public String showAll(Model model,

@@ -10,6 +10,7 @@ import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import com.myproject.bikereviewapp.validation.validator.UserUniquenessValidator;
 import jakarta.validation.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
     protected static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
@@ -33,20 +35,14 @@ public class UserController {
 
     private static final String PASSWORD_EDIT_PAGE = "user/password-edit";
 
-    private final UserService userService;
 
+    private final UserService userService;
     private final ReviewService reviewService;
 
     private final UserUniquenessValidator uniquenessValidator;
-
     private final SortUtility sortUtility;
 
-    public UserController(UserService userService, ReviewService reviewService, UserUniquenessValidator uniquenessValidator, SortUtility sortUtility) {
-        this.userService = userService;
-        this.reviewService = reviewService;
-        this.uniquenessValidator = uniquenessValidator;
-        this.sortUtility = sortUtility;
-    }
+
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model,

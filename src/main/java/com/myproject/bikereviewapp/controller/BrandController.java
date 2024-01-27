@@ -4,6 +4,7 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,21 +13,21 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/brands")
+@RequiredArgsConstructor
 public class BrandController {
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/brands/admin";
-    
+
+
     private static final String BRAND_ATTR = "brand";
     private static final String BRAND_PAGE_ATTR = "brandPage";
+
 
     private final BrandService brandService;
 
     private final SortUtility sortUtility;
 
-    public BrandController(BrandService brandService, SortUtility sortUtility) {
-        this.brandService = brandService;
-        this.sortUtility = sortUtility;
-    }
+
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model,
