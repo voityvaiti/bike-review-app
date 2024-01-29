@@ -2,17 +2,16 @@ package com.myproject.bikereviewapp.validation.validator;
 
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
 @Component
+@RequiredArgsConstructor
 public class UserUniquenessValidator {
 
     private final UserService userService;
 
-    public UserUniquenessValidator(UserService userService) {
-        this.userService = userService;
-    }
 
     public void validate(User user, BindingResult bindingResult) {
 
