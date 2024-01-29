@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByUsername(String username) {
 
-        LOGGER.debug("Looking for Motorcycle with username: {}", username);
+        LOGGER.debug("Looking for User with username: {}", username);
 
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new EntityNotFoundException("User with username " + username + " not found")
