@@ -5,6 +5,7 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.validation.validator.UserUniquenessValidator;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,16 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @Controller
+@RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
 
     private final UserUniquenessValidator uniquenessValidator;
 
-    public AuthController(UserService userService, UserUniquenessValidator uniquenessValidator) {
-        this.userService = userService;
-        this.uniquenessValidator = uniquenessValidator;
-    }
+
 
     @GetMapping("/login")
     public String showLogInForm() {

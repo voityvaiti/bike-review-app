@@ -10,6 +10,7 @@ import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import com.myproject.bikereviewapp.validation.validator.UserUniquenessValidator;
 import jakarta.validation.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
@@ -21,28 +22,27 @@ import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
     protected static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/users/admin";
 
+    private static final String USER_PAGE_ATTR = "userPage";
+    private static final String USER_ATTR = "user";
+    private static final String ROLES_ATTR = "roles";
+
     private static final String PASSWORD_EDIT_PAGE = "user/password-edit";
 
-    private final UserService userService;
 
+    private final UserService userService;
     private final ReviewService reviewService;
 
     private final UserUniquenessValidator uniquenessValidator;
-
     private final SortUtility sortUtility;
 
-    public UserController(UserService userService, ReviewService reviewService, UserUniquenessValidator uniquenessValidator, SortUtility sortUtility) {
-        this.userService = userService;
-        this.reviewService = reviewService;
-        this.uniquenessValidator = uniquenessValidator;
-        this.sortUtility = sortUtility;
-    }
+
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model,
@@ -50,7 +50,7 @@ public class UserController {
                                       @RequestParam(defaultValue = "20") Integer pageSize,
                                       @RequestParam(defaultValue = "id:asc") String sort) {
 
-        model.addAttribute("userPage", userService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
+        model.addAttribute(USER_PAGE_ATTR, userService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
         model.addAttribute("currentPageNumber", pageNumber);
         model.addAttribute("currentSort", sort);
@@ -69,9 +69,9 @@ public class UserController {
         }
         User currentUser = userService.getByUsername(authentication.getName());
 
-        model.addAttribute("user", currentUser);
+        model.addAttribute(USER_ATTR, currentUser);
 
-        model.addAttribute("reviewPage", reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
         model.addAttribute("currentReviewSort", reviewSort);
 
@@ -80,7 +80,7 @@ public class UserController {
 
     @GetMapping("/admin/new")
     public String newUser(@ModelAttribute User user, Model model) {
-        model.addAttribute("roles", Role.values());
+        model.addAttribute(ROLES_ATTR, Role.values());
         return "user/admin/new";
     }
 

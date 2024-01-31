@@ -8,6 +8,7 @@ import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -18,22 +19,17 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReviewServiceImpl.class);
+
 
     private final ReviewRepository reviewRepository;
 
     private final MotorcycleRepository motorcycleRepository;
 
     private final UserRepository userRepository;
-
-
-    public ReviewServiceImpl(ReviewRepository reviewRepository, MotorcycleRepository motorcycleRepository, UserRepository userRepository) {
-        this.reviewRepository = reviewRepository;
-        this.motorcycleRepository = motorcycleRepository;
-        this.userRepository = userRepository;
-    }
 
 
 
