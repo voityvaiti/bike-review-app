@@ -4,6 +4,7 @@ import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,15 +15,12 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 @Service
+@RequiredArgsConstructor
 public class MotorcycleServiceImpl implements MotorcycleService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MotorcycleServiceImpl.class);
 
     private final MotorcycleRepository motorcycleRepository;
-
-    public MotorcycleServiceImpl(MotorcycleRepository motorcycleRepository) {
-        this.motorcycleRepository = motorcycleRepository;
-    }
 
 
     @Override

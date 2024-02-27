@@ -5,6 +5,7 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorize
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,21 +17,21 @@ import static com.myproject.bikereviewapp.controller.UserController.USER_IS_NOT_
 
 @Controller
 @RequestMapping("/reviews")
+@RequiredArgsConstructor
 public class ReviewController {
 
     protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
     protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
     protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
 
+    protected static final String REVIEW_PAGE_ATTR = "reviewPage";
+
+
     private final ReviewService reviewService;
     private final UserService userService;
+
     private final MotorcycleController motorcycleController;
 
-    public ReviewController(ReviewService reviewService, UserService userService, MotorcycleController motorcycleController) {
-        this.reviewService = reviewService;
-        this.userService = userService;
-        this.motorcycleController = motorcycleController;
-    }
 
 
     @PostMapping

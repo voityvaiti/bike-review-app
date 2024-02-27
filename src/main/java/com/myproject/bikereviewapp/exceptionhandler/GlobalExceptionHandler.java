@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 
@@ -18,31 +17,27 @@ public class GlobalExceptionHandler {
     private static final String DEFAULT_MESSAGE = "Oops! Something went wrong.";
 
     @ExceptionHandler({EntityNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNotFoundExceptions(
+    public String handleEntityNotFoundException(
             RuntimeException exception, Model model
     ) {
         return handleException(exception, model, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({UserIsNotAuthorizedException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String handleUnauthorizedExceptions(
+    public String handleUserIsNotAuthorizedException(
             RuntimeException exception, Model model
     ) {
         return handleException(exception, model, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({UserDuplicationException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleBadRequestExceptions(
+    public String handleUserDuplicationException(
             RuntimeException exception, Model model
     ) {
         return handleException(exception, model, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({RuntimeException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleRuntimeException(Model model) {
 
         model.addAttribute("errorDetails",

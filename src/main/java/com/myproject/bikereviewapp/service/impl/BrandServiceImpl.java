@@ -4,6 +4,7 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,15 +14,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BrandServiceImpl.class);
 
     private final BrandRepository brandRepository;
 
-    public BrandServiceImpl(BrandRepository brandRepository) {
-        this.brandRepository = brandRepository;
-    }
 
     @Override
     public List<Brand> getAll() {
