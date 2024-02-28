@@ -4,13 +4,14 @@ import com.myproject.bikereviewapp.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Map;
 
 public interface ReviewService {
 
     Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable);
 
     Page<Review> getReviewsByUserId(Long id, Pageable pageable);
+
+    Review getIfExistsUserReviewOnMotorcycle(Long userId, Long motorcycleId);
 
     Review create(Review review);
 
