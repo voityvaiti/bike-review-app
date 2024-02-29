@@ -96,7 +96,7 @@ class ReviewControllerTest {
 
         MotorcycleController spyMotorcycleController = spy(motorcycleController);
         ReviewController spyReviewController = spy(new ReviewController(reviewService, userService, spyMotorcycleController));
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).show(any(), any(), any(), any(), any(), any());
+        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).show(any(), any(), any(), any(), any(), any(), any());
 
         when(mockBindingResult.hasErrors()).thenReturn(true);
 

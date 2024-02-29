@@ -47,7 +47,7 @@ public class ReviewController {
         }
 
         if (bindingResult.hasErrors()) {
-            return motorcycleController.show(review.getMotorcycle().getId(), review, reviewPageNumber, reviewPageSize, reviewSort, model);
+            return motorcycleController.show(review.getMotorcycle().getId(), review, reviewPageNumber, reviewPageSize, reviewSort, model, authentication);
         }
 
         review.setUser(userService.getByUsername(authentication.getName()));
