@@ -58,22 +58,10 @@
 
         </div>
 
-        <div th:each="review: ${reviews}" class="border border-black rounded p-3 mt-2 d-flex">
+        <div th:each="review: ${reviews}">
 
-            <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
+            <div th:replace="~{fragments/review :: motorcycleReviewTemplate(${review})}"></div>
 
-            <div>
-                <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}" class="text-black text-decoration-none">
-                    <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
-                </a>
-                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                       class="ms-2 text-muted"></small> <br>
-
-                <meter class="average-rating" min="0" max="5"
-                       th:value="${review.getRating()}"></meter>
-
-                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
-            </div>
         </div>
 
         <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, @{/users/profile}, 'reviewPageNumber', 'reviewSort')}"></div>
