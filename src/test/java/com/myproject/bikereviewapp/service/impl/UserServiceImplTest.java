@@ -3,7 +3,7 @@ package com.myproject.bikereviewapp.service.impl;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
-import com.myproject.bikereviewapp.exceptionhandler.exception.UserDuplicationException;
+import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import org.junit.jupiter.api.Test;
@@ -159,7 +159,7 @@ class UserServiceImplTest {
 
         when(userRepository.existsUserByUsername(username)).thenReturn(true);
 
-        assertThrows(UserDuplicationException.class, () -> userService.create(user));
+        assertThrows(UniquenessConstraintViolationException.class, () -> userService.create(user));
 
         verify(userRepository).existsUserByUsername(username);
         verify(userRepository, never()).save(any());

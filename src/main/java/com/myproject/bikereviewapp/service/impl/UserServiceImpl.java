@@ -2,7 +2,7 @@ package com.myproject.bikereviewapp.service.impl;
 
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
-import com.myproject.bikereviewapp.exceptionhandler.exception.UserDuplicationException;
+import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     public User create(User user) {
 
         if (userRepository.existsUserByUsername(user.getUsername())) {
-            throw new UserDuplicationException("User with username " + user.getUsername() + " already exists");
+            throw new UniquenessConstraintViolationException("User with username " + user.getUsername() + " already exists");
         }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
