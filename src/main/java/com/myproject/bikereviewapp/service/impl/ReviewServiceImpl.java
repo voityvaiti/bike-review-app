@@ -63,7 +63,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getIfExistsUserReviewOnMotorcycle(Long userId, Long motorcycleId) {
-        return reviewRepository.findFirstByUserIdAndMotorcycleId(userId, motorcycleId).orElse(null);
+        return reviewRepository.findByUserIdAndMotorcycleId(userId, motorcycleId).orElse(null);
     }
 
     @Override
