@@ -36,39 +36,47 @@
         </div>
 
 
-        <form th:method="POST" th:action="@{/reviews}" th:object="${newReview}"
-              class="border border-black rounded p-3 border-2">
+        <div class="border border-black rounded p-3 border-2">
 
             <h4>Your review:</h4>
 
-            <div class="d-flex justify-content-start">
-                <div class="d-flex flex-row-reverse">
+            <form th:if="${currentUserReview == null}" th:method="POST" th:action="@{/reviews}" th:object="${newReview}">
 
-                    <th:block th:each="i: ${#numbers.sequence(newReview.MAX_RATING, newReview.MIN_RATING)}">
-                        <input th:field="*{rating}" class="radio-input" type="radio" th:id="${'star' + i}"
-                               name="star-input"
-                               th:value="${i}"/>
-                        <label class="radio-label" th:for="${'star' + i}"></label>
-                    </th:block>
+                <div class="d-flex justify-content-start">
+                    <div class="d-flex flex-row-reverse">
 
+                        <th:block th:each="i: ${#numbers.sequence(newReview.MAX_RATING, newReview.MIN_RATING)}">
+                            <input th:field="*{rating}" class="radio-input" type="radio" th:id="${'star' + i}"
+                                   name="star-input"
+                                   th:value="${i}"/>
+                            <label class="radio-label" th:for="${'star' + i}"></label>
+                        </th:block>
+
+                    </div>
                 </div>
+                <div th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"
+                     class="form-text text-danger mb-1 mt-0"></div>
+
+                <label for="review-body">Describe your opinion: </label>
+                <textarea class="form-control" id="review-body" rows="5" cols="50" th:field="*{body}"></textarea>
+                <div th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="form-text text-danger"></div>
+
+                <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
+
+                <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
+
+                <input type="submit" class="btn btn-dark mt-2" value="Post review">
+
+            </form>
+
+            <div th:unless="${currentUserReview == null}">
+                <div th:replace="~{fragments/review :: userReviewTemplate(${currentUserReview})}"></div>
             </div>
-            <div th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"
-                 class="form-text text-danger mb-1 mt-0"></div>
 
-            <label for="review-body">Describe your opinion: </label>
-            <textarea class="form-control" id="review-body" rows="5" cols="50" th:field="*{body}"></textarea>
-            <div th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="form-text text-danger"></div>
+        </div>
 
-            <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
-
-            <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
-
-            <input type="submit" class="btn btn-dark mt-2" value="Post review">
-
-        </form>
-
-        <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }, url = @{/motorcycles/{id}(id=${motorcycle.id})}, pageNumberParamName = 'reviewPageNumber', sortParamName = 'reviewSort'" class="d-flex justify-content-between mt-4 mb-2">
+        <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }, url = @{/motorcycles/{id}(id=${motorcycle.id})}, pageNumberParamName = 'reviewPageNumber', sortParamName = 'reviewSort'"
+             class="d-flex justify-content-between mt-4 mb-2">
 
             <h3 class="mb-0">Reviews (<span th:text="${motorcycle.getReviewsAmount()}"></span>):</h3>
 
@@ -76,29 +84,10 @@
 
         </div>
 
-        <div th:each="review: ${reviewPage.content}" class="border border-black rounded p-3 mb-2 d-flex">
+        <div th:each="review: ${reviewPage.content}">
 
-            <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
+            <div th:replace="~{fragments/review :: userReviewTemplate(${review})}"></div>
 
-            <div class="w-100">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <strong th:text="${review.user.getPublicName()}"></strong>
-                        <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                               class="ms-2 text-muted"></small> <br>
-                    </div>
-
-                    <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:method="DELETE" th:action="@{/reviews/{id}(id=${review.getId()})}">
-                        <input type="hidden" name="motorcycleId" th:value="${motorcycle.getId()}">
-                        <button type="submit" class="btn-close"></button>
-                    </form>
-
-                </div>
-                <meter class="average-rating" min="0" max="5"
-                       th:value="${review.getRating()}"></meter>
-
-                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
-            </div>
         </div>
 
         <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, @{/motorcycles/{id}(id=${motorcycle.id})}, 'reviewPageNumber', 'reviewSort')}"></div>

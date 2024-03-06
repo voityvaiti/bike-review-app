@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Review</title>
+</head>
+<body>
+
+<div th:fragment="userReviewTemplate(review)" class="border border-black rounded p-3 mb-2 d-flex">
+
+    <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
+
+    <div class="w-100">
+        <div class="d-flex justify-content-between">
+            <div>
+                <strong th:text="${review.user.getPublicName()}"></strong>
+                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+                       class="ms-2 text-muted"></small> <br>
+            </div>
+
+            <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:method="DELETE" th:action="@{/reviews/{id}(id=${review.getId()})}">
+                <input type="hidden" name="motorcycleId" th:value="${review.motorcycle.getId()}">
+                <button type="submit" class="btn-close"></button>
+            </form>
+
+        </div>
+        <meter class="average-rating" min="0" max="5"
+               th:value="${review.getRating()}"></meter>
+
+        <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+    </div>
+</div>
+
+
+<div th:fragment="motorcycleReviewTemplate(review)" class="border border-black rounded p-3 mt-2 d-flex">
+
+        <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
+
+        <div>
+            <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}" class="text-black text-decoration-none">
+                <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
+            </a>
+            <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+                   class="ms-2 text-muted"></small> <br>
+
+            <meter class="average-rating" min="0" max="5"
+                   th:value="${review.getRating()}"></meter>
+
+            <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+        </div>
+</div>
+
+</body>
+</html>

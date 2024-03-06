@@ -7,6 +7,7 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
+import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,9 @@ class MotorcycleControllerTest {
 
     @MockBean
     ReviewService reviewService;
+
+    @MockBean
+    UserService userService;
 
     @MockBean
     SortUtility sortUtility;
