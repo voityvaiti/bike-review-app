@@ -2,15 +2,18 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
+import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
+import com.myproject.bikereviewapp.service.abstraction.UserService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +37,7 @@ public class MotorcycleController {
     private final MotorcycleService motorcycleService;
     private final BrandService brandService;
     private final ReviewService reviewService;
+    private final UserService userService;
 
     private final SortUtility sortUtility;
 
@@ -79,16 +83,26 @@ public class MotorcycleController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long id,
+    public String show(@PathVariable("id") Long motorcycleId,
                        @ModelAttribute("newReview") Review newReview,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
-                       Model model) {
+                       Model model, Authentication authentication) {
 
-        model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
+        model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(motorcycleId));
 
-        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(id, PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
+        Review currentUserReview = null;
+
+        if(authentication != null) {
+            User currentUser = userService.getByUsername(authentication.getName());
+
+            currentUserReview = reviewService.getIfExistsUserReviewOnMotorcycle(currentUser.getId(), motorcycleId);
+        }
+
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
+        model.addAttribute("currentUserReview", currentUserReview);
+
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
         model.addAttribute("currentReviewSort", reviewSort);
 

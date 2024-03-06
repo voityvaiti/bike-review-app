@@ -4,6 +4,7 @@ import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
+import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.repository.UserRepository;
@@ -32,7 +33,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
 
 
-
     @Override
     public Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable) {
 
@@ -40,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<Motorcycle> optionalMotorcycle = motorcycleRepository.findById(id);
 
-        if(optionalMotorcycle.isEmpty()) {
+        if (optionalMotorcycle.isEmpty()) {
             throw new EntityNotFoundException("Motorcycle with id" + id + "not found");
         }
 
@@ -57,12 +57,23 @@ public class ReviewServiceImpl implements ReviewService {
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("User with id" + id + "not found");
         }
-        
+
         return reviewRepository.findAllByUser(optionalUser.get(), pageable);
     }
 
     @Override
+    public Review getIfExistsUserReviewOnMotorcycle(Long userId, Long motorcycleId) {
+        return reviewRepository.findByUserIdAndMotorcycleId(userId, motorcycleId).orElse(null);
+    }
+
+    @Override
     public Review create(Review review) {
+
+        if (reviewRepository.existsByUserIdAndMotorcycleId(review.getUser().getId(), review.getMotorcycle().getId())) {
+
+            LOGGER.warn("User with ID: {} already has Review on Motorcycle with ID: {}", review.getUser().getId(), review.getMotorcycle().getId());
+            throw new UniquenessConstraintViolationException("You already wrote review on this motorcycle.");
+        }
 
         review.setPublicationDate(LocalDate.now());
 

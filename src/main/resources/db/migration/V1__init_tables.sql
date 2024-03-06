@@ -32,5 +32,6 @@ CREATE TABLE IF NOT EXISTS review
     rating SMALLINT NOT NULL,
     publication_date DATE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES usr(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (motorcycle_id) REFERENCES motorcycle(id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (motorcycle_id) REFERENCES motorcycle(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    UNIQUE (user_id, motorcycle_id)
 );

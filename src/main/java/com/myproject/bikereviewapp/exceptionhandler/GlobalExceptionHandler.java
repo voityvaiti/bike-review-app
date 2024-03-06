@@ -1,13 +1,13 @@
 package com.myproject.bikereviewapp.exceptionhandler;
 
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
-import com.myproject.bikereviewapp.exceptionhandler.exception.UserDuplicationException;
+import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 
@@ -16,47 +16,52 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     private static final String DEFAULT_MESSAGE = "Oops! Something went wrong.";
+    private static final String ERROR_DETAILS_ATTR = "errorDetails";
+    private static final String ERROR_PAGE = "error/error_page";
 
     @ExceptionHandler({EntityNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNotFoundExceptions(
-            RuntimeException exception, Model model
+    public String handleEntityNotFoundException(
+            RuntimeException exception, Model model, HttpServletResponse response
     ) {
-        return handleException(exception, model, HttpStatus.NOT_FOUND);
+        return handleException(exception, model, HttpStatus.NOT_FOUND, response);
     }
 
     @ExceptionHandler({UserIsNotAuthorizedException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String handleUnauthorizedExceptions(
-            RuntimeException exception, Model model
+    public String handleUserIsNotAuthorizedException(
+            RuntimeException exception, Model model, HttpServletResponse response
     ) {
-        return handleException(exception, model, HttpStatus.UNAUTHORIZED);
+        return handleException(exception, model, HttpStatus.UNAUTHORIZED, response);
     }
 
-    @ExceptionHandler({UserDuplicationException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleBadRequestExceptions(
-            RuntimeException exception, Model model
+    @ExceptionHandler({UniquenessConstraintViolationException.class})
+    public String handleUserDuplicationException(
+            RuntimeException exception, Model model, HttpServletResponse response
     ) {
-        return handleException(exception, model, HttpStatus.BAD_REQUEST);
+        return handleException(exception, model, HttpStatus.BAD_REQUEST, response);
     }
 
     @ExceptionHandler({RuntimeException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleRuntimeException(Model model) {
+    public String handleRuntimeException(RuntimeException e, Model model, HttpServletResponse response) {
 
-        model.addAttribute("errorDetails",
-                new ErrorDetailsDto(HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now(), DEFAULT_MESSAGE));
-        return "error/error_page";
+        e.printStackTrace();
+
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        response.setStatus(httpStatus.value());
+
+        model.addAttribute(ERROR_DETAILS_ATTR,
+                new ErrorDetailsDto(httpStatus, LocalDateTime.now(), DEFAULT_MESSAGE));
+        return ERROR_PAGE;
     }
 
 
     private String handleException(
-            RuntimeException exception, Model model, HttpStatus httpStatus
+            RuntimeException exception, Model model, HttpStatus httpStatus, HttpServletResponse response
     ) {
-        model.addAttribute("errorDetails",
+        response.setStatus(httpStatus.value());
+
+        model.addAttribute(ERROR_DETAILS_ATTR,
                 new ErrorDetailsDto(httpStatus, LocalDateTime.now(), exception.getMessage()));
-        return "error/error_page";
+        return ERROR_PAGE;
     }
 
 }

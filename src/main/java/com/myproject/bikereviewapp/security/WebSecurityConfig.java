@@ -1,5 +1,6 @@
 package com.myproject.bikereviewapp.security;
 
+import com.myproject.bikereviewapp.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +18,8 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private static final String ADMIN = "ADMIN";
-    private static final String STUFF = "STUFF";
+    private static final String ADMIN = Role.ADMIN.name();
+    private static final String STUFF = Role.STUFF.name();
 
 
 
