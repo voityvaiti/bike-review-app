@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface ReviewService {
 
+    Review getById(Long id);
+
     Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable);
 
     Page<Review> getReviewsByUserId(Long id, Pageable pageable);
