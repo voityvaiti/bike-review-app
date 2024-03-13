@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -47,6 +48,12 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Formula("(SELECT COUNT(r.id) FROM Reaction r WHERE r.review_id = id AND r.is_like = 'TRUE')")
+    private Integer likes;
+
+    @Formula("(SELECT COUNT(r.id) FROM Reaction r WHERE r.review_id = id AND r.is_like = 'FALSE')")
+    private Integer dislikes;
 
     @Override
     public boolean equals(Object o) {
