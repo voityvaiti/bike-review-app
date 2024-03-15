@@ -20,10 +20,26 @@
                        class="ms-2 text-muted"></small> <br>
             </div>
 
-            <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:method="DELETE" th:action="@{/reviews/{id}(id=${review.getId()})}">
-                <input type="hidden" name="motorcycleId" th:value="${review.motorcycle.getId()}">
-                <button type="submit" class="btn-close"></button>
-            </form>
+            <div class="d-flex">
+                <form th:method="PATCH" th:action="@{/reviews/reaction}">
+                    <input type="hidden" name="reviewId" th:value="${review.getId()}">
+
+                    <button type="submit" name="isLike" th:value="${true}" class="btn p-0">
+                        <img src="/img/like.png" class="reaction-icon" alt="Like" draggable="false">
+                    </button>
+                    <span th:text="${review.getLikes()}" class="text-success"></span>
+                    <button type="submit" name="isLike" th:value="${false}" class="btn p-0 ms-2">
+                        <img src="/img/dislike.png" class="reaction-icon" alt="Dislike" draggable="false">
+                    </button>
+                    <span th:text="${review.getDislikes()}" class="text-danger"></span>
+                </form>
+
+                <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:method="DELETE"
+                      th:action="@{/reviews/{id}(id=${review.getId()})}" class="ms-2">
+                    <input type="hidden" name="motorcycleId" th:value="${review.motorcycle.getId()}">
+                    <button type="submit" class="btn-close"></button>
+                </form>
+            </div>
 
         </div>
         <meter class="average-rating" min="0" max="5"
@@ -36,20 +52,20 @@
 
 <div th:fragment="motorcycleReviewTemplate(review)" class="border border-black rounded p-3 mt-2 d-flex">
 
-        <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
+    <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
 
-        <div>
-            <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}" class="text-black text-decoration-none">
-                <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
-            </a>
-            <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                   class="ms-2 text-muted"></small> <br>
+    <div>
+        <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}" class="text-black text-decoration-none">
+            <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
+        </a>
+        <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+               class="ms-2 text-muted"></small> <br>
 
-            <meter class="average-rating" min="0" max="5"
-                   th:value="${review.getRating()}"></meter>
+        <meter class="average-rating" min="0" max="5"
+               th:value="${review.getRating()}"></meter>
 
-            <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
-        </div>
+        <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+    </div>
 </div>
 
 </body>
