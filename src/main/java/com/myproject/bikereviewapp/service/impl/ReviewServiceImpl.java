@@ -1,6 +1,9 @@
 package com.myproject.bikereviewapp.service.impl;
 
-import com.myproject.bikereviewapp.entity.*;
+import com.myproject.bikereviewapp.entity.Motorcycle;
+import com.myproject.bikereviewapp.entity.Reaction;
+import com.myproject.bikereviewapp.entity.Review;
+import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
