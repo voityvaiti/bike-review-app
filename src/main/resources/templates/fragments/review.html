@@ -8,7 +8,8 @@
 </head>
 <body>
 
-<div th:fragment="userReviewTemplate(review, currentReviewPageNumber, currentReviewSort, reviewPageNumberParamName, reviewSortParamName)" class="border border-black rounded p-3 mb-2 d-flex">
+<div th:fragment="userReviewTemplate(review, currentReviewPageNumber, currentReviewSort, reviewPageNumberParamName, reviewSortParamName)"
+     class="border border-black rounded p-3 mb-2 d-flex">
 
     <img th:src="@{/img/user.png}" alt="User" class="user-icon me-3" draggable="false">
 
@@ -58,12 +59,26 @@
 
     <img th:src="@{/img/motorcycle.png}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
 
-    <div>
-        <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}" class="text-black text-decoration-none">
-            <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
-        </a>
-        <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-               class="ms-2 text-muted"></small> <br>
+    <div class="w-100">
+        <div class="d-flex justify-content-between">
+            <div>
+                <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}"
+                   class="text-black text-decoration-none">
+                    <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
+                </a>
+                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
+                       class="ms-2 text-muted"></small> <br>
+            </div>
+
+            <div>
+                <img src="/img/like.png" class="reaction-icon" alt="Like" draggable="false">
+                <span th:text="${review.getLikes()}" class="text-success"></span>
+
+                <img src="/img/dislike.png" class="reaction-icon ms-2" alt="Dislike" draggable="false">
+                <span th:text="${review.getDislikes()}" class="text-danger"></span>
+            </div>
+        </div>
+
 
         <meter class="average-rating" min="0" max="5"
                th:value="${review.getRating()}"></meter>
