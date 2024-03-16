@@ -1,6 +1,8 @@
 package com.myproject.bikereviewapp.controller;
 
+import com.myproject.bikereviewapp.entity.Reaction;
 import com.myproject.bikereviewapp.entity.Review;
+import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
@@ -55,6 +57,25 @@ public class ReviewController {
 
         return "redirect:/motorcycles/" + review.getMotorcycle().getId();
 
+    }
+
+    @PatchMapping("/reaction")
+    public String addReaction(@RequestParam Long reviewId, @RequestParam boolean isLike,
+                              @ModelAttribute("newReview") Review review, Authentication authentication, Model model,
+                              @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
+                              @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
+                              @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort) {
+
+        if (authentication == null) {
+            throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
+        }
+
+        Review reactionReview = reviewService.getById(reviewId);
+        User reactionUser = userService.getByUsername(authentication.getName());
+
+        reviewService.saveReaction(new Reaction(null, isLike, reactionReview, reactionUser));
+
+        return motorcycleController.show(reactionReview.getMotorcycle().getId(), review, reviewPageNumber, reviewPageSize, reviewSort, model, authentication);
     }
 
     @DeleteMapping("/{id}")

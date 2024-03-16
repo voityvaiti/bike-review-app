@@ -1,11 +1,13 @@
 package com.myproject.bikereviewapp.service.impl;
 
 import com.myproject.bikereviewapp.entity.Motorcycle;
+import com.myproject.bikereviewapp.entity.Reaction;
 import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
+import com.myproject.bikereviewapp.repository.ReactionRepository;
 import com.myproject.bikereviewapp.repository.ReviewRepository;
 import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
@@ -27,11 +29,22 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     private final ReviewRepository reviewRepository;
+    private final ReactionRepository reactionRepository;
 
     private final MotorcycleRepository motorcycleRepository;
 
     private final UserRepository userRepository;
 
+
+    @Override
+    public Review getById(Long id) {
+
+        LOGGER.debug("Looking for Review with ID: {}", id);
+
+        return reviewRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Review with id " + id + " not found")
+        );
+    }
 
     @Override
     public Page<Review> getReviewsByMotorcycleId(Long id, Pageable pageable) {
@@ -80,6 +93,21 @@ public class ReviewServiceImpl implements ReviewService {
         LOGGER.debug("Saving new Review: {}", review);
 
         return reviewRepository.save(review);
+    }
+
+    @Override
+    public void saveReaction(Reaction newReaction) {
+
+        Optional<Reaction> optionalReaction = reactionRepository.findByReviewIdAndUserId(newReaction.getReview().getId(), newReaction.getUser().getId());
+
+        if(optionalReaction.isPresent()) {
+            Reaction reaction = optionalReaction.get();
+            reaction.setLike(newReaction.isLike());
+
+            reactionRepository.save(reaction);
+        } else {
+            reactionRepository.save(newReaction);
+        }
     }
 
     @Override

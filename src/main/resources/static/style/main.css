@@ -22,6 +22,11 @@ body {
     max-height: 20px;
 }
 
+.reaction-icon {
+    max-width: 23px;
+    max-height: 23px;
+}
+
 .page-item.active .page-link {
     color: #fff !important;
     background: #000 !important;

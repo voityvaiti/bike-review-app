@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Motorcycle</title>
@@ -12,7 +11,7 @@
     <link th:href="@{/style/stars-rating-read.css}" rel="stylesheet"/>
 </head>
 
-<body>
+<body th:with="reviewPageNumberParamName = 'reviewPageNumber', reviewSortParamName = 'reviewSort'">
 
 <div th:replace="~{fragments/navbar/header :: content}"></div>
 
@@ -64,33 +63,34 @@
                 <input type="hidden" name="motorcycle" th:value="${motorcycle.getId()}">
 
                 <input type="hidden" name="reviewPageNumber" th:value="${currentReviewPageNumber}">
+                <input type="hidden" name="reviewSort" th:value="${currentReviewSort}">
 
                 <input type="submit" class="btn btn-dark mt-2" value="Post review">
 
             </form>
 
             <div th:unless="${currentUserReview == null}">
-                <div th:replace="~{fragments/review :: userReviewTemplate(${currentUserReview})}"></div>
+                <div th:replace="~{fragments/review :: userReviewTemplate(${currentUserReview}, ${currentReviewPageNumber}, ${currentReviewSort}, ${reviewPageNumberParamName}, ${reviewSortParamName})}"></div>
             </div>
 
         </div>
 
-        <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }, url = @{/motorcycles/{id}(id=${motorcycle.id})}, pageNumberParamName = 'reviewPageNumber', sortParamName = 'reviewSort'"
+        <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }, url = @{/motorcycles/{id}(id=${motorcycle.id})}"
              class="d-flex justify-content-between mt-4 mb-2">
 
             <h3 class="mb-0">Reviews (<span th:text="${motorcycle.getReviewsAmount()}"></span>):</h3>
 
-            <div th:replace="~{fragments/navbar/sort :: sortSelector(${linkTextArr}, ${sortArr}, ${currentReviewPageNumber}, ${currentReviewSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></div>
+            <div th:replace="~{fragments/navbar/sort :: sortSelector(${linkTextArr}, ${sortArr}, ${currentReviewPageNumber}, ${currentReviewSort}, ${url}, ${reviewPageNumberParamName}, ${reviewSortParamName})}"></div>
 
         </div>
 
         <div th:each="review: ${reviewPage.content}">
 
-            <div th:replace="~{fragments/review :: userReviewTemplate(${review})}"></div>
+            <div th:replace="~{fragments/review :: userReviewTemplate(${review}, ${currentReviewPageNumber}, ${currentReviewSort}, ${reviewPageNumberParamName}, ${reviewSortParamName})}"></div>
 
         </div>
 
-        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, @{/motorcycles/{id}(id=${motorcycle.id})}, 'reviewPageNumber', 'reviewSort')}"></div>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${reviewPage}, ${currentReviewPageNumber}, ${currentReviewSort}, @{/motorcycles/{id}(id=${motorcycle.id})}, ${reviewPageNumberParamName}, ${reviewSortParamName})}"></div>
 
 
     </div>

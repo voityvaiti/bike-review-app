@@ -84,9 +84,9 @@ class MotorcycleControllerTest {
         ));
 
         reviewPage = new PageImpl<>(Arrays.asList(
-                new Review(1L, "body1", LocalDate.of(2000, 1, 1), (short) 1, new Motorcycle(), new User()),
-                new Review(2L, "body2", LocalDate.of(2010, 2, 2), (short) 2, new Motorcycle(), new User()),
-                new Review(3L, "body3", LocalDate.of(2020, 3, 3), (short) 3, new Motorcycle(), new User())
+                new Review(1L, "body1", LocalDate.of(2000, 1, 1), (short) 1, new Motorcycle(), new User(), 43, 2),
+                new Review(2L, "body2", LocalDate.of(2010, 2, 2), (short) 2, new Motorcycle(), new User(), 33, 6),
+                new Review(3L, "body3", LocalDate.of(2020, 3, 3), (short) 3, new Motorcycle(), new User(), 46, 12)
         ));
 
         id = 12L;

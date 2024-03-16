@@ -81,8 +81,8 @@ class UserControllerTest {
 
         Motorcycle sampleMotorcycle = new Motorcycle(1L, "someModel", new Brand(1L, "someName", "someCountry"));
         reviewPage = new PageImpl<>(List.of(
-                new Review(1L, "bodyContent", LocalDate.of(2000, 1, 10), (short) 3, sampleMotorcycle, user),
-                new Review(2L, "bodyContent", LocalDate.of(2000, 2, 20), (short) 4, sampleMotorcycle, user)
+                new Review(1L, "bodyContent", LocalDate.of(2000, 1, 10), (short) 3, sampleMotorcycle, user, 10, 5),
+                new Review(2L, "bodyContent", LocalDate.of(2000, 2, 20), (short) 4, sampleMotorcycle, user, 25, 1)
         ));
 
         user = new User(8L, USERNAME, "somePassword", true, Role.CLIENT, "somePublicName");
