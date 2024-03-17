@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,16 +24,12 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc(addFilters = false)
 class ReviewControllerTest {
 
-    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     ReviewService reviewService;
 
     @MockBean
     UserService userService;
-
-    @MockBean
-    MotorcycleController motorcycleController;
 
     @Autowired
     ReviewController reviewController;
@@ -70,7 +67,7 @@ class ReviewControllerTest {
     @Test
     void create_shouldCreateReview_ifUserIsAuthenticated() {
 
-        reviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
+        reviewController.create(review, mockBindingResult, mockAuthentication, mock(RedirectAttributes.class), null, null);
 
         verify(reviewService).create(review);
     }
@@ -78,7 +75,7 @@ class ReviewControllerTest {
     @Test
     void create_shouldNeverCreateReview_ifUserIsNotAuthenticated() {
 
-        assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, mockBindingResult, null, null, null, null, null));
+        assertThrows(UserIsNotAuthorizedException.class, () -> reviewController.create(review, mockBindingResult, null, mock(RedirectAttributes.class), null, null));
 
         verify(reviewService, never()).create(any());
     }
@@ -86,7 +83,7 @@ class ReviewControllerTest {
     @Test
     void create_shouldCreateReview_ifReviewIsValid() {
 
-        reviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
+        reviewController.create(review, mockBindingResult, mockAuthentication, mock(RedirectAttributes.class), null, null);
 
         verify(reviewService).create(review);
     }
@@ -94,13 +91,9 @@ class ReviewControllerTest {
     @Test
     void create_shouldNeverCreateReview_ifReviewIsInvalid() {
 
-        MotorcycleController spyMotorcycleController = spy(motorcycleController);
-        ReviewController spyReviewController = spy(new ReviewController(reviewService, userService, spyMotorcycleController));
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).show(any(), any(), any(), any(), any(), any(), any());
-
         when(mockBindingResult.hasErrors()).thenReturn(true);
 
-        spyReviewController.create(review, mockBindingResult, mockAuthentication, null, null, null, null);
+        reviewController.create(review, mockBindingResult, mockAuthentication, mock(RedirectAttributes.class), null, null);
 
         verify(reviewService, never()).create(any(Review.class));
     }

@@ -10,9 +10,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.myproject.bikereviewapp.controller.UserController.USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE;
 
@@ -23,25 +23,26 @@ import static com.myproject.bikereviewapp.controller.UserController.USER_IS_NOT_
 public class ReviewController {
 
     protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
-    protected static final String DEFAULT_REVIEWS_PAGE_SIZE = "10";
     protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
+    public static final Integer REVIEWS_PAGE_SIZE = 10;
 
     protected static final String REVIEW_PAGE_ATTR = "reviewPage";
+    protected static final String NEW_REVIEW_ATTR = "newReview";
+
+    private static final String SHOW_MOTORCYCLE_REDIRECT = "redirect:/motorcycles/{id}";
 
 
     private final ReviewService reviewService;
     private final UserService userService;
 
-    private final MotorcycleController motorcycleController;
-
 
 
     @PostMapping
-    public String create(@ModelAttribute("newReview") @Valid Review review,
-                         BindingResult bindingResult, Authentication authentication, Model model,
-                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
-                         @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort) {
+    public String create(@ModelAttribute(NEW_REVIEW_ATTR) @Valid Review review,
+                         BindingResult bindingResult, Authentication authentication,
+                         RedirectAttributes redirectAttributes,
+                         @RequestParam(required = false) Integer reviewPageNumber,
+                         @RequestParam(required = false) String reviewSort) {
 
 
         if (authentication == null) {
@@ -49,22 +50,28 @@ public class ReviewController {
         }
 
         if (bindingResult.hasErrors()) {
-            return motorcycleController.show(review.getMotorcycle().getId(), review, reviewPageNumber, reviewPageSize, reviewSort, model, authentication);
+
+            redirectAttributes.addFlashAttribute(NEW_REVIEW_ATTR, review);
+
+            redirectAttributes.addAttribute("id", review.getMotorcycle().getId());
+            redirectAttributes.addAttribute("reviewPageNumber", reviewPageNumber);
+            redirectAttributes.addAttribute("reviewSort", reviewSort);
+            return SHOW_MOTORCYCLE_REDIRECT;
         }
 
         review.setUser(userService.getByUsername(authentication.getName()));
         reviewService.create(review);
 
-        return "redirect:/motorcycles/" + review.getMotorcycle().getId();
+        redirectAttributes.addAttribute("id", review.getMotorcycle().getId());
+        return SHOW_MOTORCYCLE_REDIRECT;
 
     }
 
     @PatchMapping("/reaction")
     public String addReaction(@RequestParam Long reviewId, @RequestParam boolean isLike,
-                              @ModelAttribute("newReview") Review review, Authentication authentication, Model model,
-                              @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                              @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
-                              @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort) {
+                              Authentication authentication, RedirectAttributes redirectAttributes,
+                              @RequestParam(required = false) Integer reviewPageNumber,
+                              @RequestParam(required = false) String reviewSort) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
@@ -75,13 +82,18 @@ public class ReviewController {
 
         reviewService.saveReaction(new Reaction(null, isLike, reactionReview, reactionUser));
 
-        return motorcycleController.show(reactionReview.getMotorcycle().getId(), review, reviewPageNumber, reviewPageSize, reviewSort, model, authentication);
+        redirectAttributes.addAttribute("id", reactionReview.getMotorcycle().getId());
+        redirectAttributes.addAttribute("reviewPageNumber", reviewPageNumber);
+        redirectAttributes.addAttribute("reviewSort", reviewSort);
+        return SHOW_MOTORCYCLE_REDIRECT;
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, @RequestParam Long motorcycleId) {
+    public String delete(@PathVariable Long id, @RequestParam Long motorcycleId, RedirectAttributes redirectAttributes) {
 
         reviewService.delete(id);
-        return "redirect:/motorcycles/" + motorcycleId;
+
+        redirectAttributes.addAttribute("id", motorcycleId);
+        return SHOW_MOTORCYCLE_REDIRECT;
     }
 }
