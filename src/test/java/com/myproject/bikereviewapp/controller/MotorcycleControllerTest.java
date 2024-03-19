@@ -27,6 +27,7 @@ import org.springframework.validation.BindingResult;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import static com.myproject.bikereviewapp.controller.MotorcycleController.MOTORCYCLE_MAIN_PAGE_SIZE;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -132,12 +133,11 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles")
                         .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
                         .param("sort", sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
-        verify(motorcycleService).getAll(PageRequest.of(pageNumber, pageSize, sort));
+        verify(motorcycleService).getAll(PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sort));
     }
 
     @Test
@@ -145,7 +145,6 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles")
                         .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
                         .param("sort", sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentPageNumber", pageNumber))

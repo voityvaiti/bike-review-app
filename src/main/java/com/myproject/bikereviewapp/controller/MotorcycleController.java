@@ -28,6 +28,7 @@ public class MotorcycleController {
 
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/motorcycles/admin";
 
+    public static final Integer MOTORCYCLE_MAIN_PAGE_SIZE = 16;
 
     private static final String MOTORCYCLE_ATTR = "motorcycle";
     private static final String MOTORCYCLE_PAGE_ATTR = "motorcyclePage";
@@ -46,12 +47,11 @@ public class MotorcycleController {
     @GetMapping
     public String showAll(Model model,
                           @RequestParam(defaultValue = "0") Integer pageNumber,
-                          @RequestParam(defaultValue = "16") Integer pageSize,
                           @RequestParam(defaultValue = "reviewsAmount:desc") String sort,
                           @RequestParam(required = false, name = "q") String query) {
 
         Page<Motorcycle> motorcyclePage;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort));
+        Pageable pageable = PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sortUtility.parseSort(sort));
 
         if (query != null && !query.isBlank()) {
             motorcyclePage = motorcycleService.getAllByQuery(query, pageable);
@@ -84,9 +84,8 @@ public class MotorcycleController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long motorcycleId,
-                       @ModelAttribute("newReview") Review newReview,
+                       @ModelAttribute(NEW_REVIEW_ATTR) Review newReview,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
                        Model model, Authentication authentication) {
 
@@ -100,7 +99,7 @@ public class MotorcycleController {
             currentUserReview = reviewService.getIfExistsUserReviewOnMotorcycle(currentUser.getId(), motorcycleId);
         }
 
-        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, REVIEWS_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentUserReview", currentUserReview);
 
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
