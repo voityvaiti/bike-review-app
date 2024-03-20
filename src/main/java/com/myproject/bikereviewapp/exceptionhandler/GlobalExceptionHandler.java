@@ -19,11 +19,11 @@ public class GlobalExceptionHandler {
     private static final String ERROR_DETAILS_ATTR = "errorDetails";
     private static final String ERROR_PAGE = "error/error_page";
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    public String handleEntityNotFoundException(
+    @ExceptionHandler({EntityNotFoundException.class, UniquenessConstraintViolationException.class})
+    public String handleBadRequestExceptions(
             RuntimeException exception, Model model, HttpServletResponse response
     ) {
-        return handleException(exception, model, HttpStatus.NOT_FOUND, response);
+        return handleException(exception, model, HttpStatus.BAD_REQUEST, response);
     }
 
     @ExceptionHandler({UserIsNotAuthorizedException.class})
@@ -31,13 +31,6 @@ public class GlobalExceptionHandler {
             RuntimeException exception, Model model, HttpServletResponse response
     ) {
         return handleException(exception, model, HttpStatus.UNAUTHORIZED, response);
-    }
-
-    @ExceptionHandler({UniquenessConstraintViolationException.class})
-    public String handleUserDuplicationException(
-            RuntimeException exception, Model model, HttpServletResponse response
-    ) {
-        return handleException(exception, model, HttpStatus.BAD_REQUEST, response);
     }
 
     @ExceptionHandler({RuntimeException.class})
