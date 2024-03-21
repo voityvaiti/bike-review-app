@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class RedirectController {
 
+
+    public static final String BINDING_RESULT_ATTR = "org.springframework.validation.BindingResult.";
+
     @GetMapping("/")
     public String redirectToMainPage() {
         return "redirect:/motorcycles";
