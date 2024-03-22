@@ -84,12 +84,12 @@ public class MotorcycleController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long motorcycleId,
-                       @ModelAttribute(NEW_REVIEW_ATTR) Review newReview,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
                        @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
                        Model model, Authentication authentication) {
 
         model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(motorcycleId));
+
 
         Review currentUserReview = null;
 
@@ -99,6 +99,9 @@ public class MotorcycleController {
             currentUserReview = reviewService.getIfExistsUserReviewOnMotorcycle(currentUser.getId(), motorcycleId);
         }
 
+        if(!model.containsAttribute(NEW_REVIEW_ATTR)) {
+            model.addAttribute(NEW_REVIEW_ATTR, new Review());
+        }
         model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, REVIEWS_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentUserReview", currentUserReview);
 

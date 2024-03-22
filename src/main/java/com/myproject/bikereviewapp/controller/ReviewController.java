@@ -3,17 +3,20 @@ package com.myproject.bikereviewapp.controller;
 import com.myproject.bikereviewapp.entity.Reaction;
 import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.User;
+import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
 import static com.myproject.bikereviewapp.controller.UserController.USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE;
 
 
@@ -27,7 +30,7 @@ public class ReviewController {
     public static final Integer REVIEWS_PAGE_SIZE = 10;
 
     protected static final String REVIEW_PAGE_ATTR = "reviewPage";
-    protected static final String NEW_REVIEW_ATTR = "newReview";
+    public static final String NEW_REVIEW_ATTR = "newReview";
 
     private static final String SHOW_MOTORCYCLE_REDIRECT = "redirect:/motorcycles/{id}";
 
@@ -39,11 +42,13 @@ public class ReviewController {
 
     @PostMapping
     public String create(@ModelAttribute(NEW_REVIEW_ATTR) @Valid Review review,
-                         BindingResult bindingResult, Authentication authentication,
+                         BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
                          @RequestParam(required = false) Integer reviewPageNumber,
                          @RequestParam(required = false) String reviewSort) {
 
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
@@ -51,7 +56,12 @@ public class ReviewController {
 
         if (bindingResult.hasErrors()) {
 
+            if(review.getMotorcycle() == null) {
+                throw new EntityNotFoundException("Undefined motorcycle.");
+            }
+
             redirectAttributes.addFlashAttribute(NEW_REVIEW_ATTR, review);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + NEW_REVIEW_ATTR, bindingResult);
 
             redirectAttributes.addAttribute("id", review.getMotorcycle().getId());
             redirectAttributes.addAttribute("reviewPageNumber", reviewPageNumber);
@@ -69,9 +79,11 @@ public class ReviewController {
 
     @PatchMapping("/reaction")
     public String addReaction(@RequestParam Long reviewId, @RequestParam boolean isLike,
-                              Authentication authentication, RedirectAttributes redirectAttributes,
+                              RedirectAttributes redirectAttributes,
                               @RequestParam(required = false) Integer reviewPageNumber,
                               @RequestParam(required = false) String reviewSort) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
