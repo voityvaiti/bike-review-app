@@ -24,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.myproject.bikereviewapp.controller.ReviewController.REVIEWS_PAGE_SIZE;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -211,13 +212,12 @@ class UserControllerTest {
 
         mockMvc.perform(get("/users/profile")
                         .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewPageSize", String.valueOf(pageSize))
                         .param("reviewSort", sortStr)
                         .principal(mockAuthentication))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
-        verify(reviewService).getReviewsByUserId(user.getId(), PageRequest.of(pageNumber, pageSize, sort));
+        verify(reviewService).getReviewsByUserId(user.getId(), PageRequest.of(pageNumber, REVIEWS_PAGE_SIZE, sort));
     }
 
     @Test
@@ -225,7 +225,6 @@ class UserControllerTest {
 
         mockMvc.perform(get("/users/profile")
                         .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewPageSize", String.valueOf(pageSize))
                         .param("reviewSort", sortStr)
                         .principal(mockAuthentication))
                 .andExpect(status().isOk())

@@ -61,7 +61,6 @@ public class UserController {
     @GetMapping("/profile")
     public String showCurrentUserProfile(Authentication authentication, Model model,
                                          @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
                                          @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort) {
 
         if (authentication == null) {
@@ -71,7 +70,7 @@ public class UserController {
 
         model.addAttribute(USER_ATTR, currentUser);
 
-        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, REVIEWS_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
         model.addAttribute("currentReviewSort", reviewSort);
 
