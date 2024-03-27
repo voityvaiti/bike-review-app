@@ -18,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
 import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
@@ -113,17 +115,23 @@ public class MotorcycleController {
     }
 
     @GetMapping("/admin/new")
-    public String newMotorcycle(@ModelAttribute Motorcycle motorcycle, Model model) {
+    public String newMotorcycle(Model model) {
 
+        if (!model.containsAttribute(MOTORCYCLE_ATTR)) {
+            model.addAttribute(MOTORCYCLE_ATTR, new Motorcycle());
+        }
         model.addAttribute(BRANDS_ATTR, brandService.getAll());
+
         return "motorcycle/admin/new";
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute @Valid Motorcycle motorcycle, BindingResult bindingResult, Model model) {
+    public String create(@ModelAttribute @Valid Motorcycle motorcycle, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
-            return newMotorcycle(motorcycle, model);
+            redirectAttributes.addFlashAttribute(MOTORCYCLE_ATTR, motorcycle);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + MOTORCYCLE_ATTR, bindingResult);
+            return "redirect:/motorcycles/admin/new";
         }
         motorcycleService.create(motorcycle);
 
@@ -142,10 +150,14 @@ public class MotorcycleController {
     }
 
     @PutMapping("/admin/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute @Valid Motorcycle motorcycle, BindingResult bindingResult, Model model) {
+    public String update(@PathVariable Long id, @ModelAttribute @Valid Motorcycle motorcycle, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            return edit(id, model);
+            redirectAttributes.addAttribute("id", id);
+            redirectAttributes.addFlashAttribute(MOTORCYCLE_ATTR, motorcycle);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + MOTORCYCLE_ATTR, bindingResult);
+
+            return "redirect:/motorcycles/admin/edit/{id}";
         }
         motorcycleService.update(id, motorcycle);
 
