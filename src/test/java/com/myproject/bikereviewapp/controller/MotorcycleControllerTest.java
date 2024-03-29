@@ -30,7 +30,8 @@ import java.util.Arrays;
 import static com.myproject.bikereviewapp.controller.MotorcycleController.MOTORCYCLE_MAIN_PAGE_SIZE;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -38,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class MotorcycleControllerTest {
 
-    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     MotorcycleService motorcycleService;
@@ -284,45 +284,77 @@ class MotorcycleControllerTest {
 
 
     @Test
-    void create_shouldCreateMotorcycle_ifMotorcycleIsValid() {
+    void create_shouldCreateMotorcycle_ifMotorcycleIsValid() throws Exception {
 
-        motorcycleController.create(motorcycle, mockBindingResult, model);
+        mockMvc.perform(post("/motorcycles/admin")
+                .flashAttr("motorcycle", motorcycle));
 
         verify(motorcycleService).create(motorcycle);
     }
 
     @Test
-    void create_shouldNeverCreateMotorcycle_ifMotorcycleIsInvalid() {
+    void create_shouldRedirectToAppropriateUrl_ifMotorcycleIsValid() throws Exception {
 
-        MotorcycleController spyMotorcycleController = spy(motorcycleController);
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).newMotorcycle(any(Motorcycle.class), any(Model.class));
+        mockMvc.perform(post("/motorcycles/admin")
+                        .flashAttr("motorcycle", motorcycle))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin"));
 
-        when(mockBindingResult.hasErrors()).thenReturn(true);
+    }
 
-        spyMotorcycleController.create(motorcycle, mockBindingResult, model);
+    @Test
+    void create_shouldNeverCreateMotorcycle_ifMotorcycleIsInvalid() throws Exception {
+
+        mockMvc.perform(post("/motorcycles/admin")
+                .flashAttr("motorcycle", new Motorcycle()));
 
         verify(motorcycleService, never()).create(any(Motorcycle.class));
     }
 
     @Test
-    void update_shouldUpdateMotorcycle_ifMotorcycleIsValid() {
+    void create_shouldRedirectToAppropriateUrl_ifMotorcycleIsInvalid() throws Exception {
 
-        motorcycleController.update(id, motorcycle, mockBindingResult, model);
+        mockMvc.perform(post("/motorcycles/admin")
+                        .flashAttr("motorcycle", new Motorcycle()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin/new"));
+    }
+
+    @Test
+    void update_shouldUpdateMotorycle_ifMotorcycleIsValid() throws Exception {
+
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                .flashAttr("motorcycle", motorcycle));
 
         verify(motorcycleService).update(id, motorcycle);
     }
 
     @Test
-    void update_shouldNeverUpdateMotorcycle_ifMotorcycleIsInvalid() {
+    void update_shouldRedirectToAppropriateUrl_ifMotorcycleIsValid() throws Exception {
 
-        MotorcycleController spyMotorcycleController = spy(motorcycleController);
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).edit(anyLong(), any(Model.class));
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                        .flashAttr("motorcycle", motorcycle))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin"));
 
-        when(mockBindingResult.hasErrors()).thenReturn(true);
+    }
 
-        spyMotorcycleController.update(id, motorcycle, mockBindingResult, model);
+    @Test
+    void update_shouldNeverUpdateMotorcycle_ifMotorcycleIsInvalid() throws Exception {
+
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                .flashAttr("motorcycle", new Motorcycle()));
 
         verify(motorcycleService, never()).update(anyLong(), any(Motorcycle.class));
+    }
+
+    @Test
+    void update_shouldRedirectToAppropriateUrl_ifMotorcycleIsInvalid() throws Exception {
+
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                        .flashAttr("motorcycle", new Motorcycle()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin/edit/" + id));
     }
 
 }
