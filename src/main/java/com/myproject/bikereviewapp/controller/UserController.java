@@ -17,7 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
 import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
@@ -78,18 +80,25 @@ public class UserController {
     }
 
     @GetMapping("/admin/new")
-    public String newUser(@ModelAttribute User user, Model model) {
+    public String newUser(Model model) {
+
+        if (!model.containsAttribute(USER_ATTR)) {
+            model.addAttribute(USER_ATTR, new User());
+        }
         model.addAttribute(ROLES_ATTR, Role.values());
+
         return "user/admin/new";
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
+    public String create(@ModelAttribute @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         uniquenessValidator.validate(user, bindingResult);
 
         if(bindingResult.hasErrors()) {
-            return newUser(user, model);
+            redirectAttributes.addFlashAttribute(USER_ATTR, user);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + USER_ATTR, bindingResult);
+            return "redirect:/users/admin/new";
         }
         userService.create(user);
 
