@@ -73,7 +73,6 @@ class MotorcycleControllerTest {
     private static int pageSize;
     private static Sort sort;
     private static String sortStr;
-    private static BindingResult mockBindingResult;
 
     @BeforeAll
     static void init() {
@@ -97,7 +96,6 @@ class MotorcycleControllerTest {
         pageSize = 10;
         sort = Sort.by(Sort.Direction.ASC, "id");
         sortStr = "id:asc";
-        mockBindingResult = mock(BindingResult.class);
     }
 
     @BeforeEach
@@ -107,7 +105,6 @@ class MotorcycleControllerTest {
         when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
 
         when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(mockBindingResult.hasErrors()).thenReturn(false);
     }
 
     @Test

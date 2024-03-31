@@ -18,8 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,16 +25,14 @@ import java.util.List;
 import static com.myproject.bikereviewapp.controller.ReviewController.REVIEWS_PAGE_SIZE;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
-
-    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     UserService userService;
@@ -53,9 +49,6 @@ class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    UserController userController;
-
 
     private static Page<User> userPage;
     private static Page<Review> reviewPage;
@@ -67,8 +60,6 @@ class UserControllerTest {
     private static int pageSize;
     private static Sort sort;
     private static String sortStr;
-    private static BindingResult mockBindingResult;
-    private static Model mockModel;
     private static Authentication mockAuthentication;
 
 
@@ -95,8 +86,6 @@ class UserControllerTest {
         pageSize = 12;
         sort = Sort.by(Sort.Direction.ASC, "id");
         sortStr = "id:asc";
-        mockBindingResult = mock(BindingResult.class);
-        mockModel = mock(Model.class);
 
         mockAuthentication = mock(Authentication.class);
         when(mockAuthentication.getName()).thenReturn(USERNAME);
@@ -110,7 +99,6 @@ class UserControllerTest {
         when(reviewService.getReviewsByUserId(anyLong(), any(Pageable.class))).thenReturn(reviewPage);
 
         when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(mockBindingResult.hasErrors()).thenReturn(false);
     }
 
 
@@ -253,24 +241,31 @@ class UserControllerTest {
     }
 
     @Test
-    void create_shouldCreateUser_ifUserIsValid() {
+    void create_shouldRedirectToAppropriateUrl_ifUserIsValid() throws Exception {
 
-        userController.create(user, mockBindingResult, mockModel);
+        mockMvc.perform(post("/users/admin")
+                        .flashAttr("user", user))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/admin"));
 
-        verify(userService).create(user);
     }
 
     @Test
-    void create_shouldNeverCreateUser_ifUserIsInvalid() {
+    void create_shouldNeverCreateUser_ifUserIsInvalid() throws Exception {
 
-        UserController spyUserController = spy(userController);
-        doReturn(SAMPLE_VIEW).when(spyUserController).newUser(any(User.class), any(Model.class));
-
-        when(mockBindingResult.hasErrors()).thenReturn(true);
-
-        spyUserController.create(user, mockBindingResult, mockModel);
+        mockMvc.perform(post("/users/admin")
+                .flashAttr("user", new User()));
 
         verify(userService, never()).create(any(User.class));
+    }
+
+    @Test
+    void create_shouldRedirectToAppropriateUrl_ifUserIsInvalid() throws Exception {
+
+        mockMvc.perform(post("/users/admin")
+                        .flashAttr("user", new User()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/admin/new"));
     }
 
     @Test
