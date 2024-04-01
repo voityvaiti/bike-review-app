@@ -12,6 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.UserController.USER_ATTR;
 
 
 @Controller
@@ -43,18 +47,24 @@ public class AuthController {
 
 
     @GetMapping("/signup")
-    public String showSignUpForm(@ModelAttribute("user") User user) {
+    public String showSignUpForm(Model model) {
 
+        if (!model.containsAttribute(USER_ATTR)) {
+            model.addAttribute(USER_ATTR, new User());
+        }
         return "auth/signup";
     }
 
     @PostMapping("/signup")
-    public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         uniquenessValidator.validate(user, bindingResult);
 
         if(bindingResult.hasErrors()) {
-            return showSignUpForm(user);
+
+            redirectAttributes.addFlashAttribute(USER_ATTR, user);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + USER_ATTR, bindingResult);
+            return "redirect:/signup";
         }
         user.setRole(Role.CLIENT);
         user.setEnabled(true);
