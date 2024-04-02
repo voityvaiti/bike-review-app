@@ -32,7 +32,7 @@ public class UserController {
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/users/admin";
 
     private static final String USER_PAGE_ATTR = "userPage";
-    private static final String USER_ATTR = "user";
+    protected static final String USER_ATTR = "user";
     private static final String ROLES_ATTR = "roles";
 
     private static final String PASSWORD_EDIT_PAGE = "user/password-edit";
