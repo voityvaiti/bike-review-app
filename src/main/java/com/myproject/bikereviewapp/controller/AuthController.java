@@ -22,29 +22,33 @@ import static com.myproject.bikereviewapp.controller.UserController.USER_ATTR;
 @RequiredArgsConstructor
 public class AuthController {
 
+
+    private static final String LOGIN_PAGE = "auth/login";
+    private static final String LOGOUT_PAGE = "auth/logout";
+    private static final String SIGNUP_PAGE = "auth/signup";
+
+
     private final UserService userService;
 
     private final UserUniquenessValidator uniquenessValidator;
 
 
-
     @GetMapping("/login")
     public String showLogInForm() {
-        return "auth/login";
+        return LOGIN_PAGE;
     }
 
     @GetMapping("/login-error")
     public String showLogInErrorForm(Model model) {
 
         model.addAttribute("error", true);
-        return "auth/login";
+        return LOGIN_PAGE;
     }
 
     @GetMapping("/logout")
     public String showLogOutPage() {
-        return "auth/logout";
+        return LOGOUT_PAGE;
     }
-
 
     @GetMapping("/signup")
     public String showSignUpForm(Model model) {
@@ -52,15 +56,15 @@ public class AuthController {
         if (!model.containsAttribute(USER_ATTR)) {
             model.addAttribute(USER_ATTR, new User());
         }
-        return "auth/signup";
+        return SIGNUP_PAGE;
     }
 
     @PostMapping("/signup")
-    public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String signUp(@ModelAttribute(USER_ATTR) @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         uniquenessValidator.validate(user, bindingResult);
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
 
             redirectAttributes.addFlashAttribute(USER_ATTR, user);
             redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + USER_ATTR, bindingResult);
