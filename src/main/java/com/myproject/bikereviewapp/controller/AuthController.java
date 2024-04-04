@@ -23,9 +23,9 @@ import static com.myproject.bikereviewapp.controller.UserController.USER_ATTR;
 public class AuthController {
 
 
-    private static final String LOGIN_PAGE = "auth/login";
-    private static final String LOGOUT_PAGE = "auth/logout";
-    private static final String SIGNUP_PAGE = "auth/signup";
+    private static final String LOGIN_VIEW = "auth/login";
+    private static final String LOGOUT_VIEW = "auth/logout";
+    private static final String SIGNUP_VIEW = "auth/signup";
 
 
     private final UserService userService;
@@ -35,19 +35,19 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLogInForm() {
-        return LOGIN_PAGE;
+        return LOGIN_VIEW;
     }
 
     @GetMapping("/login-error")
     public String showLogInErrorForm(Model model) {
 
         model.addAttribute("error", true);
-        return LOGIN_PAGE;
+        return LOGIN_VIEW;
     }
 
     @GetMapping("/logout")
     public String showLogOutPage() {
-        return LOGOUT_PAGE;
+        return LOGOUT_VIEW;
     }
 
     @GetMapping("/signup")
@@ -56,7 +56,7 @@ public class AuthController {
         if (!model.containsAttribute(USER_ATTR)) {
             model.addAttribute(USER_ATTR, new User());
         }
-        return SIGNUP_PAGE;
+        return SIGNUP_VIEW;
     }
 
     @PostMapping("/signup")
