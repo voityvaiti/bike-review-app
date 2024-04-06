@@ -86,8 +86,8 @@ public class MotorcycleController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long motorcycleId,
-                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                       @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER, name = REVIEW_PAGE_NUMBER_ATTR) Integer reviewPageNumber,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT, name = REVIEW_SORT_ATTR) String reviewSort,
                        Model model, Authentication authentication) {
 
         model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(motorcycleId));

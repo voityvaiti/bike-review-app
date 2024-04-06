@@ -62,8 +62,8 @@ public class UserController {
 
     @GetMapping("/profile")
     public String showCurrentUserProfile(Authentication authentication, Model model,
-                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort) {
+                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER, name = REVIEW_PAGE_NUMBER_ATTR) Integer reviewPageNumber,
+                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT, name = REVIEW_SORT_ATTR) String reviewSort) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);

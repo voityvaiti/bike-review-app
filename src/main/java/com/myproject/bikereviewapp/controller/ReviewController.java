@@ -27,10 +27,12 @@ public class ReviewController {
 
     protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
     protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
-    public static final Integer REVIEWS_PAGE_SIZE = 10;
+    protected static final Integer REVIEWS_PAGE_SIZE = 10;
 
     protected static final String REVIEW_PAGE_ATTR = "reviewPage";
-    public static final String NEW_REVIEW_ATTR = "newReview";
+    protected static final String NEW_REVIEW_ATTR = "newReview";
+    protected static final String REVIEW_PAGE_NUMBER_ATTR = "reviewPageNumber";
+    protected static final String REVIEW_SORT_ATTR = "reviewSort";
 
     private static final String SHOW_MOTORCYCLE_REDIRECT = "redirect:/motorcycles/{id}";
 
@@ -44,8 +46,8 @@ public class ReviewController {
     public String create(@ModelAttribute(NEW_REVIEW_ATTR) @Valid Review review,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
-                         @RequestParam(required = false) Integer reviewPageNumber,
-                         @RequestParam(required = false) String reviewSort) {
+                         @RequestParam(required = false, name = REVIEW_PAGE_NUMBER_ATTR) Integer reviewPageNumber,
+                         @RequestParam(required = false, name = REVIEW_SORT_ATTR) String reviewSort) {
 
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -64,8 +66,8 @@ public class ReviewController {
             redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + NEW_REVIEW_ATTR, bindingResult);
 
             redirectAttributes.addAttribute("id", review.getMotorcycle().getId());
-            redirectAttributes.addAttribute("reviewPageNumber", reviewPageNumber);
-            redirectAttributes.addAttribute("reviewSort", reviewSort);
+            redirectAttributes.addAttribute(REVIEW_PAGE_NUMBER_ATTR, reviewPageNumber);
+            redirectAttributes.addAttribute(REVIEW_SORT_ATTR, reviewSort);
             return SHOW_MOTORCYCLE_REDIRECT;
         }
 
@@ -80,8 +82,8 @@ public class ReviewController {
     @PatchMapping("/reaction")
     public String addReaction(@RequestParam Long reviewId, @RequestParam boolean isLike,
                               RedirectAttributes redirectAttributes,
-                              @RequestParam(required = false) Integer reviewPageNumber,
-                              @RequestParam(required = false) String reviewSort) {
+                              @RequestParam(required = false, name = REVIEW_PAGE_NUMBER_ATTR) Integer reviewPageNumber,
+                              @RequestParam(required = false, name = REVIEW_SORT_ATTR) String reviewSort) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -95,8 +97,8 @@ public class ReviewController {
         reviewService.saveReaction(new Reaction(null, isLike, reactionReview, reactionUser));
 
         redirectAttributes.addAttribute("id", reactionReview.getMotorcycle().getId());
-        redirectAttributes.addAttribute("reviewPageNumber", reviewPageNumber);
-        redirectAttributes.addAttribute("reviewSort", reviewSort);
+        redirectAttributes.addAttribute(REVIEW_PAGE_NUMBER_ATTR, reviewPageNumber);
+        redirectAttributes.addAttribute(REVIEW_SORT_ATTR, reviewSort);
         return SHOW_MOTORCYCLE_REDIRECT;
     }
 
