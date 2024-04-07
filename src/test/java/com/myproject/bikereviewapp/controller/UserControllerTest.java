@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.myproject.bikereviewapp.controller.ReviewController.REVIEWS_PAGE_SIZE;
+import static com.myproject.bikereviewapp.controller.ReviewController.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -178,7 +178,7 @@ class UserControllerTest {
         mockMvc.perform(get("/users/profile")
                         .principal(mockAuthentication))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("reviewPage", reviewPage));
+                .andExpect(model().attribute(REVIEW_PAGE_ATTR, reviewPage));
     }
 
     @Test
@@ -199,21 +199,21 @@ class UserControllerTest {
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
 
         mockMvc.perform(get("/users/profile")
-                        .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewSort", sortStr)
+                        .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(REVIEW_SORT_ATTR, sortStr)
                         .principal(mockAuthentication))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
-        verify(reviewService).getReviewsByUserId(user.getId(), PageRequest.of(pageNumber, REVIEWS_PAGE_SIZE, sort));
+        verify(reviewService).getReviewsByUserId(user.getId(), PageRequest.of(pageNumber, REVIEW_PAGE_SIZE, sort));
     }
 
     @Test
     void showCurrentUserProfile_shouldAddReviewPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/users/profile")
-                        .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewSort", sortStr)
+                        .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(REVIEW_SORT_ATTR, sortStr)
                         .principal(mockAuthentication))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentReviewPageNumber", pageNumber))

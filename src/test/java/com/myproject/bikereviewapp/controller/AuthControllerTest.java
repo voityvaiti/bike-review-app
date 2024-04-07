@@ -13,7 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 
-import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.MainController.BINDING_RESULT_ATTR;
 import static com.myproject.bikereviewapp.controller.UserController.USER_ATTR;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

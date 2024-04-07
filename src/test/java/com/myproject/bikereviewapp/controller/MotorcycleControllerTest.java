@@ -22,12 +22,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
 import static com.myproject.bikereviewapp.controller.MotorcycleController.MOTORCYCLE_MAIN_PAGE_SIZE;
+import static com.myproject.bikereviewapp.controller.ReviewController.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -242,29 +242,27 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("reviewPage", reviewPage));
+                .andExpect(model().attribute(REVIEW_PAGE_ATTR, reviewPage));
     }
 
     @Test
     void show_shouldGetReviewPageByProperMotorcycleIdAndPageRequest_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles/{id}", id)
-                        .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewPageSize", String.valueOf(pageSize))
-                        .param("reviewSort", sortStr))
+                        .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(REVIEW_SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
-        verify(reviewService).getReviewsByMotorcycleId(id, PageRequest.of(pageNumber, pageSize, sort));
+        verify(reviewService).getReviewsByMotorcycleId(id, PageRequest.of(pageNumber, REVIEW_PAGE_SIZE, sort));
     }
 
     @Test
     void show_shouldAddReviewPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles/{id}", id)
-                        .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewPageSize", String.valueOf(pageSize))
-                        .param("reviewSort", sortStr))
+                        .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(REVIEW_SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentReviewPageNumber", pageNumber))
                 .andExpect(model().attribute("currentReviewSort", sortStr));
