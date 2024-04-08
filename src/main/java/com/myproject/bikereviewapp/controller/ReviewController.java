@@ -16,7 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.MainController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.MainController.ID;
 import static com.myproject.bikereviewapp.controller.UserController.USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE;
 
 
@@ -27,7 +28,7 @@ public class ReviewController {
 
     protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
     protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";
-    protected static final Integer REVIEWS_PAGE_SIZE = 10;
+    protected static final Integer REVIEW_PAGE_SIZE = 10;
 
     protected static final String REVIEW_PAGE_ATTR = "reviewPage";
     protected static final String NEW_REVIEW_ATTR = "newReview";
@@ -65,7 +66,7 @@ public class ReviewController {
             redirectAttributes.addFlashAttribute(NEW_REVIEW_ATTR, review);
             redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + NEW_REVIEW_ATTR, bindingResult);
 
-            redirectAttributes.addAttribute("id", review.getMotorcycle().getId());
+            redirectAttributes.addAttribute(ID, review.getMotorcycle().getId());
             redirectAttributes.addAttribute(REVIEW_PAGE_NUMBER_ATTR, reviewPageNumber);
             redirectAttributes.addAttribute(REVIEW_SORT_ATTR, reviewSort);
             return SHOW_MOTORCYCLE_REDIRECT;
@@ -74,7 +75,7 @@ public class ReviewController {
         review.setUser(userService.getByUsername(authentication.getName()));
         reviewService.create(review);
 
-        redirectAttributes.addAttribute("id", review.getMotorcycle().getId());
+        redirectAttributes.addAttribute(ID, review.getMotorcycle().getId());
         return SHOW_MOTORCYCLE_REDIRECT;
 
     }
@@ -96,18 +97,18 @@ public class ReviewController {
 
         reviewService.saveReaction(new Reaction(null, isLike, reactionReview, reactionUser));
 
-        redirectAttributes.addAttribute("id", reactionReview.getMotorcycle().getId());
+        redirectAttributes.addAttribute(ID, reactionReview.getMotorcycle().getId());
         redirectAttributes.addAttribute(REVIEW_PAGE_NUMBER_ATTR, reviewPageNumber);
         redirectAttributes.addAttribute(REVIEW_SORT_ATTR, reviewSort);
         return SHOW_MOTORCYCLE_REDIRECT;
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, @RequestParam Long motorcycleId, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable(ID) Long id, @RequestParam Long motorcycleId, RedirectAttributes redirectAttributes) {
 
         reviewService.delete(id);
 
-        redirectAttributes.addAttribute("id", motorcycleId);
+        redirectAttributes.addAttribute(ID, motorcycleId);
         return SHOW_MOTORCYCLE_REDIRECT;
     }
 }

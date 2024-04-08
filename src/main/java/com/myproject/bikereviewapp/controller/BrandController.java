@@ -12,19 +12,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.MainController.*;
 
 @Controller
 @RequestMapping("/brands")
 @RequiredArgsConstructor
 public class BrandController {
 
+
+    protected static final String BRAND_ATTR = "brand";
+    protected static final String BRAND_PAGE_ATTR = "brandPage";
+
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/brands/admin";
-
-
-    private static final String BRAND_ATTR = "brand";
-    private static final String BRAND_PAGE_ATTR = "brandPage";
-
 
     private final BrandService brandService;
 
@@ -34,9 +33,9 @@ public class BrandController {
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model,
-                                      @RequestParam(defaultValue = "0") Integer pageNumber,
-                                      @RequestParam(defaultValue = "20") Integer pageSize,
-                                      @RequestParam(defaultValue = "id:asc") String sort) {
+                                      @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, name = PAGE_NUMBER_ATTR) Integer pageNumber,
+                                      @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SIZE, name = PAGE_SIZE_ATTR) Integer pageSize,
+                                      @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SORT, name = SORT_ATTR) String sort) {
 
         model.addAttribute(BRAND_PAGE_ATTR, brandService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
@@ -72,7 +71,7 @@ public class BrandController {
 
 
     @GetMapping("/admin/edit/{id}")
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable(ID) Long id, Model model) {
 
         if (!model.containsAttribute(BRAND_ATTR)) {
             model.addAttribute(BRAND_ATTR, brandService.getById(id));
@@ -81,11 +80,11 @@ public class BrandController {
     }
 
     @PutMapping("/admin/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute(BRAND_ATTR) @Valid Brand brand, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String update(@PathVariable(ID) Long id, @ModelAttribute(BRAND_ATTR) @Valid Brand brand, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
 
-            redirectAttributes.addAttribute("id", id);
+            redirectAttributes.addAttribute(ID, id);
             redirectAttributes.addFlashAttribute(BRAND_ATTR, brand);
             redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + BRAND_ATTR, bindingResult);
             return "redirect:/brands/admin/edit/{id}";
@@ -97,7 +96,7 @@ public class BrandController {
     }
 
     @DeleteMapping("/admin/{id}")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable(ID) Long id) {
 
         brandService.delete(id);
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;

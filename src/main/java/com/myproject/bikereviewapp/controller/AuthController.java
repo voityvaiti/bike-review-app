@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.myproject.bikereviewapp.controller.RedirectController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.MainController.BINDING_RESULT_ATTR;
 import static com.myproject.bikereviewapp.controller.UserController.USER_ATTR;
 
 
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
-
 
     private static final String LOGIN_VIEW = "auth/login";
     private static final String LOGOUT_VIEW = "auth/logout";
@@ -31,6 +30,7 @@ public class AuthController {
     private final UserService userService;
 
     private final UserUniquenessValidator uniquenessValidator;
+
 
 
     @GetMapping("/login")
@@ -49,6 +49,7 @@ public class AuthController {
     public String showLogOutPage() {
         return LOGOUT_VIEW;
     }
+
 
     @GetMapping("/signup")
     public String showSignUpForm(Model model) {
