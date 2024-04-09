@@ -26,7 +26,8 @@ import org.springframework.ui.Model;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import static com.myproject.bikereviewapp.controller.MotorcycleController.MOTORCYCLE_MAIN_PAGE_SIZE;
+import static com.myproject.bikereviewapp.controller.MainController.*;
+import static com.myproject.bikereviewapp.controller.MotorcycleController.*;
 import static com.myproject.bikereviewapp.controller.ReviewController.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -120,7 +121,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("motorcyclePage", motorcyclePage));
+                .andExpect(model().attribute(MOTORCYCLE_PAGE_ATTR, motorcyclePage));
     }
 
     @Test
@@ -129,8 +130,8 @@ class MotorcycleControllerTest {
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
 
         mockMvc.perform(get("/motorcycles")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
@@ -141,8 +142,8 @@ class MotorcycleControllerTest {
     void showAll_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentPageNumber", pageNumber))
                 .andExpect(model().attribute("currentSort", sortStr));
@@ -170,7 +171,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/admin"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("motorcyclePage", motorcyclePage));
+                .andExpect(model().attribute(MOTORCYCLE_PAGE_ATTR, motorcyclePage));
     }
 
     @Test
@@ -179,9 +180,9 @@ class MotorcycleControllerTest {
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
 
         mockMvc.perform(get("/motorcycles/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
@@ -192,9 +193,9 @@ class MotorcycleControllerTest {
     void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentPageNumber", pageNumber))
                 .andExpect(model().attribute("currentSort", sortStr));
@@ -223,7 +224,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("motorcycle", motorcycle));
+                .andExpect(model().attribute(MOTORCYCLE_ATTR, motorcycle));
     }
 
     @Test
@@ -282,7 +283,7 @@ class MotorcycleControllerTest {
     void create_shouldCreateMotorcycle_ifMotorcycleIsValid() throws Exception {
 
         mockMvc.perform(post("/motorcycles/admin")
-                .flashAttr("motorcycle", motorcycle));
+                .flashAttr(MOTORCYCLE_ATTR, motorcycle));
 
         verify(motorcycleService).create(motorcycle);
     }
@@ -291,7 +292,7 @@ class MotorcycleControllerTest {
     void create_shouldRedirectToAppropriateUrl_ifMotorcycleIsValid() throws Exception {
 
         mockMvc.perform(post("/motorcycles/admin")
-                        .flashAttr("motorcycle", motorcycle))
+                        .flashAttr(MOTORCYCLE_ATTR, motorcycle))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/motorcycles/admin"));
 
@@ -301,7 +302,7 @@ class MotorcycleControllerTest {
     void create_shouldNeverCreateMotorcycle_ifMotorcycleIsInvalid() throws Exception {
 
         mockMvc.perform(post("/motorcycles/admin")
-                .flashAttr("motorcycle", new Motorcycle()));
+                .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()));
 
         verify(motorcycleService, never()).create(any(Motorcycle.class));
     }
@@ -310,7 +311,7 @@ class MotorcycleControllerTest {
     void create_shouldRedirectToAppropriateUrl_ifMotorcycleIsInvalid() throws Exception {
 
         mockMvc.perform(post("/motorcycles/admin")
-                        .flashAttr("motorcycle", new Motorcycle()))
+                        .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/motorcycles/admin/new"));
     }
@@ -319,7 +320,7 @@ class MotorcycleControllerTest {
     void update_shouldUpdateMotorycle_ifMotorcycleIsValid() throws Exception {
 
         mockMvc.perform(put("/motorcycles/admin/{id}", id)
-                .flashAttr("motorcycle", motorcycle));
+                .flashAttr(MOTORCYCLE_ATTR, motorcycle));
 
         verify(motorcycleService).update(id, motorcycle);
     }
@@ -328,7 +329,7 @@ class MotorcycleControllerTest {
     void update_shouldRedirectToAppropriateUrl_ifMotorcycleIsValid() throws Exception {
 
         mockMvc.perform(put("/motorcycles/admin/{id}", id)
-                        .flashAttr("motorcycle", motorcycle))
+                        .flashAttr(MOTORCYCLE_ATTR, motorcycle))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/motorcycles/admin"));
 
@@ -338,7 +339,7 @@ class MotorcycleControllerTest {
     void update_shouldNeverUpdateMotorcycle_ifMotorcycleIsInvalid() throws Exception {
 
         mockMvc.perform(put("/motorcycles/admin/{id}", id)
-                .flashAttr("motorcycle", new Motorcycle()));
+                .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()));
 
         verify(motorcycleService, never()).update(anyLong(), any(Motorcycle.class));
     }
@@ -347,7 +348,7 @@ class MotorcycleControllerTest {
     void update_shouldRedirectToAppropriateUrl_ifMotorcycleIsInvalid() throws Exception {
 
         mockMvc.perform(put("/motorcycles/admin/{id}", id)
-                        .flashAttr("motorcycle", new Motorcycle()))
+                        .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/motorcycles/admin/edit/" + id));
     }

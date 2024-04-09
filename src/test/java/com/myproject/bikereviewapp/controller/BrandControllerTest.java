@@ -18,6 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static com.myproject.bikereviewapp.controller.BrandController.BRAND_ATTR;
+import static com.myproject.bikereviewapp.controller.BrandController.BRAND_PAGE_ATTR;
+import static com.myproject.bikereviewapp.controller.MainController.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -88,16 +91,16 @@ class BrandControllerTest {
 
         mockMvc.perform(get("/brands/admin"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("brandPage", brandPage));
+                .andExpect(model().attribute(BRAND_PAGE_ATTR, brandPage));
     }
 
     @Test
     void showAllInAdminPanel_shouldMakePageRequestByProperPageNumberAndSort_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/brands/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
@@ -108,9 +111,9 @@ class BrandControllerTest {
     void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/brands/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentPageNumber", pageNumber))
                 .andExpect(model().attribute("currentSort", sortStr));
@@ -129,7 +132,7 @@ class BrandControllerTest {
     void create_shouldCreateBrand_ifBrandIsValid() throws Exception {
 
         mockMvc.perform(post("/brands/admin")
-                        .flashAttr("brand", brand));
+                        .flashAttr(BRAND_ATTR, brand));
 
         verify(brandService).create(brand);
     }
@@ -138,7 +141,7 @@ class BrandControllerTest {
     void create_shouldRedirectToAppropriateUrl_ifBrandIsValid() throws Exception {
 
         mockMvc.perform(post("/brands/admin")
-                .flashAttr("brand", brand))
+                .flashAttr(BRAND_ATTR, brand))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/brands/admin"));
 
@@ -148,7 +151,7 @@ class BrandControllerTest {
     void create_shouldNeverCreateBrand_ifBrandIsInvalid() throws Exception {
 
         mockMvc.perform(post("/brands/admin")
-                        .flashAttr("brand", new Brand()));
+                        .flashAttr(BRAND_ATTR, new Brand()));
 
         verify(brandService, never()).create(any(Brand.class));
     }
@@ -157,7 +160,7 @@ class BrandControllerTest {
     void create_shouldRedirectToAppropriateUrl_ifBrandIsInvalid() throws Exception {
 
         mockMvc.perform(post("/brands/admin")
-                        .flashAttr("brand", new Brand()))
+                        .flashAttr(BRAND_ATTR, new Brand()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/brands/admin/new"));
     }
@@ -166,7 +169,7 @@ class BrandControllerTest {
     void update_shouldUpdateBrand_ifBrandIsValid() throws Exception {
 
         mockMvc.perform(put("/brands/admin/{id}", id)
-                .flashAttr("brand", brand));
+                .flashAttr(BRAND_ATTR, brand));
 
         verify(brandService).update(id, brand);
     }
@@ -175,7 +178,7 @@ class BrandControllerTest {
     void update_shouldRedirectToAppropriateUrl_ifBrandIsValid() throws Exception {
 
         mockMvc.perform(put("/brands/admin/{id}", id)
-                        .flashAttr("brand", brand))
+                        .flashAttr(BRAND_ATTR, brand))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/brands/admin"));
 
@@ -185,7 +188,7 @@ class BrandControllerTest {
     void update_shouldNeverUpdateBrand_ifBrandIsInvalid() throws Exception {
 
         mockMvc.perform(put("/brands/admin/{id}", id)
-                .flashAttr("brand", new Brand()));
+                .flashAttr(BRAND_ATTR, new Brand()));
 
         verify(brandService, never()).update(anyLong(), any(Brand.class));
     }
@@ -194,7 +197,7 @@ class BrandControllerTest {
     void update_shouldRedirectToAppropriateUrl_ifBrandIsInvalid() throws Exception {
 
         mockMvc.perform(put("/brands/admin/{id}", id)
-                        .flashAttr("brand", new Brand()))
+                        .flashAttr(BRAND_ATTR, new Brand()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/brands/admin/edit/" + id));
     }
