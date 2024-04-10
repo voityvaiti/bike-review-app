@@ -12,11 +12,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import static com.myproject.bikereviewapp.controller.MainController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.UserController.USER_ATTR;
 
 
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
+
+    private static final String LOGIN_VIEW = "auth/login";
+    private static final String LOGOUT_VIEW = "auth/logout";
+    private static final String SIGNUP_VIEW = "auth/signup";
+
 
     private final UserService userService;
 
@@ -26,35 +35,41 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLogInForm() {
-        return "auth/login";
+        return LOGIN_VIEW;
     }
 
     @GetMapping("/login-error")
     public String showLogInErrorForm(Model model) {
 
         model.addAttribute("error", true);
-        return "auth/login";
+        return LOGIN_VIEW;
     }
 
     @GetMapping("/logout")
     public String showLogOutPage() {
-        return "auth/logout";
+        return LOGOUT_VIEW;
     }
 
 
     @GetMapping("/signup")
-    public String showSignUpForm(@ModelAttribute("user") User user) {
+    public String showSignUpForm(Model model) {
 
-        return "auth/signup";
+        if (!model.containsAttribute(USER_ATTR)) {
+            model.addAttribute(USER_ATTR, new User());
+        }
+        return SIGNUP_VIEW;
     }
 
     @PostMapping("/signup")
-    public String signUp(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String signUp(@ModelAttribute(USER_ATTR) @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         uniquenessValidator.validate(user, bindingResult);
 
-        if(bindingResult.hasErrors()) {
-            return showSignUpForm(user);
+        if (bindingResult.hasErrors()) {
+
+            redirectAttributes.addFlashAttribute(USER_ATTR, user);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + USER_ATTR, bindingResult);
+            return "redirect:/signup";
         }
         user.setRole(Role.CLIENT);
         user.setEnabled(true);

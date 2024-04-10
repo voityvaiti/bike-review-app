@@ -22,14 +22,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import static com.myproject.bikereviewapp.controller.MainController.*;
+import static com.myproject.bikereviewapp.controller.MotorcycleController.*;
+import static com.myproject.bikereviewapp.controller.ReviewController.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -37,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class MotorcycleControllerTest {
 
-    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     MotorcycleService motorcycleService;
@@ -72,7 +74,6 @@ class MotorcycleControllerTest {
     private static int pageSize;
     private static Sort sort;
     private static String sortStr;
-    private static BindingResult mockBindingResult;
 
     @BeforeAll
     static void init() {
@@ -96,7 +97,6 @@ class MotorcycleControllerTest {
         pageSize = 10;
         sort = Sort.by(Sort.Direction.ASC, "id");
         sortStr = "id:asc";
-        mockBindingResult = mock(BindingResult.class);
     }
 
     @BeforeEach
@@ -106,7 +106,6 @@ class MotorcycleControllerTest {
         when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
 
         when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(mockBindingResult.hasErrors()).thenReturn(false);
     }
 
     @Test
@@ -122,7 +121,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("motorcyclePage", motorcyclePage));
+                .andExpect(model().attribute(MOTORCYCLE_PAGE_ATTR, motorcyclePage));
     }
 
     @Test
@@ -131,22 +130,20 @@ class MotorcycleControllerTest {
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
 
         mockMvc.perform(get("/motorcycles")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
-        verify(motorcycleService).getAll(PageRequest.of(pageNumber, pageSize, sort));
+        verify(motorcycleService).getAll(PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sort));
     }
 
     @Test
     void showAll_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentPageNumber", pageNumber))
                 .andExpect(model().attribute("currentSort", sortStr));
@@ -174,7 +171,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/admin"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("motorcyclePage", motorcyclePage));
+                .andExpect(model().attribute(MOTORCYCLE_PAGE_ATTR, motorcyclePage));
     }
 
     @Test
@@ -183,9 +180,9 @@ class MotorcycleControllerTest {
         when(sortUtility.parseSort(sortStr)).thenReturn(sort);
 
         mockMvc.perform(get("/motorcycles/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
@@ -196,9 +193,9 @@ class MotorcycleControllerTest {
     void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentPageNumber", pageNumber))
                 .andExpect(model().attribute("currentSort", sortStr));
@@ -227,7 +224,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("motorcycle", motorcycle));
+                .andExpect(model().attribute(MOTORCYCLE_ATTR, motorcycle));
     }
 
     @Test
@@ -246,29 +243,27 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("reviewPage", reviewPage));
+                .andExpect(model().attribute(REVIEW_PAGE_ATTR, reviewPage));
     }
 
     @Test
     void show_shouldGetReviewPageByProperMotorcycleIdAndPageRequest_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles/{id}", id)
-                        .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewPageSize", String.valueOf(pageSize))
-                        .param("reviewSort", sortStr))
+                        .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(REVIEW_SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
-        verify(reviewService).getReviewsByMotorcycleId(id, PageRequest.of(pageNumber, pageSize, sort));
+        verify(reviewService).getReviewsByMotorcycleId(id, PageRequest.of(pageNumber, REVIEW_PAGE_SIZE, sort));
     }
 
     @Test
     void show_shouldAddReviewPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/motorcycles/{id}", id)
-                        .param("reviewPageNumber", String.valueOf(pageNumber))
-                        .param("reviewPageSize", String.valueOf(pageSize))
-                        .param("reviewSort", sortStr))
+                        .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(REVIEW_SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentReviewPageNumber", pageNumber))
                 .andExpect(model().attribute("currentReviewSort", sortStr));
@@ -285,45 +280,77 @@ class MotorcycleControllerTest {
 
 
     @Test
-    void create_shouldCreateMotorcycle_ifMotorcycleIsValid() {
+    void create_shouldCreateMotorcycle_ifMotorcycleIsValid() throws Exception {
 
-        motorcycleController.create(motorcycle, mockBindingResult, model);
+        mockMvc.perform(post("/motorcycles/admin")
+                .flashAttr(MOTORCYCLE_ATTR, motorcycle));
 
         verify(motorcycleService).create(motorcycle);
     }
 
     @Test
-    void create_shouldNeverCreateMotorcycle_ifMotorcycleIsInvalid() {
+    void create_shouldRedirectToAppropriateUrl_ifMotorcycleIsValid() throws Exception {
 
-        MotorcycleController spyMotorcycleController = spy(motorcycleController);
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).newMotorcycle(any(Motorcycle.class), any(Model.class));
+        mockMvc.perform(post("/motorcycles/admin")
+                        .flashAttr(MOTORCYCLE_ATTR, motorcycle))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin"));
 
-        when(mockBindingResult.hasErrors()).thenReturn(true);
+    }
 
-        spyMotorcycleController.create(motorcycle, mockBindingResult, model);
+    @Test
+    void create_shouldNeverCreateMotorcycle_ifMotorcycleIsInvalid() throws Exception {
+
+        mockMvc.perform(post("/motorcycles/admin")
+                .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()));
 
         verify(motorcycleService, never()).create(any(Motorcycle.class));
     }
 
     @Test
-    void update_shouldUpdateMotorcycle_ifMotorcycleIsValid() {
+    void create_shouldRedirectToAppropriateUrl_ifMotorcycleIsInvalid() throws Exception {
 
-        motorcycleController.update(id, motorcycle, mockBindingResult, model);
+        mockMvc.perform(post("/motorcycles/admin")
+                        .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin/new"));
+    }
+
+    @Test
+    void update_shouldUpdateMotorycle_ifMotorcycleIsValid() throws Exception {
+
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                .flashAttr(MOTORCYCLE_ATTR, motorcycle));
 
         verify(motorcycleService).update(id, motorcycle);
     }
 
     @Test
-    void update_shouldNeverUpdateMotorcycle_ifMotorcycleIsInvalid() {
+    void update_shouldRedirectToAppropriateUrl_ifMotorcycleIsValid() throws Exception {
 
-        MotorcycleController spyMotorcycleController = spy(motorcycleController);
-        doReturn(SAMPLE_VIEW).when(spyMotorcycleController).edit(anyLong(), any(Model.class));
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                        .flashAttr(MOTORCYCLE_ATTR, motorcycle))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin"));
 
-        when(mockBindingResult.hasErrors()).thenReturn(true);
+    }
 
-        spyMotorcycleController.update(id, motorcycle, mockBindingResult, model);
+    @Test
+    void update_shouldNeverUpdateMotorcycle_ifMotorcycleIsInvalid() throws Exception {
+
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()));
 
         verify(motorcycleService, never()).update(anyLong(), any(Motorcycle.class));
+    }
+
+    @Test
+    void update_shouldRedirectToAppropriateUrl_ifMotorcycleIsInvalid() throws Exception {
+
+        mockMvc.perform(put("/motorcycles/admin/{id}", id)
+                        .flashAttr(MOTORCYCLE_ATTR, new Motorcycle()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/motorcycles/admin/edit/" + id));
     }
 
 }

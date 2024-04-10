@@ -18,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.myproject.bikereviewapp.controller.MainController.*;
 import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
@@ -26,13 +28,16 @@ import static com.myproject.bikereviewapp.controller.ReviewController.*;
 @RequiredArgsConstructor
 public class MotorcycleController {
 
+    protected static final Integer MOTORCYCLE_MAIN_PAGE_SIZE = 16;
+    protected static final String MOTORCYCLE_MAIN_PAGE_DEFAULT_SORT = "reviewsAmount:desc";
+
+
+    protected static final String MOTORCYCLE_ATTR = "motorcycle";
+    protected static final String MOTORCYCLE_PAGE_ATTR = "motorcyclePage";
+    protected static final String BRAND_LIST_ATTR = "brands";
+
+
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/motorcycles/admin";
-
-
-    private static final String MOTORCYCLE_ATTR = "motorcycle";
-    private static final String MOTORCYCLE_PAGE_ATTR = "motorcyclePage";
-    private static final String BRANDS_ATTR = "brands";
-
 
     private final MotorcycleService motorcycleService;
     private final BrandService brandService;
@@ -45,13 +50,12 @@ public class MotorcycleController {
 
     @GetMapping
     public String showAll(Model model,
-                          @RequestParam(defaultValue = "0") Integer pageNumber,
-                          @RequestParam(defaultValue = "16") Integer pageSize,
-                          @RequestParam(defaultValue = "reviewsAmount:desc") String sort,
+                          @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, name = PAGE_NUMBER_ATTR) Integer pageNumber,
+                          @RequestParam(defaultValue = MOTORCYCLE_MAIN_PAGE_DEFAULT_SORT, name = SORT_ATTR) String sort,
                           @RequestParam(required = false, name = "q") String query) {
 
         Page<Motorcycle> motorcyclePage;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort));
+        Pageable pageable = PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sortUtility.parseSort(sort));
 
         if (query != null && !query.isBlank()) {
             motorcyclePage = motorcycleService.getAllByQuery(query, pageable);
@@ -70,9 +74,9 @@ public class MotorcycleController {
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model,
-                                      @RequestParam(defaultValue = "0") Integer pageNumber,
-                                      @RequestParam(defaultValue = "20") Integer pageSize,
-                                      @RequestParam(defaultValue = "id:asc") String sort) {
+                                      @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, name = PAGE_NUMBER_ATTR) Integer pageNumber,
+                                      @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SIZE, name = PAGE_SIZE_ATTR) Integer pageSize,
+                                      @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SORT, name = SORT_ATTR) String sort) {
 
         model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
@@ -83,14 +87,13 @@ public class MotorcycleController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long motorcycleId,
-                       @ModelAttribute("newReview") Review newReview,
-                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
-                       @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort,
+    public String show(@PathVariable(ID) Long motorcycleId,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER, name = REVIEW_PAGE_NUMBER_ATTR) Integer reviewPageNumber,
+                       @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT, name = REVIEW_SORT_ATTR) String reviewSort,
                        Model model, Authentication authentication) {
 
         model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(motorcycleId));
+
 
         Review currentUserReview = null;
 
@@ -100,7 +103,10 @@ public class MotorcycleController {
             currentUserReview = reviewService.getIfExistsUserReviewOnMotorcycle(currentUser.getId(), motorcycleId);
         }
 
-        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
+        if(!model.containsAttribute(NEW_REVIEW_ATTR)) {
+            model.addAttribute(NEW_REVIEW_ATTR, new Review());
+        }
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentUserReview", currentUserReview);
 
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
@@ -111,17 +117,23 @@ public class MotorcycleController {
     }
 
     @GetMapping("/admin/new")
-    public String newMotorcycle(@ModelAttribute Motorcycle motorcycle, Model model) {
+    public String newMotorcycle(Model model) {
 
-        model.addAttribute(BRANDS_ATTR, brandService.getAll());
+        if (!model.containsAttribute(MOTORCYCLE_ATTR)) {
+            model.addAttribute(MOTORCYCLE_ATTR, new Motorcycle());
+        }
+        model.addAttribute(BRAND_LIST_ATTR, brandService.getAll());
+
         return "motorcycle/admin/new";
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute @Valid Motorcycle motorcycle, BindingResult bindingResult, Model model) {
+    public String create(@ModelAttribute(MOTORCYCLE_ATTR) @Valid Motorcycle motorcycle, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
-            return newMotorcycle(motorcycle, model);
+            redirectAttributes.addFlashAttribute(MOTORCYCLE_ATTR, motorcycle);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + MOTORCYCLE_ATTR, bindingResult);
+            return "redirect:/motorcycles/admin/new";
         }
         motorcycleService.create(motorcycle);
 
@@ -129,21 +141,25 @@ public class MotorcycleController {
     }
 
     @GetMapping("/admin/edit/{id}")
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable(ID) Long id, Model model) {
 
         if (!model.containsAttribute(MOTORCYCLE_ATTR)) {
             model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
         }
-        model.addAttribute(BRANDS_ATTR, brandService.getAll());
+        model.addAttribute(BRAND_LIST_ATTR, brandService.getAll());
 
         return "motorcycle/admin/edit";
     }
 
     @PutMapping("/admin/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute @Valid Motorcycle motorcycle, BindingResult bindingResult, Model model) {
+    public String update(@PathVariable(ID) Long id, @ModelAttribute(MOTORCYCLE_ATTR) @Valid Motorcycle motorcycle, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            return edit(id, model);
+            redirectAttributes.addAttribute(ID, id);
+            redirectAttributes.addFlashAttribute(MOTORCYCLE_ATTR, motorcycle);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + MOTORCYCLE_ATTR, bindingResult);
+
+            return "redirect:/motorcycles/admin/edit/{id}";
         }
         motorcycleService.update(id, motorcycle);
 
@@ -151,7 +167,7 @@ public class MotorcycleController {
     }
 
     @DeleteMapping("/admin/{id}")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable(ID) Long id) {
 
         motorcycleService.delete(id);
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;

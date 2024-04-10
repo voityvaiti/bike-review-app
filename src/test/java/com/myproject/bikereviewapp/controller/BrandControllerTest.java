@@ -15,21 +15,21 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
 import java.util.Arrays;
 
+import static com.myproject.bikereviewapp.controller.BrandController.BRAND_ATTR;
+import static com.myproject.bikereviewapp.controller.BrandController.BRAND_PAGE_ATTR;
+import static com.myproject.bikereviewapp.controller.MainController.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BrandController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class BrandControllerTest {
 
-    private static final String SAMPLE_VIEW = "some/view";
 
     @MockBean
     BrandService brandService;
@@ -51,9 +51,6 @@ class BrandControllerTest {
     private static int pageSize;
     private static Sort sort;
     private static String sortStr;
-    private static BindingResult mockBindingResult;
-    private static Model mockModel;
-
 
 
     @BeforeAll
@@ -71,14 +68,11 @@ class BrandControllerTest {
         pageSize = 15;
         sort = Sort.by(Sort.Direction.ASC, "id");
         sortStr = "id:asc";
-        mockBindingResult = mock(BindingResult.class);
-        mockModel = mock(Model.class);
     }
 
     @BeforeEach
     void setUp() {
         when(sortUtility.parseSort(anyString())).thenReturn(sort);
-        when(mockBindingResult.hasErrors()).thenReturn(false);
 
         when(brandService.getAll(any(PageRequest.class))).thenReturn(brandPage);
     }
@@ -97,16 +91,16 @@ class BrandControllerTest {
 
         mockMvc.perform(get("/brands/admin"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("brandPage", brandPage));
+                .andExpect(model().attribute(BRAND_PAGE_ATTR, brandPage));
     }
 
     @Test
     void showAllInAdminPanel_shouldMakePageRequestByProperPageNumberAndSort_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/brands/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
         verify(sortUtility).parseSort(sortStr);
@@ -117,9 +111,9 @@ class BrandControllerTest {
     void showAllInAdminPanel_shouldAddPageNumberAndSortModelAttributes_whenRequestContainAppropriateParams() throws Exception {
 
         mockMvc.perform(get("/brands/admin")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
-                        .param("sort", sortStr))
+                        .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
+                        .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
+                        .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("currentPageNumber", pageNumber))
                 .andExpect(model().attribute("currentSort", sortStr));
@@ -135,46 +129,76 @@ class BrandControllerTest {
     }
 
     @Test
-    void create_shouldCreateBrand_ifBrandIsValid() {
+    void create_shouldCreateBrand_ifBrandIsValid() throws Exception {
 
-        brandController.create(brand, mockBindingResult);
+        mockMvc.perform(post("/brands/admin")
+                        .flashAttr(BRAND_ATTR, brand));
 
         verify(brandService).create(brand);
     }
 
     @Test
-    void create_shouldNeverCreateBrand_ifBrandIsInvalid() {
+    void create_shouldRedirectToAppropriateUrl_ifBrandIsValid() throws Exception {
 
-        BrandController spyBrandController = spy(brandController);
-        doReturn(SAMPLE_VIEW).when(spyBrandController).newBrand(any(Brand.class));
+        mockMvc.perform(post("/brands/admin")
+                .flashAttr(BRAND_ATTR, brand))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/brands/admin"));
 
-        when(mockBindingResult.hasErrors()).thenReturn(true);
+    }
 
-        spyBrandController.create(brand, mockBindingResult);
+    @Test
+    void create_shouldNeverCreateBrand_ifBrandIsInvalid() throws Exception {
+
+        mockMvc.perform(post("/brands/admin")
+                        .flashAttr(BRAND_ATTR, new Brand()));
 
         verify(brandService, never()).create(any(Brand.class));
     }
 
     @Test
-    void update_shouldUpdateBrand_ifBrandIsValid() {
+    void create_shouldRedirectToAppropriateUrl_ifBrandIsInvalid() throws Exception {
 
-        brandController.update(id, brand, mockBindingResult, mockModel);
+        mockMvc.perform(post("/brands/admin")
+                        .flashAttr(BRAND_ATTR, new Brand()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/brands/admin/new"));
+    }
+
+    @Test
+    void update_shouldUpdateBrand_ifBrandIsValid() throws Exception {
+
+        mockMvc.perform(put("/brands/admin/{id}", id)
+                .flashAttr(BRAND_ATTR, brand));
 
         verify(brandService).update(id, brand);
     }
 
     @Test
-    void update_shouldNeverUpdateBrand_ifBrandIsInvalid() {
+    void update_shouldRedirectToAppropriateUrl_ifBrandIsValid() throws Exception {
 
-        BrandController spyBrandController = spy(brandController);
-        doReturn(SAMPLE_VIEW).when(spyBrandController).edit(anyLong(), any(Model.class));
+        mockMvc.perform(put("/brands/admin/{id}", id)
+                        .flashAttr(BRAND_ATTR, brand))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/brands/admin"));
 
-        when(mockBindingResult.hasErrors()).thenReturn(true);
+    }
 
-        spyBrandController.update(id, brand, mockBindingResult, mockModel);
+    @Test
+    void update_shouldNeverUpdateBrand_ifBrandIsInvalid() throws Exception {
+
+        mockMvc.perform(put("/brands/admin/{id}", id)
+                .flashAttr(BRAND_ATTR, new Brand()));
 
         verify(brandService, never()).update(anyLong(), any(Brand.class));
     }
 
+    @Test
+    void update_shouldRedirectToAppropriateUrl_ifBrandIsInvalid() throws Exception {
 
+        mockMvc.perform(put("/brands/admin/{id}", id)
+                        .flashAttr(BRAND_ATTR, new Brand()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/brands/admin/edit/" + id));
+    }
 }

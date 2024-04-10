@@ -17,7 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.myproject.bikereviewapp.controller.MainController.*;
 import static com.myproject.bikereviewapp.controller.ReviewController.*;
 
 @Controller
@@ -27,13 +29,17 @@ public class UserController {
 
     protected static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
 
-    private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/users/admin";
+    protected static final String USER_PAGE_ATTR = "userPage";
+    protected static final String USER_ATTR = "user";
+    protected static final String ROLE_LIST_ATTR = "roles";
 
-    private static final String USER_PAGE_ATTR = "userPage";
-    private static final String USER_ATTR = "user";
-    private static final String ROLES_ATTR = "roles";
+    protected static final String PASSWORD_UPDATE_DTO_ATTR = "passwordUpdateDto";
+    protected static final String OLD_PASSWORD_FIELD_ATTR = "oldPassword";
+    protected static final String PUBLIC_NAME_UPDATE_DTO_ATTR = "publicNameUpdateDto";
+
 
     private static final String PASSWORD_EDIT_PAGE = "user/password-edit";
+    private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/users/admin";
 
 
     private final UserService userService;
@@ -46,9 +52,9 @@ public class UserController {
 
     @GetMapping("/admin")
     public String showAllInAdminPanel(Model model,
-                                      @RequestParam(defaultValue = "0") Integer pageNumber,
-                                      @RequestParam(defaultValue = "20") Integer pageSize,
-                                      @RequestParam(defaultValue = "id:asc") String sort) {
+                                      @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, name = PAGE_NUMBER_ATTR) Integer pageNumber,
+                                      @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SIZE, name = PAGE_SIZE_ATTR) Integer pageSize,
+                                      @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SORT, name = SORT_ATTR) String sort) {
 
         model.addAttribute(USER_PAGE_ATTR, userService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
@@ -60,9 +66,8 @@ public class UserController {
 
     @GetMapping("/profile")
     public String showCurrentUserProfile(Authentication authentication, Model model,
-                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER) Integer reviewPageNumber,
-                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_SIZE) Integer reviewPageSize,
-                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT) String reviewSort) {
+                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_PAGE_NUMBER, name = REVIEW_PAGE_NUMBER_ATTR) Integer reviewPageNumber,
+                                         @RequestParam(defaultValue = DEFAULT_REVIEWS_SORT, name = REVIEW_SORT_ATTR) String reviewSort) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
@@ -71,7 +76,7 @@ public class UserController {
 
         model.addAttribute(USER_ATTR, currentUser);
 
-        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, reviewPageSize, sortUtility.parseSort(reviewSort))));
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentReviewPageNumber", reviewPageNumber);
         model.addAttribute("currentReviewSort", reviewSort);
 
@@ -79,18 +84,25 @@ public class UserController {
     }
 
     @GetMapping("/admin/new")
-    public String newUser(@ModelAttribute User user, Model model) {
-        model.addAttribute(ROLES_ATTR, Role.values());
+    public String newUser(Model model) {
+
+        if (!model.containsAttribute(USER_ATTR)) {
+            model.addAttribute(USER_ATTR, new User());
+        }
+        model.addAttribute(ROLE_LIST_ATTR, Role.values());
+
         return "user/admin/new";
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
+    public String create(@ModelAttribute(USER_ATTR) @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         uniquenessValidator.validate(user, bindingResult);
 
         if(bindingResult.hasErrors()) {
-            return newUser(user, model);
+            redirectAttributes.addFlashAttribute(USER_ATTR, user);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + USER_ATTR, bindingResult);
+            return "redirect:/users/admin/new";
         }
         userService.create(user);
 
@@ -98,7 +110,7 @@ public class UserController {
     }
 
     @PatchMapping ("/admin/is-enabled/{id}")
-    public String toggleStatus(@PathVariable Long id) {
+    public String toggleStatus(@PathVariable(ID) Long id) {
 
         userService.toggleStatus(id);
 
@@ -110,12 +122,12 @@ public class UserController {
     @GetMapping("/profile/password-edit")
     public String editCurrentUserPassword(Model model) {
 
-        model.addAttribute("passwordUpdateDto", new PasswordUpdateDto());
+        model.addAttribute(PASSWORD_UPDATE_DTO_ATTR, new PasswordUpdateDto());
         return PASSWORD_EDIT_PAGE;
     }
 
     @PatchMapping("/profile/password")
-    public String updateCurrentUserPassword(@ModelAttribute @Valid PasswordUpdateDto passwordUpdateDto, BindingResult bindingResult, Authentication authentication) {
+    public String updateCurrentUserPassword(@ModelAttribute(PASSWORD_UPDATE_DTO_ATTR) @Valid PasswordUpdateDto passwordUpdateDto, BindingResult bindingResult, Authentication authentication) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
@@ -127,7 +139,7 @@ public class UserController {
 
         String username = authentication.getName();
         if (!userService.isCorrectCredentials(username, passwordUpdateDto.getOldPassword())) {
-            bindingResult.rejectValue("oldPassword", "passwordUpdateDto.oldPassword", "Wrong old password.");
+            bindingResult.rejectValue(OLD_PASSWORD_FIELD_ATTR, PASSWORD_UPDATE_DTO_ATTR + "." + OLD_PASSWORD_FIELD_ATTR, "Wrong old password.");
             return PASSWORD_EDIT_PAGE;
         }
 
@@ -145,12 +157,12 @@ public class UserController {
         }
         User currentUser = userService.getByUsername(authentication.getName());
 
-        model.addAttribute("publicNameUpdateDto", new PublicNameUpdateDto(currentUser.getPublicName()));
+        model.addAttribute(PUBLIC_NAME_UPDATE_DTO_ATTR, new PublicNameUpdateDto(currentUser.getPublicName()));
         return "user/public-name-edit";
     }
 
     @PatchMapping("/profile/public-name")
-    public String updateCurrentUserPublicName(@ModelAttribute @Valid PublicNameUpdateDto publicNameUpdateDto, BindingResult bindingResult, Authentication authentication) {
+    public String updateCurrentUserPublicName(@ModelAttribute(PUBLIC_NAME_UPDATE_DTO_ATTR) @Valid PublicNameUpdateDto publicNameUpdateDto, BindingResult bindingResult, Authentication authentication) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
@@ -167,7 +179,7 @@ public class UserController {
     }
 
     @DeleteMapping("/admin/{id}")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable(ID) Long id) {
 
         userService.delete(id);
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;

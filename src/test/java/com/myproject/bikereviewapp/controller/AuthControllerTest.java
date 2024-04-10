@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 
+import static com.myproject.bikereviewapp.controller.MainController.BINDING_RESULT_ATTR;
+import static com.myproject.bikereviewapp.controller.UserController.USER_ATTR;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -79,24 +81,25 @@ class AuthControllerTest {
     }
 
     @Test
-    void signUp_shouldReturnSignUpForm_ifUserIsInvalid() throws Exception {
+    void signUp_shouldRedirectToSignUpForm_ifUserIsInvalid() throws Exception {
 
         mockMvc.perform(post("/signup")
                         .param("username", invalidInputUser.getUsername())
                         .param("password", invalidInputUser.getPassword())
                         .param("publicName", invalidInputUser.getPublicName())
-                ).andExpect(status().isOk())
-                .andExpect(view().name("auth/signup"));
+                ).andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/signup"));
     }
 
     @Test
-    void signUp_shouldReturnFieldErrors_ifUserIsInvalid() throws Exception {
+    void signUp_shouldAddUserAndBindingResultAttribute_ifUserIsInvalid() throws Exception {
 
         mockMvc.perform(post("/signup")
                         .param("username", invalidInputUser.getUsername())
                         .param("password", invalidInputUser.getPassword())
                         .param("publicName", invalidInputUser.getPublicName())
-                ).andExpect(model().attributeHasErrors("user"));
+                ).andExpect(flash().attribute(USER_ATTR, invalidInputUser))
+                .andExpect(flash().attributeExists(BINDING_RESULT_ATTR + USER_ATTR));
     }
 
     @Test
