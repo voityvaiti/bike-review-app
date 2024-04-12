@@ -115,8 +115,7 @@ class BrandControllerTest {
                         .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("currentPageNumber", pageNumber))
-                .andExpect(model().attribute("currentSort", sortStr));
+                .andExpect(model().attribute(SORT_ATTR, sortStr));
     }
 
     @Test
@@ -124,8 +123,7 @@ class BrandControllerTest {
 
         mockMvc.perform(get("/brands/admin"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("currentPageNumber"))
-                .andExpect(model().attributeExists("currentSort"));
+                .andExpect(model().attributeExists(SORT_ATTR));
     }
 
     @Test

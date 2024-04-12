@@ -39,8 +39,7 @@ public class BrandController {
 
         model.addAttribute(BRAND_PAGE_ATTR, brandService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
-        model.addAttribute("currentPageNumber", pageNumber);
-        model.addAttribute("currentSort", sort);
+        model.addAttribute(SORT_ATTR, sort);
 
         return "brand/admin/all";
     }

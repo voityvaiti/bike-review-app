@@ -11,7 +11,7 @@
     <link th:href="@{/style/main.css}" rel="stylesheet"/>
 </head>
 
-<body>
+<body th:with="url = @{/brands/admin}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
 
 <div th:replace="~{fragments/navbar/admin/header :: content}"></div>
 
@@ -29,9 +29,9 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr th:with="thNameArr=${ {'ID', 'Name', 'Country'} }, fieldParamArr=${ {'id', 'name','country'} }, url = @{/brands/admin}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
+            <tr th:with="thNameArr=${ {'ID', 'Name', 'Country'} }, fieldParamArr=${ {'id', 'name','country'} }">
 
-                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
+                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${brandPage.number}, ${sort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
 
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
@@ -72,7 +72,7 @@
 
         </table>
 
-        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${brandPage}, ${currentPageNumber}, ${currentSort}, @{/brands/admin}, 'pageNumber', 'sort')}"></div>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${brandPage}, ${sort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></div>
 
     </div>
 </div>
