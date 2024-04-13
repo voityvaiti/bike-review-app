@@ -145,8 +145,7 @@ class MotorcycleControllerTest {
                         .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("currentPageNumber", pageNumber))
-                .andExpect(model().attribute("currentSort", sortStr));
+                .andExpect(model().attribute(SORT_ATTR, sortStr));
     }
 
     @Test
@@ -154,8 +153,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("currentPageNumber"))
-                .andExpect(model().attributeExists("currentSort"));
+                .andExpect(model().attributeExists(SORT_ATTR));
     }
 
     @Test
@@ -197,8 +195,7 @@ class MotorcycleControllerTest {
                         .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("currentPageNumber", pageNumber))
-                .andExpect(model().attribute("currentSort", sortStr));
+                .andExpect(model().attribute(SORT_ATTR, sortStr));
     }
 
     @Test
@@ -206,8 +203,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/admin"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("currentPageNumber"))
-                .andExpect(model().attributeExists("currentSort"));
+                .andExpect(model().attributeExists(SORT_ATTR));
     }
 
 
@@ -265,8 +261,7 @@ class MotorcycleControllerTest {
                         .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
                         .param(REVIEW_SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("currentReviewPageNumber", pageNumber))
-                .andExpect(model().attribute("currentReviewSort", sortStr));
+                .andExpect(model().attribute(REVIEW_SORT_ATTR, sortStr));
     }
 
     @Test
@@ -274,8 +269,7 @@ class MotorcycleControllerTest {
 
         mockMvc.perform(get("/motorcycles/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("currentReviewPageNumber"))
-                .andExpect(model().attributeExists("currentReviewSort"));
+                .andExpect(model().attributeExists(REVIEW_SORT_ATTR));
     }
 
 

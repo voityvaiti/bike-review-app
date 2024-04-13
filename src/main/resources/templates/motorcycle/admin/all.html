@@ -11,7 +11,7 @@
     <link th:href="@{/style/main.css}" rel="stylesheet"/>
 </head>
 
-<body>
+<body th:with="url = @{/motorcycles/admin}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
 
 <div th:replace="~{fragments/navbar/admin/header :: content}"></div>
 
@@ -29,9 +29,9 @@
         <table class="table">
 
             <thead class="table-dark">
-            <tr th:with="thNameArr=${ {'ID', 'Brand', 'Model', 'Country', 'Avarage rating', 'Reviews'} }, fieldParamArr=${ {'id', 'brand.name', 'model', 'brand.country', 'avgRating', 'reviewsAmount'} }, url = @{/motorcycles/admin}, pageNumberParamName = 'pageNumber', sortParamName = 'sort'">
+            <tr th:with="thNameArr=${ {'ID', 'Brand', 'Model', 'Country', 'Avarage rating', 'Reviews'} }, fieldParamArr=${ {'id', 'brand.name', 'model', 'brand.country', 'avgRating', 'reviewsAmount'} }">
 
-                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${currentPageNumber}, ${currentSort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
+                <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${motorcyclePage.number}, ${sort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
 
                 <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
@@ -64,7 +64,7 @@
 
         </table>
 
-        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, @{/motorcycles/admin}, 'pageNumber', 'sort')}"></div>
+        <div th:replace="~{fragments/navbar/pagination :: paginationBar(${motorcyclePage}, ${sort}, @{/motorcycles/admin}, ${pageNumberParamName}, ${sortParamName})}"></div>
 
     </div>
 </div>

@@ -11,26 +11,26 @@
     <link th:href="@{/style/stars-rating-read.css}" rel="stylesheet"/>
 </head>
 
-<body>
+<body th:with="url = @{/motorcycles}, pageNumberParamName = 'pageNumber', sortParamName = 'sort', queryParamName = 'query'">
 
 <div th:replace="~{fragments/navbar/header :: content}"></div>
 
 <div class="container my-4">
 
-    <div th:with="linkTextArr=${ {'Popularity', 'Rating', 'A→Z', 'Z→A'} }, sortArr=${ {'reviewsAmount:desc', 'avgRating:desc', 'brand.name:asc, model:asc', 'brand.name:desc, model:desc'} }, url = @{/motorcycles}" class="d-flex justify-content-between">
+    <div th:with="linkTextArr=${ {'Popularity', 'Rating', 'A→Z', 'Z→A'} }, sortArr=${ {'reviewsAmount:desc', 'avgRating:desc', 'brand.name:asc, model:asc', 'brand.name:desc, model:desc'} }" class="d-flex justify-content-between">
 
-        <form method="GET" th:action="@{/motorcycles}" class="d-flex align-items-center">
-            <input type="text" name="q" th:value="${currentQuery}" class="form-control" placeholder="Search">
+        <form method="GET" th:action="${url}" class="d-flex align-items-center">
+            <input type="text" th:name="${queryParamName}" th:value="${query}" class="form-control" placeholder="Search">
 
-            <input type="hidden" name="pageNumber" th:value="${0}">
-            <input type="hidden" name="sort" th:value="${currentSort}">
+            <input type="hidden" th:name="${pageNumberParamName}" th:value="${0}">
+            <input type="hidden" th:name="${sortParamName}" th:value="${sort}">
 
             <button type="submit" class="btn btn-dark ms-1">
                 <img src="/img/search.png" class="search-icon" alt="Search" draggable="false">
             </button>
         </form>
 
-        <div th:replace="~{fragments/navbar/sort :: sortSelectorWithQueryParam(${linkTextArr}, ${sortArr}, ${currentPageNumber}, ${currentSort}, ${currentQuery}, ${url}, 'pageNumber', 'sort', 'q')}"></div>
+        <div th:replace="~{fragments/navbar/sort :: sortSelectorWithQueryParam(${linkTextArr}, ${sortArr}, ${motorcyclePage.number}, ${sort}, ${query}, ${url}, ${pageNumberParamName}, ${sortParamName}, ${queryParamName})}"></div>
     </div>
 
     <div class="row">
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments/navbar/pagination :: paginationBarWithQueryParam(${motorcyclePage}, ${currentPageNumber}, ${currentSort}, ${currentQuery}, @{/motorcycles}, 'pageNumber', 'sort', 'q')}"></div>
+    <div th:replace="~{fragments/navbar/pagination :: paginationBarWithQueryParam(${motorcyclePage}, ${sort}, ${query}, ${url}, ${pageNumberParamName}, ${sortParamName}, ${queryParamName})}"></div>
 
 </div>
 

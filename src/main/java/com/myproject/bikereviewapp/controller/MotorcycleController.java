@@ -52,7 +52,7 @@ public class MotorcycleController {
     public String showAll(Model model,
                           @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, name = PAGE_NUMBER_ATTR) Integer pageNumber,
                           @RequestParam(defaultValue = MOTORCYCLE_MAIN_PAGE_DEFAULT_SORT, name = SORT_ATTR) String sort,
-                          @RequestParam(required = false, name = "q") String query) {
+                          @RequestParam(required = false, name = "query") String query) {
 
         Page<Motorcycle> motorcyclePage;
         Pageable pageable = PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sortUtility.parseSort(sort));
@@ -65,9 +65,8 @@ public class MotorcycleController {
 
         model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcyclePage);
 
-        model.addAttribute("currentPageNumber", pageNumber);
-        model.addAttribute("currentSort", sort);
-        model.addAttribute("currentQuery", query);
+        model.addAttribute(SORT_ATTR, sort);
+        model.addAttribute("query", query);
 
         return "motorcycle/all";
     }
@@ -80,8 +79,7 @@ public class MotorcycleController {
 
         model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
-        model.addAttribute("currentPageNumber", pageNumber);
-        model.addAttribute("currentSort", sort);
+        model.addAttribute(SORT_ATTR, sort);
 
         return "motorcycle/admin/all";
     }
@@ -109,8 +107,7 @@ public class MotorcycleController {
         model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
         model.addAttribute("currentUserReview", currentUserReview);
 
-        model.addAttribute("currentReviewPageNumber", reviewPageNumber);
-        model.addAttribute("currentReviewSort", reviewSort);
+        model.addAttribute(REVIEW_SORT_ATTR, reviewSort);
 
 
         return "motorcycle/show";
