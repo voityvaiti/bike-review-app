@@ -40,9 +40,6 @@ class BrandControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    BrandController brandController;
-
 
     private static Page<Brand> brandPage;
     private static Brand brand;

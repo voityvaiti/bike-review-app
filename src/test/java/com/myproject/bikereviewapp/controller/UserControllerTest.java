@@ -155,7 +155,7 @@ class UserControllerTest {
     }
 
     @Test
-    void fProfile_shouldReturnAppropriateView() throws Exception {
+    void showCurrentUserProfile_shouldReturnAppropriateView() throws Exception {
 
         mockMvc.perform(get("/users/profile")
                         .principal(mockAuthentication))
