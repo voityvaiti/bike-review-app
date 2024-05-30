@@ -69,15 +69,15 @@ public class ReviewController {
             redirectAttributes.addAttribute(ID, review.getMotorcycle().getId());
             redirectAttributes.addAttribute(REVIEW_PAGE_NUMBER_ATTR, reviewPageNumber);
             redirectAttributes.addAttribute(REVIEW_SORT_ATTR, reviewSort);
-            return SHOW_MOTORCYCLE_REDIRECT;
+
+        } else {
+            review.setUser(userService.getByUsername(authentication.getName()));
+            reviewService.create(review);
+
+            redirectAttributes.addAttribute(ID, review.getMotorcycle().getId());
         }
 
-        review.setUser(userService.getByUsername(authentication.getName()));
-        reviewService.create(review);
-
-        redirectAttributes.addAttribute(ID, review.getMotorcycle().getId());
         return SHOW_MOTORCYCLE_REDIRECT;
-
     }
 
     @PatchMapping("/reaction")
