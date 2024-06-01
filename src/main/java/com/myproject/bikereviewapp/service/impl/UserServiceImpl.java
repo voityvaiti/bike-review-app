@@ -6,8 +6,7 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstrai
 import com.myproject.bikereviewapp.repository.UserRepository;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +15,9 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-
 
     private final UserRepository userRepository;
 
@@ -36,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isCorrectCredentials(String username, String password) {
 
-        LOGGER.debug("Checking credentials of user with username: {}", username);
+        log.debug("Checking credentials of user with username: {}", username);
 
         User user = getByUsername(username);
 
@@ -46,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getAll(Pageable pageable) {
 
-        LOGGER.debug("Page request received: {}", pageable);
+        log.debug("Page request received: {}", pageable);
 
         return userRepository.findAll(pageable);
     }
@@ -54,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Long id) {
 
-        LOGGER.debug("Looking for User with ID: {}", id);
+        log.debug("Looking for User with ID: {}", id);
 
         return userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("User with id " + id + " not found")
@@ -64,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByUsername(String username) {
 
-        LOGGER.debug("Looking for User with username: {}", username);
+        log.debug("Looking for User with username: {}", username);
 
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new EntityNotFoundException("User with username " + username + " not found")
@@ -81,7 +78,7 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
-        LOGGER.debug("Saving new User: {}", user);
+        log.debug("Saving new User: {}", user);
 
         return userRepository.save(user);
     }
@@ -95,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(currentUser);
 
-        LOGGER.debug("Toggled status of User with ID: {}", id);
+        log.debug("Toggled status of User with ID: {}", id);
     }
 
     @Override
@@ -105,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(password));
 
-        LOGGER.debug("Saving User with updated password with ID: {}", id);
+        log.debug("Saving User with updated password with ID: {}", id);
 
         return userRepository.save(user);
     }
@@ -117,7 +114,7 @@ public class UserServiceImpl implements UserService {
 
         user.setPublicName(publicName);
 
-        LOGGER.debug("Saving User with updated public name with ID: {}", id);
+        log.debug("Saving User with updated public name with ID: {}", id);
 
         return userRepository.save(user);
     }
@@ -126,7 +123,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
 
-        LOGGER.debug("Removing User with ID: {}", id);
+        log.debug("Removing User with ID: {}", id);
 
         userRepository.delete(getById(id));
     }

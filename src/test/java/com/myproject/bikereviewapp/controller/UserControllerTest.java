@@ -143,8 +143,7 @@ class UserControllerTest {
                         .param(PAGE_SIZE_ATTR, String.valueOf(pageSize))
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("currentPageNumber", pageNumber))
-                .andExpect(model().attribute("currentSort", sortStr));
+                .andExpect(model().attribute(SORT_ATTR, sortStr));
     }
 
     @Test
@@ -152,12 +151,11 @@ class UserControllerTest {
 
         mockMvc.perform(get("/users/admin"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("currentPageNumber"))
-                .andExpect(model().attributeExists("currentSort"));
+                .andExpect(model().attributeExists(SORT_ATTR));
     }
 
     @Test
-    void fProfile_shouldReturnAppropriateView() throws Exception {
+    void showCurrentUserProfile_shouldReturnAppropriateView() throws Exception {
 
         mockMvc.perform(get("/users/profile")
                         .principal(mockAuthentication))
@@ -218,8 +216,7 @@ class UserControllerTest {
                         .param(REVIEW_SORT_ATTR, sortStr)
                         .principal(mockAuthentication))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("currentReviewPageNumber", pageNumber))
-                .andExpect(model().attribute("currentReviewSort", sortStr));
+                .andExpect(model().attribute(REVIEW_SORT_ATTR, sortStr));
     }
 
     @Test
@@ -228,8 +225,7 @@ class UserControllerTest {
         mockMvc.perform(get("/users/profile")
                         .principal(mockAuthentication))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("currentReviewPageNumber"))
-                .andExpect(model().attributeExists("currentReviewSort"));
+                .andExpect(model().attributeExists(REVIEW_SORT_ATTR));
     }
 
     @Test

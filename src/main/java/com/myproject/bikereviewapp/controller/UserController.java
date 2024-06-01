@@ -58,8 +58,7 @@ public class UserController {
 
         model.addAttribute(USER_PAGE_ATTR, userService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
 
-        model.addAttribute("currentPageNumber", pageNumber);
-        model.addAttribute("currentSort", sort);
+        model.addAttribute(SORT_ATTR, sort);
 
         return "user/admin/all";
     }
@@ -77,8 +76,7 @@ public class UserController {
         model.addAttribute(USER_ATTR, currentUser);
 
         model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
-        model.addAttribute("currentReviewPageNumber", reviewPageNumber);
-        model.addAttribute("currentReviewSort", reviewSort);
+        model.addAttribute(REVIEW_SORT_ATTR, reviewSort);
 
         return "user/profile";
     }
