@@ -1,5 +1,6 @@
 package com.myproject.bikereviewapp.exceptionhandler;
 
+import com.myproject.bikereviewapp.exceptionhandler.exception.CloudException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
@@ -31,6 +32,12 @@ public class GlobalExceptionHandler {
             RuntimeException exception, Model model, HttpServletResponse response
     ) {
         return handleException(exception, model, HttpStatus.UNAUTHORIZED, response);
+    }
+
+    @ExceptionHandler(CloudException.class)
+    public String handleCloudUploadingException(CloudException ex, Model model, HttpServletResponse response) {
+
+        return handleException(ex, model, HttpStatus.INTERNAL_SERVER_ERROR, response);
     }
 
     @ExceptionHandler({RuntimeException.class})
