@@ -46,6 +46,9 @@ public class User {
     @UserPublicName
     private String publicName;
 
+    @Column(name = "img_url")
+    private String imgUrl;
+
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
 

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 @Entity
 @Table(name = "brand")
 @AllArgsConstructor
@@ -33,6 +34,9 @@ public class Brand {
     @NotBlank(message = "Country cannot be blank.")
     @Size(max = 30, message = "Country cannot be longer then 30 characters.")
     private String country;
+
+    @Column(name = "img_url")
+    private String imgUrl;
 
     @OneToMany(mappedBy = "brand")
     private List<Motorcycle> motorcycles = new ArrayList<>();

@@ -42,6 +42,9 @@ public class Motorcycle {
     @Formula("(SELECT AVG(r.rating) FROM Review r WHERE r.motorcycle_id = id)")
     private Float avgRating;
 
+    @Column(name = "img_url")
+    private String imgUrl;
+
     @OneToMany(mappedBy = "motorcycle")
     private List<Review> reviews = new ArrayList<>();
 
