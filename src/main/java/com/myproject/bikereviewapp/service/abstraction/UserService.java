@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.service.abstraction;
 import com.myproject.bikereviewapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -23,6 +24,8 @@ public interface UserService {
     User updatePassword(Long id, String password);
 
     User updatePublicName(Long id, String publicName);
+
+    void uploadImg(Long id, MultipartFile file);
 
     void delete(Long id);
     

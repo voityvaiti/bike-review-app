@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.service.impl;
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
+import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 
@@ -18,7 +20,12 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class MotorcycleServiceImpl implements MotorcycleService {
 
+    private static final String MOTORCYCLE_IMAGES_FOLDER = "motorcycle";
+
+
     private final MotorcycleRepository motorcycleRepository;
+
+    private final CloudService cloudService;
 
 
     @Override
@@ -71,6 +78,23 @@ public class MotorcycleServiceImpl implements MotorcycleService {
         log.debug("Saving updated Motorcycle: {}", currentMotorcycle);
 
         return motorcycleRepository.save(currentMotorcycle);
+    }
+
+    @Override
+    public void uploadImg(Long id, MultipartFile file) {
+
+        Motorcycle motorcycle = motorcycleRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Motorcycle with id " + id + "not found")
+        );
+
+        if(motorcycle.getImgUrl() != null && !motorcycle.getImgUrl().isBlank()) {
+            cloudService.delete(MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString());
+        }
+
+        motorcycle.setImgUrl(
+                cloudService.upload(file, MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString())
+        );
+        motorcycleRepository.save(motorcycle);
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.myproject.bikereviewapp.service.impl;
 
+import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
+import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -19,7 +21,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private static final String USER_IMAGES_FOLDER = "user";
+
+
     private final UserRepository userRepository;
+
+    private final CloudService cloudService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -117,6 +124,23 @@ public class UserServiceImpl implements UserService {
         log.debug("Saving User with updated public name with ID: {}", id);
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public void uploadImg(Long id, MultipartFile file) {
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("user with id " + id + "not found")
+        );
+
+        if(user.getImgUrl() != null && !user.getImgUrl().isBlank()) {
+            cloudService.delete(USER_IMAGES_FOLDER, user.getId().toString());
+        }
+
+        user.setImgUrl(
+                cloudService.upload(file, USER_IMAGES_FOLDER, user.getId().toString())
+        );
+        userRepository.save(user);
     }
 
 
