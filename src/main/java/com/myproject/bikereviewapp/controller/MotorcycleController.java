@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.myproject.bikereviewapp.controller.MainController.*;
@@ -162,6 +163,15 @@ public class MotorcycleController {
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
+
+    @PostMapping("/admin/{id}/upload-image")
+    public String uploadImage(@PathVariable("id") Long id, @RequestParam("image") MultipartFile image) {
+
+        motorcycleService.uploadImg(id, image);
+
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
+    }
+
 
     @DeleteMapping("/admin/{id}")
     public String delete(@PathVariable(ID) Long id) {

@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.myproject.bikereviewapp.controller.MainController.*;
@@ -172,6 +173,19 @@ public class UserController {
         User currentUser = userService.getByUsername(authentication.getName());
 
         userService.updatePublicName(currentUser.getId(), publicNameUpdateDto.getPublicName());
+
+        return "redirect:/users/profile";
+    }
+
+    @PostMapping("/profile/upload-image")
+    public String uploadImage(@RequestParam("image") MultipartFile image, Authentication authentication) {
+
+        if (authentication == null) {
+            throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
+        }
+        User currentUser = userService.getByUsername(authentication.getName());
+
+        userService.uploadImg(currentUser.getId(), image);
 
         return "redirect:/users/profile";
     }

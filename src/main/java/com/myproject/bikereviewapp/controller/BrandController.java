@@ -2,6 +2,7 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
+import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.myproject.bikereviewapp.controller.MainController.*;
@@ -26,9 +28,9 @@ public class BrandController {
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/brands/admin";
 
     private final BrandService brandService;
+    private final CloudService cloudService;
 
     private final SortUtility sortUtility;
-
 
 
     @GetMapping("/admin")
@@ -90,6 +92,14 @@ public class BrandController {
         }
 
         brandService.update(id, brand);
+
+        return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
+    }
+
+    @PostMapping("/admin/{id}/upload-image")
+    public String uploadImage(@PathVariable("id") Long id, @RequestParam("image") MultipartFile image) {
+
+        brandService.uploadImg(id, image);
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
