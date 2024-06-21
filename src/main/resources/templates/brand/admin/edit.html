@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Edit brand</title>
@@ -14,12 +12,8 @@
 <div th:replace="~{fragments/navbar/admin/header :: content}"></div>
 
 <div class="d-flex justify-content-center mt-4">
-
     <div class="w-25">
-
-        <form th:method="PUT" th:action="@{/brands/admin/{id}(id=${brand.getId()})}" th:object="${brand}"
-              class="border border-black rounded p-4">
-
+        <form th:method="PUT" th:action="@{/brands/admin/{id}(id=${brand.getId()})}" th:object="${brand}" class="border border-black rounded p-4">
             <h1 class="text-center">Edit Brand</h1>
 
             <div class="form-group mb-2">
@@ -35,7 +29,14 @@
             </div>
 
             <button type="submit" class="btn btn-dark">Update</button>
+        </form>
 
+        <form th:method="post" th:action="@{/brands/admin/{id}/upload-image(id=${brand.getId()})}" enctype="multipart/form-data" class="mt-4">
+            <div class="form-group mb-2">
+                <label for="image">Upload Image</label>
+                <input type="file" class="form-control" id="image" name="image">
+            </div>
+            <button type="submit" class="btn btn-dark">Upload Image</button>
         </form>
     </div>
 </div>
