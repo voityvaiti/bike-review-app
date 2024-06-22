@@ -43,6 +43,16 @@
             <button type="submit" class="btn btn-dark">Update</button>
 
         </form>
+
+
+        <form th:method="post" th:action="@{/motorcycles/admin/{id}/upload-image(id=${motorcycle.getId()})}" enctype="multipart/form-data" class="mt-4">
+            <div class="form-group mb-2">
+                <label for="image">Upload Image</label>
+                <input type="file" class="form-control" id="image" name="image">
+            </div>
+            <button type="submit" class="btn btn-dark">Upload Image</button>
+        </form>
+
     </div>
 </div>
 

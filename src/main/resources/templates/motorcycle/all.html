@@ -40,7 +40,7 @@
             <a class="d-flex flex-column align-items-center border border-black rounded text-decoration-none text-black p-3 h-100"
                th:href="@{/motorcycles/{id}(id=${motorcycle.getId()})}">
 
-                <img th:src="@{/img/motorcycle.png}" class="img-thumbnail border-0 mb-1" alt="Motorcycle" draggable="false">
+                <img th:src="${motorcycle.imgUrl ?: '/img/motorcycle.png'}" class="img-thumbnail border-0 mb-1" alt="Motorcycle" draggable="false">
                 <h4 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"
                       class="text-center mb-1"></h4>
 
