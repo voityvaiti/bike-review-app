@@ -23,10 +23,15 @@
 
             <h1 class="text-center">Profile</h1>
 
+            <div class="d-flex justify-content-center mb-1">
+                <img th:src="${user.imgUrl ?: '/img/user.png'}" class="user-img rounded-circle" alt="Profile img"/>
+            </div>
+
             <p class="text-center bold">
                 <span th:if="${user.isEnabled()}" class="text-success">ENABLED</span>
                 <span th:unless="${user.isEnabled()}" class="text-danger">DISABLED</span>
             </p>
+
 
             <p th:text="${'Username: ' + user.getUsername()}"></p>
 
@@ -39,6 +44,14 @@
 
             <a th:href="@{/users/profile/password-edit}" class="text-black">Change password</a>
 
+<!--            <form th:action="@{/users/profile/upload-image}" method="post" enctype="multipart/form-data" class="mt-3">-->
+<!--                <div class="mb-3">-->
+<!--                    <label for="image" class="form-label">Update Profile Image:</label>-->
+<!--                    <input type="file" class="form-control" id="image" name="image" accept="image/*">-->
+<!--                </div>-->
+<!--                <button type="submit" class="btn btn-primary">Upload</button>-->
+<!--            </form>-->
+
             <div class="d-flex justify-content-center">
                 <a th:href="@{/logout}" class="btn btn-dark">Log Out</a>
             </div>
@@ -50,7 +63,8 @@
 <div th:with="reviews=${reviewPage.content}" class="d-flex justify-content-center mt-3">
     <div class="w-50">
 
-        <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }" class="d-flex justify-content-between mt-4 mb-2">
+        <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }"
+             class="d-flex justify-content-between mt-4 mb-2">
 
             <h3 class="mb-0">Reviews (<span th:text="${user.getReviews().size()}"></span>):</h3>
 
