@@ -4,6 +4,7 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
+import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,10 @@ class BrandServiceImplTest {
     
     @MockBean
     BrandRepository brandRepository;
+
+    @MockBean
+    CloudService cloudService;
+
 
     @Autowired
     BrandService brandService;
