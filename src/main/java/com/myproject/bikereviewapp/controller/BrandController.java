@@ -28,7 +28,6 @@ public class BrandController {
     private static final String REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL = "redirect:/brands/admin";
 
     private final BrandService brandService;
-    private final CloudService cloudService;
 
     private final SortUtility sortUtility;
 
