@@ -44,11 +44,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Brand getById(Long id) {
 
-        log.debug("Looking for Brand with ID: {}", id);
-
-        return brandRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Brand with id " + id + "not found")
-        );
+        return getBrandById(id);
     }
 
     @Override
@@ -62,7 +58,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Brand update(Long id, Brand updatedBrand) {
 
-        Brand currentBrand = getById(id);
+        Brand currentBrand = getBrandById(id);
 
         log.debug("Updating Brand: {}", currentBrand);
 
@@ -77,9 +73,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public void uploadImg(Long id, MultipartFile file) {
 
-        Brand brand = brandRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Brand with id " + id + "not found")
-        );
+        Brand brand = getBrandById(id);
 
         if(brand.getImgUrl() != null && !brand.getImgUrl().isBlank()) {
             cloudService.delete(BRAND_IMAGES_FOLDER, brand.getId().toString());
@@ -98,5 +92,15 @@ public class BrandServiceImpl implements BrandService {
 
         brandRepository.delete(getById(id));
         cloudService.delete(BRAND_IMAGES_FOLDER, id.toString());
+    }
+
+
+    private Brand getBrandById(Long id) {
+
+        log.debug("Looking for Brand with ID: {}", id);
+
+        return brandRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Brand with id " + id + "not found")
+        );
     }
 }

@@ -36,11 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review getById(Long id) {
 
-        log.debug("Looking for Review with ID: {}", id);
-
-        return reviewRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Review with id " + id + " not found")
-        );
+        return getReviewById(id);
     }
 
     @Override
@@ -113,5 +109,15 @@ public class ReviewServiceImpl implements ReviewService {
         log.debug("Removing Review with ID: {}", id);
 
         reviewRepository.deleteById(id);
+    }
+
+
+    private Review getReviewById(Long id) {
+
+        log.debug("Looking for Review with ID: {}", id);
+
+        return reviewRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Review with id " + id + " not found")
+        );
     }
 }

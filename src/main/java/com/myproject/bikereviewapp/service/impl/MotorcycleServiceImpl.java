@@ -50,11 +50,7 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     @Override
     public Motorcycle getById(Long id) {
 
-        log.debug("Looking for Motorcycle with ID: {}", id);
-
-        return motorcycleRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Motorcycle with id " + id + " not found.")
-        );
+        return getMotorcycleById(id);
     }
 
     @Override
@@ -68,7 +64,7 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     @Override
     public Motorcycle update(Long id, Motorcycle updatedMotorcycle) {
 
-        Motorcycle currentMotorcycle = getById(id);
+        Motorcycle currentMotorcycle = getMotorcycleById(id);
 
         log.debug("Updating Motorcycle: {}", currentMotorcycle);
 
@@ -83,9 +79,7 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     @Override
     public void uploadImg(Long id, MultipartFile file) {
 
-        Motorcycle motorcycle = motorcycleRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Motorcycle with id " + id + "not found")
-        );
+        Motorcycle motorcycle = getMotorcycleById(id);
 
         if(motorcycle.getImgUrl() != null && !motorcycle.getImgUrl().isBlank()) {
             cloudService.delete(MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString());
@@ -103,5 +97,15 @@ public class MotorcycleServiceImpl implements MotorcycleService {
         log.debug("Removing Motorcycle with ID: {}", id);
 
         motorcycleRepository.delete(getById(id));
+    }
+
+
+    private Motorcycle getMotorcycleById(Long id) {
+
+        log.debug("Looking for Motorcycle with ID: {}", id);
+
+        return motorcycleRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Motorcycle with id " + id + " not found.")
+        );
     }
 }

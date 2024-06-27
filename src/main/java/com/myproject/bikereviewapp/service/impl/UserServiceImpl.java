@@ -58,11 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Long id) {
 
-        log.debug("Looking for User with ID: {}", id);
-
-        return userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("User with id " + id + " not found")
-        );
+        return getUserById(id);
     }
 
     @Override
@@ -93,7 +89,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void toggleStatus(Long id) {
 
-        User currentUser = getById(id);
+        User currentUser = getUserById(id);
 
         currentUser.setEnabled(!currentUser.isEnabled());
 
@@ -105,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updatePassword(Long id, String password) {
 
-        User user = getById(id);
+        User user = getUserById(id);
 
         user.setPassword(passwordEncoder.encode(password));
 
@@ -117,7 +113,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updatePublicName(Long id, String publicName) {
 
-        User user = getById(id);
+        User user = getUserById(id);
 
         user.setPublicName(publicName);
 
@@ -129,9 +125,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void uploadImg(Long id, MultipartFile file) {
 
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("user with id " + id + "not found")
-        );
+        User user = getUserById(id);
 
         if(user.getImgUrl() != null && !user.getImgUrl().isBlank()) {
             cloudService.delete(USER_IMAGES_FOLDER, user.getId().toString());
@@ -150,5 +144,15 @@ public class UserServiceImpl implements UserService {
         log.debug("Removing User with ID: {}", id);
 
         userRepository.delete(getById(id));
+    }
+
+
+    private User getUserById(Long id) {
+
+        log.debug("Looking for User with ID: {}", id);
+
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User with id " + id + " not found")
+        );
     }
 }
