@@ -5,6 +5,7 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
+import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,11 @@ class UserServiceImplTest {
     UserRepository userRepository;
 
     @MockBean
+    CloudService cloudService;
+
+    @MockBean
     PasswordEncoder passwordEncoder;
+
 
     @Autowired
     UserService userService;
@@ -53,6 +58,7 @@ class UserServiceImplTest {
 
     @Test
     void isCorrectCredentials_shouldReturnFalse_ifPasswordsMismatches() {
+
         Long id = 10L;
         String username = "someUsername";
         String password = "somePassword";
@@ -172,12 +178,11 @@ class UserServiceImplTest {
 
         User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
 
-        UserService spyUserService = spy(userService);
-        doReturn(user).when(spyUserService).getById(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        spyUserService.toggleStatus(id);
+        userService.toggleStatus(id);
 
-        verify(spyUserService).getById(id);
+        verify(userRepository).findById(id);
         verify(userRepository).save(any(User.class));
     }
 
@@ -188,12 +193,11 @@ class UserServiceImplTest {
         User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
         User expectedUser = new User(user.getId(), user.getUsername(), user.getPassword(), !user.isEnabled(), user.getRole(), user.getPublicName());
 
-        UserService spyUserService = spy(userService);
-        doReturn(user).when(spyUserService).getById(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        spyUserService.toggleStatus(id);
+        userService.toggleStatus(id);
 
-        verify(spyUserService).getById(id);
+        verify(userRepository).findById(id);
         verify(userRepository).save(expectedUser);
     }
 
@@ -204,12 +208,11 @@ class UserServiceImplTest {
 
         User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
 
-        UserService spyUserService = spy(userService);
-        doReturn(user).when(spyUserService).getById(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        spyUserService.updatePassword(id, updatedPassword);
+        userService.updatePassword(id, updatedPassword);
 
-        verify(spyUserService).getById(id);
+        verify(userRepository).findById(id);
         verify(userRepository).save(any(User.class));
     }
 
@@ -223,14 +226,12 @@ class UserServiceImplTest {
         User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
         User expectedUser = new User(id, "someUsername", encodedUpdatedPassword, true, Role.CLIENT, "somePublicName");
 
-        UserService spyUserService = spy(userService);
-
-        doReturn(user).when(spyUserService).getById(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(passwordEncoder.encode(updatedPassword)).thenReturn(encodedUpdatedPassword);
 
-        spyUserService.updatePassword(id, updatedPassword);
+        userService.updatePassword(id, updatedPassword);
 
-        verify(spyUserService).getById(id);
+        verify(userRepository).findById(id);
         verify(userRepository).save(expectedUser);
     }
 
@@ -242,12 +243,11 @@ class UserServiceImplTest {
 
         User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
 
-        UserService spyUserService = spy(userService);
-        doReturn(user).when(spyUserService).getById(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        spyUserService.updatePublicName(id, updatedPublicName);
+        userService.updatePublicName(id, updatedPublicName);
 
-        verify(spyUserService).getById(id);
+        verify(userRepository).findById(id);
         verify(userRepository).save(any(User.class));
     }
 
@@ -261,12 +261,11 @@ class UserServiceImplTest {
         User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
         User expectedUser = new User(user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getRole(), updatedPublicName);
 
-        UserService spyUserService = spy(userService);
-        doReturn(user).when(spyUserService).getById(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        spyUserService.updatePublicName(id, updatedPublicName);
+        userService.updatePublicName(id, updatedPublicName);
 
-        verify(spyUserService).getById(id);
+        verify(userRepository).findById(id);
         verify(userRepository).save(expectedUser);
     }
 
