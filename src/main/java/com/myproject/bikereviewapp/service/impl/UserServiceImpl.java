@@ -144,6 +144,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Removing User with ID: {}", id);
 
         userRepository.delete(getById(id));
+        cloudService.delete(USER_IMAGES_FOLDER, id.toString());
     }
 
 
