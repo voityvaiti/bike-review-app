@@ -5,6 +5,7 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundExce
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +21,8 @@ public class GlobalExceptionHandler {
     private static final String ERROR_DETAILS_ATTR = "errorDetails";
     private static final String ERROR_PAGE = "error/error_page";
 
-    @ExceptionHandler({EntityNotFoundException.class, UniquenessConstraintViolationException.class})
+
+    @ExceptionHandler({EntityNotFoundException.class, UniquenessConstraintViolationException.class, ConstraintViolationException.class})
     public String handleBadRequestExceptions(
             RuntimeException exception, Model model, HttpServletResponse response
     ) {
@@ -39,6 +41,7 @@ public class GlobalExceptionHandler {
 
         return handleException(ex, model, HttpStatus.INTERNAL_SERVER_ERROR, response);
     }
+
 
     @ExceptionHandler({RuntimeException.class})
     public String handleRuntimeException(RuntimeException e, Model model, HttpServletResponse response) {

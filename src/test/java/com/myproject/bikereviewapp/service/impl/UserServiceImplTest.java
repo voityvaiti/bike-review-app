@@ -5,7 +5,7 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
-import com.myproject.bikereviewapp.service.abstraction.CloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ class UserServiceImplTest {
     UserRepository userRepository;
 
     @MockBean
-    CloudService cloudService;
+    ImageCloudService imageCloudService;
 
     @MockBean
     PasswordEncoder passwordEncoder;

@@ -4,7 +4,7 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
-import com.myproject.bikereviewapp.service.abstraction.CloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ class MotorcycleServiceImplTest {
     MotorcycleRepository motorcycleRepository;
 
     @MockBean
-    CloudService cloudService;
+    ImageCloudService imageCloudService;
 
 
     @Autowired
