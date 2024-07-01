@@ -1,11 +1,10 @@
 package com.myproject.bikereviewapp.service.impl;
 
-import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
-import com.myproject.bikereviewapp.service.abstraction.CloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final CloudService cloudService;
+    private final ImageCloudService imageCloudService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -128,11 +127,11 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(id);
 
         if(user.getImgUrl() != null && !user.getImgUrl().isBlank()) {
-            cloudService.delete(USER_IMAGES_FOLDER, user.getId().toString());
+            imageCloudService.deleteImg(USER_IMAGES_FOLDER, user.getId().toString());
         }
 
         user.setImgUrl(
-                cloudService.upload(file, USER_IMAGES_FOLDER, user.getId().toString())
+                imageCloudService.uploadImg(file, USER_IMAGES_FOLDER, user.getId().toString())
         );
         userRepository.save(user);
     }
@@ -144,7 +143,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Removing User with ID: {}", id);
 
         userRepository.delete(getById(id));
-        cloudService.delete(USER_IMAGES_FOLDER, id.toString());
+        imageCloudService.deleteImg(USER_IMAGES_FOLDER, id.toString());
     }
 
 

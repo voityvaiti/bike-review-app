@@ -4,7 +4,7 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
-import com.myproject.bikereviewapp.service.abstraction.CloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,7 @@ public class BrandServiceImpl implements BrandService {
 
     private final BrandRepository brandRepository;
 
-    private final CloudService cloudService;
+    private final ImageCloudService imageCloudService;
 
 
     @Override
@@ -76,11 +76,11 @@ public class BrandServiceImpl implements BrandService {
         Brand brand = getBrandById(id);
 
         if(brand.getImgUrl() != null && !brand.getImgUrl().isBlank()) {
-            cloudService.delete(BRAND_IMAGES_FOLDER, brand.getId().toString());
+            imageCloudService.deleteImg(BRAND_IMAGES_FOLDER, brand.getId().toString());
         }
 
         brand.setImgUrl(
-                cloudService.upload(file, BRAND_IMAGES_FOLDER, brand.getId().toString())
+                imageCloudService.uploadImg(file, BRAND_IMAGES_FOLDER, brand.getId().toString())
         );
         brandRepository.save(brand);
     }
@@ -91,7 +91,7 @@ public class BrandServiceImpl implements BrandService {
         log.debug("Removing Brand with ID: {}", id);
 
         brandRepository.delete(getById(id));
-        cloudService.delete(BRAND_IMAGES_FOLDER, id.toString());
+        imageCloudService.deleteImg(BRAND_IMAGES_FOLDER, id.toString());
     }
 
 

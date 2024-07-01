@@ -11,6 +11,7 @@ public class MainController {
     protected static final String PAGE_NUMBER_ATTR = "pageNumber";
     protected static final String PAGE_SIZE_ATTR = "pageSize";
     protected static final String SORT_ATTR = "sort";
+    protected static final String IMAGE_DTO_ATTR = "imageDto";
 
     protected static final String DEFAULT_PAGE_NUMBER = "0";
     protected static final String DEFAULT_ADMIN_PAGE_SIZE = "20";

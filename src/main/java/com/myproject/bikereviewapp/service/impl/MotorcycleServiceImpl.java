@@ -3,7 +3,7 @@ package com.myproject.bikereviewapp.service.impl;
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
-import com.myproject.bikereviewapp.service.abstraction.CloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
     private final MotorcycleRepository motorcycleRepository;
 
-    private final CloudService cloudService;
+    private final ImageCloudService imageCloudService;
 
 
     @Override
@@ -82,11 +82,11 @@ public class MotorcycleServiceImpl implements MotorcycleService {
         Motorcycle motorcycle = getMotorcycleById(id);
 
         if(motorcycle.getImgUrl() != null && !motorcycle.getImgUrl().isBlank()) {
-            cloudService.delete(MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString());
+            imageCloudService.deleteImg(MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString());
         }
 
         motorcycle.setImgUrl(
-                cloudService.upload(file, MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString())
+                imageCloudService.uploadImg(file, MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString())
         );
         motorcycleRepository.save(motorcycle);
     }
@@ -97,7 +97,7 @@ public class MotorcycleServiceImpl implements MotorcycleService {
         log.debug("Removing Motorcycle with ID: {}", id);
 
         motorcycleRepository.delete(getById(id));
-        cloudService.delete(MOTORCYCLE_IMAGES_FOLDER, id.toString());
+        imageCloudService.deleteImg(MOTORCYCLE_IMAGES_FOLDER, id.toString());
     }
 
 
