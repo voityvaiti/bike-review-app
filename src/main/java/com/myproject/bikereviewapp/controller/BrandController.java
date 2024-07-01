@@ -1,8 +1,8 @@
 package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Brand;
+import com.myproject.bikereviewapp.entity.dto.ImageDto;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
-import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.utility.SortUtility;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.myproject.bikereviewapp.controller.MainController.*;
@@ -76,6 +75,10 @@ public class BrandController {
         if (!model.containsAttribute(BRAND_ATTR)) {
             model.addAttribute(BRAND_ATTR, brandService.getById(id));
         }
+        if (!model.containsAttribute(IMAGE_DTO_ATTR)) {
+            model.addAttribute(IMAGE_DTO_ATTR, new ImageDto());
+        }
+
         return "brand/admin/edit";
     }
 
@@ -96,9 +99,16 @@ public class BrandController {
     }
 
     @PostMapping("/admin/{id}/upload-image")
-    public String uploadImage(@PathVariable("id") Long id, @RequestParam("image") MultipartFile image) {
+    public String uploadImage(@PathVariable("id") Long id, @ModelAttribute(IMAGE_DTO_ATTR) @Valid ImageDto imageDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        brandService.uploadImg(id, image);
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addAttribute(ID, id);
+            redirectAttributes.addFlashAttribute(IMAGE_DTO_ATTR, imageDto);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + IMAGE_DTO_ATTR, bindingResult);
+            return "redirect:/brands/admin/edit/{id}";
+        }
+
+        brandService.uploadImg(id, imageDto.getImage());
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
