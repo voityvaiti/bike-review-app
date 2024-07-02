@@ -3,6 +3,7 @@ package com.myproject.bikereviewapp.controller;
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.User;
+import com.myproject.bikereviewapp.entity.dto.ImageDto;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
@@ -144,7 +145,9 @@ public class MotorcycleController {
         if (!model.containsAttribute(MOTORCYCLE_ATTR)) {
             model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
         }
-        model.addAttribute(BRAND_LIST_ATTR, brandService.getAll());
+        if (!model.containsAttribute(IMAGE_DTO_ATTR)) {
+            model.addAttribute(IMAGE_DTO_ATTR, new ImageDto());
+        }
 
         return "motorcycle/admin/edit";
     }
@@ -165,9 +168,16 @@ public class MotorcycleController {
     }
 
     @PostMapping("/admin/{id}/upload-image")
-    public String uploadImage(@PathVariable("id") Long id, @RequestParam("image") MultipartFile image) {
+    public String uploadImage(@PathVariable("id") Long id, @ModelAttribute(IMAGE_DTO_ATTR) @Valid ImageDto imageDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        motorcycleService.uploadImg(id, image);
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addAttribute(ID, id);
+            redirectAttributes.addFlashAttribute(IMAGE_DTO_ATTR, imageDto);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + IMAGE_DTO_ATTR, bindingResult);
+            return "redirect:/motorcycles/admin/edit/{id}";
+        }
+
+        motorcycleService.uploadImg(id, imageDto.getImage());
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }
