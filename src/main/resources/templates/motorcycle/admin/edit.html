@@ -45,10 +45,11 @@
         </form>
 
 
-        <form th:method="post" th:action="@{/motorcycles/admin/{id}/upload-image(id=${motorcycle.getId()})}" enctype="multipart/form-data" class="mt-4">
+        <form th:method="post" th:action="@{/motorcycles/admin/{id}/upload-image(id=${motorcycle.getId()})}" th:object="${imageDto}" enctype="multipart/form-data" class="mt-4">
             <div class="form-group mb-2">
                 <label for="image">Upload Image</label>
-                <input type="file" class="form-control" id="image" name="image">
+                <input type="file" th:field="*{image}" class="form-control" id="image">
+                <div th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="form-text text-danger"></div>
             </div>
             <button type="submit" class="btn btn-dark">Upload Image</button>
         </form>
