@@ -2,6 +2,7 @@ package com.myproject.bikereviewapp.controller;
 
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
+import com.myproject.bikereviewapp.entity.dto.ImageDto;
 import com.myproject.bikereviewapp.entity.dto.PasswordUpdateDto;
 import com.myproject.bikereviewapp.entity.dto.PublicNameUpdateDto;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
@@ -75,6 +76,10 @@ public class UserController {
         User currentUser = userService.getByUsername(authentication.getName());
 
         model.addAttribute(USER_ATTR, currentUser);
+
+        if (!model.containsAttribute(IMAGE_DTO_ATTR)) {
+            model.addAttribute(IMAGE_DTO_ATTR, new ImageDto());
+        }
 
         model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
         model.addAttribute(REVIEW_SORT_ATTR, reviewSort);
@@ -178,14 +183,20 @@ public class UserController {
     }
 
     @PostMapping("/profile/upload-image")
-    public String uploadImage(@RequestParam("image") MultipartFile image, Authentication authentication) {
+    public String uploadImage(Authentication authentication, @ModelAttribute(IMAGE_DTO_ATTR) @Valid ImageDto imageDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (authentication == null) {
             throw new UserIsNotAuthorizedException(USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE);
         }
         User currentUser = userService.getByUsername(authentication.getName());
 
-        userService.uploadImg(currentUser.getId(), image);
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute(IMAGE_DTO_ATTR, imageDto);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + IMAGE_DTO_ATTR, bindingResult);
+            return "redirect:/motorcycles/admin/edit/{id}";
+        }
+
+        userService.uploadImg(currentUser.getId(), imageDto.getImage());
 
         return "redirect:/users/profile";
     }
