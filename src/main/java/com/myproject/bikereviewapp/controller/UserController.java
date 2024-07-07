@@ -193,7 +193,7 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute(IMAGE_DTO_ATTR, imageDto);
             redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + IMAGE_DTO_ATTR, bindingResult);
-            return "redirect:/motorcycles/admin/edit/{id}";
+            return "redirect:/users/profile";
         }
 
         userService.uploadImg(currentUser.getId(), imageDto.getImage());
