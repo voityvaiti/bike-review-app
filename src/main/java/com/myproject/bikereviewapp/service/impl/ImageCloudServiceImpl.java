@@ -53,11 +53,11 @@ public class ImageCloudServiceImpl implements ImageCloudService {
     }
 
     @Override
-    public void deleteImg(String folderName, String fileName) {
+    public void deleteImg(String url) {
         try {
-            String blobName = folderName + "/" + fileName;
-            BlobId blobId = BlobId.of(bucketName, blobName);
+            BlobId blobId = BlobId.fromGsUtilUri(url);
             Storage storage = initializeStorage();
+
             storage.delete(blobId);
 
         } catch (IOException e) {

@@ -9,6 +9,6 @@ public interface ImageCloudService {
 
     String uploadImg(@Valid @NotEmptyMultipartFile @ImageExtension MultipartFile multipartFile, String folderName, String fileName);
 
-    void deleteImg(String folderName, String fileName);
+    void deleteImg(String url);
 
 }
