@@ -76,7 +76,7 @@ public class BrandServiceImpl implements BrandService {
         Brand brand = getBrandById(id);
 
         if(brand.getImgUrl() != null && !brand.getImgUrl().isBlank()) {
-            imageCloudService.deleteImg(BRAND_IMAGES_FOLDER, brand.getId().toString());
+            imageCloudService.deleteImg(brand.getImgUrl());
         }
 
         brand.setImgUrl(
@@ -88,10 +88,12 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public void delete(Long id) {
 
+        Brand brand = getById(id);
+
         log.debug("Removing Brand with ID: {}", id);
 
-        brandRepository.delete(getById(id));
-        imageCloudService.deleteImg(BRAND_IMAGES_FOLDER, id.toString());
+        brandRepository.delete(brand);
+        imageCloudService.deleteImg(brand.getImgUrl());
     }
 
 
