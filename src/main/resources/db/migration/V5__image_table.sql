@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS image
+(
+    id     BIGSERIAL PRIMARY KEY,
+    name   VARCHAR(255) NOT NULL,
+    folder VARCHAR(255) NOT NULL,
+    url    VARCHAR(255) NOT NULL
+);
