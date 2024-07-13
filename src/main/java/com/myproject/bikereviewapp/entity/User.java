@@ -46,8 +46,9 @@ public class User {
     @UserPublicName
     private String publicName;
 
-    @Column(name = "img_url")
-    private String imgUrl;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "img_id", referencedColumnName = "id")
+    private Image image;
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();

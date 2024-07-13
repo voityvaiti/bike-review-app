@@ -35,8 +35,9 @@ public class Brand {
     @Size(max = 30, message = "Country cannot be longer then 30 characters.")
     private String country;
 
-    @Column(name = "img_url")
-    private String imgUrl;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "img_id", referencedColumnName = "id")
+    private Image image;
 
     @OneToMany(mappedBy = "brand")
     private List<Motorcycle> motorcycles = new ArrayList<>();

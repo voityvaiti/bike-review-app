@@ -36,14 +36,15 @@ public class Motorcycle {
     @NotNull(message = "Brand must be selected.")
     private Brand brand;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "img_id", referencedColumnName = "id")
+    private Image image;
+
     @Formula("(SELECT COUNT(r.id) FROM Review r WHERE r.motorcycle_id = id)")
     private Integer reviewsAmount;
 
     @Formula("(SELECT AVG(r.rating) FROM Review r WHERE r.motorcycle_id = id)")
     private Float avgRating;
-
-    @Column(name = "img_url")
-    private String imgUrl;
 
     @OneToMany(mappedBy = "motorcycle")
     private List<Review> reviews = new ArrayList<>();
