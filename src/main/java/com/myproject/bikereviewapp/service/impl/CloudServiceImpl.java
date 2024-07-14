@@ -6,9 +6,9 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.myproject.bikereviewapp.entity.pojo.FileUploadPojo;
 import com.myproject.bikereviewapp.exceptionhandler.exception.CloudException;
-import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
-import com.myproject.bikereviewapp.validation.annotation.ImageExtension;
+import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.validation.annotation.NotEmptyMultipartFile;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +20,12 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-
+import java.util.UUID;
 
 
 @Service
 @Validated
-public class ImageCloudServiceImpl implements ImageCloudService {
+public class CloudServiceImpl implements CloudService {
 
 
     @Value("${firebase.access.file-name}")
@@ -36,16 +36,18 @@ public class ImageCloudServiceImpl implements ImageCloudService {
 
 
     @Override
-    public String uploadImg(@Valid @NotEmptyMultipartFile @ImageExtension MultipartFile multipartFile, String folderName, String fileName) {
+    public FileUploadPojo upload(@Valid @NotEmptyMultipartFile MultipartFile multipartFile, String folderName) {
 
         try {
             String fileExtension = getExtension(multipartFile.getOriginalFilename());
 
-            String completeFileName = fileName + fileExtension;
+            String completeFileName = UUID.randomUUID() + fileExtension;
             File file = convertToFile(multipartFile, completeFileName);
+
             String url = uploadFile(file, completeFileName, folderName);
             file.delete();
-            return url;
+
+            return new FileUploadPojo(completeFileName, url);
 
         } catch (IOException e) {
             throw new CloudException("Error when uploading file.");
@@ -53,9 +55,10 @@ public class ImageCloudServiceImpl implements ImageCloudService {
     }
 
     @Override
-    public void deleteImg(String url) {
+    public void delete(String folderName, String fileName) {
         try {
-            BlobId blobId = BlobId.fromGsUtilUri(url);
+            String blobName = folderName + "/" + fileName;
+            BlobId blobId = BlobId.of(bucketName, blobName);
             Storage storage = initializeStorage();
 
             storage.delete(blobId);
@@ -82,7 +85,7 @@ public class ImageCloudServiceImpl implements ImageCloudService {
 
     private Storage initializeStorage() throws IOException {
 
-        try (InputStream inputStream = ImageCloudServiceImpl.class.getClassLoader().getResourceAsStream(firebaseAccessFileName)) {
+        try (InputStream inputStream = CloudServiceImpl.class.getClassLoader().getResourceAsStream(firebaseAccessFileName)) {
             Credentials credentials = GoogleCredentials.fromStream(inputStream);
             return StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         }
