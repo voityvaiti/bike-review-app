@@ -4,7 +4,8 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
-import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
+import com.myproject.bikereviewapp.service.abstraction.CloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,7 @@ class BrandServiceImplTest {
     BrandRepository brandRepository;
 
     @MockBean
-    ImageCloudService imageCloudService;
+    ImageService imageService;
 
 
     @Autowired
