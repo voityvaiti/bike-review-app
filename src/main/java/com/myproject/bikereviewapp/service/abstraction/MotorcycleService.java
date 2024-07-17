@@ -17,7 +17,7 @@ public interface MotorcycleService {
 
     Motorcycle update(Long id, Motorcycle motorcycle);
 
-    void uploadImg(Long id, MultipartFile file);
+    void updateImg(Long id, MultipartFile file);
 
     void delete(Long id);
 

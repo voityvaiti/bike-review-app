@@ -25,7 +25,7 @@ public interface UserService {
 
     User updatePublicName(Long id, String publicName);
 
-    void uploadImg(Long id, MultipartFile file);
+    void updateImg(Long id, MultipartFile file);
 
     void delete(Long id);
     

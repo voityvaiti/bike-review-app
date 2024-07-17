@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface BrandService {
 
@@ -20,7 +19,7 @@ public interface BrandService {
 
     Brand update(Long id, Brand brand);
 
-    void uploadImg(Long id, MultipartFile file);
+    void updateImg(Long id, MultipartFile file);
 
     void delete(Long id);
 
