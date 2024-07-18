@@ -4,7 +4,8 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
-import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ public class BrandServiceImpl implements BrandService {
 
     private final BrandRepository brandRepository;
 
-    private final ImageCloudService imageCloudService;
+    private final ImageService imageService;
 
 
     @Override
@@ -71,29 +72,31 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public void uploadImg(Long id, MultipartFile file) {
+    @Transactional
+    public void updateImg(Long id, MultipartFile file) {
 
         Brand brand = getBrandById(id);
 
-        if(brand.getImgUrl() != null && !brand.getImgUrl().isBlank()) {
-            imageCloudService.deleteImg(brand.getImgUrl());
+        if(brand.getImage() != null) {
+            imageService.delete(brand.getImage().getId());
         }
 
-        brand.setImgUrl(
-                imageCloudService.uploadImg(file, BRAND_IMAGES_FOLDER, brand.getId().toString())
+        brand.setImage(
+                imageService.create(file, BRAND_IMAGES_FOLDER)
         );
         brandRepository.save(brand);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
 
         Brand brand = getById(id);
 
         log.debug("Removing Brand with ID: {}", id);
 
-        brandRepository.delete(brand);
-        imageCloudService.deleteImg(brand.getImgUrl());
+        imageService.delete(brand.getImage().getId());
+        brandRepository.delete(getById(id));
     }
 
 

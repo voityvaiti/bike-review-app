@@ -4,8 +4,9 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
 import com.myproject.bikereviewapp.repository.UserRepository;
-import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final ImageCloudService imageCloudService;
+    private final ImageService imageService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -122,28 +123,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void uploadImg(Long id, MultipartFile file) {
+    @Transactional
+    public void updateImg(Long id, MultipartFile file) {
 
         User user = getUserById(id);
 
-        if(user.getImgUrl() != null && !user.getImgUrl().isBlank()) {
-            imageCloudService.deleteImg(USER_IMAGES_FOLDER, user.getId().toString());
+        if(user.getImage() != null) {
+            imageService.delete(user.getImage().getId());
         }
 
-        user.setImgUrl(
-                imageCloudService.uploadImg(file, USER_IMAGES_FOLDER, user.getId().toString())
+        user.setImage(
+                imageService.create(file, USER_IMAGES_FOLDER)
         );
         userRepository.save(user);
     }
 
 
     @Override
+    @Transactional
     public void delete(Long id) {
+
+        User user = getUserById(id);
 
         log.debug("Removing User with ID: {}", id);
 
-        userRepository.delete(getById(id));
-        imageCloudService.deleteImg(USER_IMAGES_FOLDER, id.toString());
+        imageService.delete(user.getImage().getId());
+        userRepository.delete(user);
     }
 
 

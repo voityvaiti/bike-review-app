@@ -3,8 +3,9 @@ package com.myproject.bikereviewapp.service.impl;
 import com.myproject.bikereviewapp.entity.Motorcycle;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
-import com.myproject.bikereviewapp.service.abstraction.ImageCloudService;
+import com.myproject.bikereviewapp.service.abstraction.ImageService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
     private final MotorcycleRepository motorcycleRepository;
 
-    private final ImageCloudService imageCloudService;
+    private final ImageService imageService;
 
 
     @Override
@@ -77,27 +78,31 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     }
 
     @Override
-    public void uploadImg(Long id, MultipartFile file) {
+    @Transactional
+    public void updateImg(Long id, MultipartFile file) {
 
         Motorcycle motorcycle = getMotorcycleById(id);
 
-        if(motorcycle.getImgUrl() != null && !motorcycle.getImgUrl().isBlank()) {
-            imageCloudService.deleteImg(MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString());
+        if(motorcycle.getImage() != null) {
+            imageService.delete(motorcycle.getImage().getId());
         }
 
-        motorcycle.setImgUrl(
-                imageCloudService.uploadImg(file, MOTORCYCLE_IMAGES_FOLDER, motorcycle.getId().toString())
+        motorcycle.setImage(
+                imageService.create(file, MOTORCYCLE_IMAGES_FOLDER)
         );
         motorcycleRepository.save(motorcycle);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
+
+        Motorcycle motorcycle = getById(id);
 
         log.debug("Removing Motorcycle with ID: {}", id);
 
-        motorcycleRepository.delete(getById(id));
-        imageCloudService.deleteImg(MOTORCYCLE_IMAGES_FOLDER, id.toString());
+        imageService.delete(motorcycle.getImage().getId());
+        motorcycleRepository.delete(motorcycle);
     }
 
 
