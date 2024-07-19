@@ -145,6 +145,8 @@ public class MotorcycleController {
         if (!model.containsAttribute(MOTORCYCLE_ATTR)) {
             model.addAttribute(MOTORCYCLE_ATTR, motorcycleService.getById(id));
         }
+        model.addAttribute(BRAND_LIST_ATTR, brandService.getAll());
+
         if (!model.containsAttribute(IMAGE_DTO_ATTR)) {
             model.addAttribute(IMAGE_DTO_ATTR, new ImageDto());
         }
@@ -177,7 +179,7 @@ public class MotorcycleController {
             return "redirect:/motorcycles/admin/edit/{id}";
         }
 
-        motorcycleService.uploadImg(id, imageDto.getImage());
+        motorcycleService.updateImg(id, imageDto.getImage());
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }

@@ -108,7 +108,7 @@ public class BrandController {
             return "redirect:/brands/admin/edit/{id}";
         }
 
-        brandService.uploadImg(id, imageDto.getImage());
+        brandService.updateImg(id, imageDto.getImage());
 
         return REDIRECT_TO_SHOW_ALL_IN_ADMIN_PANEL;
     }

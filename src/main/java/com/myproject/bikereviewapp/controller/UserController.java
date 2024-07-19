@@ -196,7 +196,7 @@ public class UserController {
             return "redirect:/users/profile";
         }
 
-        userService.uploadImg(currentUser.getId(), imageDto.getImage());
+        userService.updateImg(currentUser.getId(), imageDto.getImage());
 
         return "redirect:/users/profile";
     }
