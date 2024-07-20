@@ -24,7 +24,7 @@
             <h1 class="text-center">Profile</h1>
 
             <div class="d-flex justify-content-center mb-1">
-                <img th:src="${user.imgUrl ?: '/img/user.png'}" class="user-img rounded-circle" alt="Profile img"/>
+                <img th:src="${user.image != null ? user.image.url : '/img/user.png'}" class="user-img rounded-circle" alt="Profile img"/>
             </div>
 
             <p class="text-center bold">
