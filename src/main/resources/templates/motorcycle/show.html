@@ -19,11 +19,11 @@
     <div class="w-50">
 
         <div class="d-flex justify-content-center mt-2">
-            <img th:src="${motorcycle.imgUrl ?: '/img/motorcycle.png'}" class="motorcycle-img" alt="motorcycle-img" draggable="false">
+            <img th:src="${motorcycle.image != null ? motorcycle.image.url : '/img/motorcycle.png'}" class="motorcycle-img" alt="motorcycle-img" draggable="false">
         </div>
 
         <div class="d-flex justify-content-start my-2">
-            <img th:src="${motorcycle.brand.imgUrl ?: '/img/brand.png'}" class="brand-img" alt="brand-img" draggable="false">
+            <img th:src="${motorcycle.brand.image != null ? motorcycle.brand.image.url : '/img/brand.png'}" class="brand-img" alt="brand-img" draggable="false">
         </div>
 
         <div class="d-flex justify-content-between">

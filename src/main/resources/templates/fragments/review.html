@@ -11,7 +11,7 @@
 <div th:fragment="userReviewTemplate(review, currentReviewPageNumber, currentReviewSort, reviewPageNumberParamName, reviewSortParamName)"
      class="border border-black rounded p-3 mb-2 d-flex">
 
-    <img th:src="${review.user.imgUrl ?: '/img/user.png'}" alt="User" class="user-icon me-3" draggable="false">
+    <img th:src="${review.user.image != null ? review.user.image.url : '/img/user.png'}" alt="User" class="user-icon me-3" draggable="false">
 
     <div class="w-100">
         <div class="d-flex justify-content-between">
@@ -57,7 +57,7 @@
 
 <div th:fragment="motorcycleReviewTemplate(review)" class="border border-black rounded p-3 mt-2 d-flex">
 
-    <img th:src="${review.motorcycle.imgUrl ?: '/img/motorcycle.png'}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
+    <img th:src="${review.motorcycle.image != null ? review.motorcycle.image.url : '/img/motorcycle.png'}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
 
     <div class="w-100">
         <div class="d-flex justify-content-between">
