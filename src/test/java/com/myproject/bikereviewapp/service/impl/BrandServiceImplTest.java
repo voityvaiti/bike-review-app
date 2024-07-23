@@ -4,8 +4,8 @@ import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.BrandRepository;
 import com.myproject.bikereviewapp.service.abstraction.BrandService;
-import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.service.abstraction.ImageService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,10 +30,26 @@ class BrandServiceImplTest {
     @Autowired
     BrandService brandService;
 
+    private static final Long id = 10L;
+    private static final Brand brand = new Brand();
+    private static final Brand updatedBrand =  new Brand();
+
+
+    @BeforeAll
+    static void init() {
+
+        brand.setId(id);
+        brand.setName("someName");
+        brand.setCountry("someCountry");
+
+        updatedBrand.setId(id);
+        updatedBrand.setName("updatedName");
+        updatedBrand.setCountry("updatedCountry");
+
+    }
+
     @Test
     void getById_shouldReturnBrand_whenBrandWasFound() {
-        Long id = 10L;
-        Brand brand = new Brand(id, "someName", "someCountry");
 
         when(brandRepository.findById(id)).thenReturn(Optional.of(brand));
 
@@ -44,7 +60,6 @@ class BrandServiceImplTest {
 
     @Test
     void getById_shouldThrowException_whenBrandWasNotFound() {
-        Long id = 10L;
 
         when(brandRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -55,10 +70,6 @@ class BrandServiceImplTest {
 
     @Test
     void update_shouldSaveAndReturnUpdatedBrand() {
-        Long id = 10L;
-
-        Brand brand = new Brand(id, "someName", "someCountry");
-        Brand updatedBrand = new Brand(id, "updatedName", "updatedCountry");
 
         when(brandRepository.findById(id)).thenReturn(Optional.of(brand));
         when(brandRepository.save(updatedBrand)).thenReturn(updatedBrand);
@@ -70,18 +81,13 @@ class BrandServiceImplTest {
 
     @Test
     void update_shouldSaveAndReturnUpdatedBrand_whenBrandWasReceivedWithoutId() {
-        Long id = 10L;
-
-        Brand brand = new Brand(id, "someName", "someCountry");
-        Brand receivedBrand = new Brand(null, "updatedName", "updatedCountry");
-        Brand updatedBrand = new Brand(id, receivedBrand.getName(), receivedBrand.getCountry());
 
         when(brandRepository.findById(id)).thenReturn(Optional.of(brand));
-        when(brandRepository.save(updatedBrand)).thenReturn(updatedBrand);
+        when(brandRepository.save(brand)).thenReturn(updatedBrand);
 
-        assertEquals(updatedBrand, brandService.update(id, receivedBrand));
+        assertEquals(updatedBrand, brandService.update(id, brand));
 
-        verify(brandRepository).save(updatedBrand);
+        verify(brandRepository).save(brand);
     }
 
 }

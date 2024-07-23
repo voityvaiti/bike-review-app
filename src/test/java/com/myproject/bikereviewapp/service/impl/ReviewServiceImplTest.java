@@ -41,10 +41,24 @@ class ReviewServiceImplTest {
     ReviewService reviewService;
 
 
+    private static final Long id = 7L;
+    private static final Motorcycle motorcycle = new Motorcycle();
+    private static final User user = new User();
     private static List<Review> sampleReviews;
 
     @BeforeAll
     static void init() {
+
+        motorcycle.setId(id);
+        motorcycle.setModel("someModel");
+        motorcycle.setBrand(new Brand());
+
+        user.setId(id);
+        user.setUsername("someUsername");
+        user.setPassword("somePassword");
+        user.setEnabled(true);
+        user.setRole(Role.CLIENT);
+        user.setPublicName("somePublicName");
 
         Review review1 = new Review();
         review1.setId(2L);
@@ -58,8 +72,6 @@ class ReviewServiceImplTest {
 
     @Test
     void getReviewsByMotorcycleId_shouldReturnReviewList_whenMotorcycleWasFound() {
-        Long id = 7L;
-        Motorcycle motorcycle = new Motorcycle(id, "someModel", new Brand());
 
         Pageable pageable = Mockito.mock(Pageable.class);
 
@@ -88,8 +100,6 @@ class ReviewServiceImplTest {
 
     @Test
     void getReviewsByUserId_shouldReturnReviewList_whenUserWasFound() {
-        Long id = 7L;
-        User user = new User(id, "someUsername", "somePassword", true, Role.CLIENT, "somePublicName");
 
         Pageable pageable = Mockito.mock(Pageable.class);
 

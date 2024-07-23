@@ -2,11 +2,13 @@ package com.myproject.bikereviewapp.service.impl;
 
 import com.myproject.bikereviewapp.entity.Brand;
 import com.myproject.bikereviewapp.entity.Motorcycle;
+import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.repository.MotorcycleRepository;
 import com.myproject.bikereviewapp.service.abstraction.CloudService;
 import com.myproject.bikereviewapp.service.abstraction.ImageService;
 import com.myproject.bikereviewapp.service.abstraction.MotorcycleService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,10 +40,20 @@ class MotorcycleServiceImplTest {
     @Autowired
     MotorcycleService motorcycleService;
 
+
+    private static final Long id = 7L;
+    private static final Motorcycle motorcycle = new Motorcycle();
+
+    @BeforeAll
+    static void init() {
+
+        motorcycle.setId(id);
+        motorcycle.setModel("someModel");
+        motorcycle.setBrand(new Brand());
+    }
+
     @Test
     void getById_shouldReturnMotorcycle_whenMotorcycleWasFound() {
-        Long id = 7L;
-        Motorcycle motorcycle = new Motorcycle(id, "someModel", new Brand());
 
         when(motorcycleRepository.findById(id)).thenReturn(Optional.of(motorcycle));
 
@@ -66,9 +78,9 @@ class MotorcycleServiceImplTest {
         String query = "Honda";
         Pageable pageable = PageRequest.of(0, 10);
         List<Motorcycle> motorcycles = Arrays.asList(
-                new Motorcycle(1L, "model1", new Brand(1L, "name1", "country1")),
-                new Motorcycle(2L, "model2", new Brand(2L, "name2", "country2")
-        ));
+                motorcycle,
+                new Motorcycle()
+        );
         Page<Motorcycle> expectedPage = new PageImpl<>(motorcycles, pageable, motorcycles.size());
 
         when(motorcycleRepository.getAllByModelContainingIgnoreCaseOrBrandNameContainingIgnoreCase(query, query, pageable)).thenReturn(expectedPage);
