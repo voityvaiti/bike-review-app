@@ -78,10 +78,20 @@ class MotorcycleControllerTest {
     @BeforeAll
     static void init() {
 
+        Motorcycle motorcycle1 = new Motorcycle();
+        motorcycle1.setId(1L);
+        motorcycle1.setModel("model1");
+        motorcycle1.setBrand(new Brand());
+
+        Motorcycle motorcycle2 = new Motorcycle();
+        motorcycle2.setId(2L);
+        motorcycle2.setModel("model2");
+        motorcycle2.setBrand(new Brand());
+
+
         motorcyclePage = new PageImpl<>(Arrays.asList(
-                new Motorcycle(1L, "model1", new Brand()),
-                new Motorcycle(2L, "model2", new Brand()),
-                new Motorcycle(3L, "model3", new Brand())
+                motorcycle1,
+                motorcycle2
         ));
 
         reviewPage = new PageImpl<>(Arrays.asList(
@@ -91,7 +101,10 @@ class MotorcycleControllerTest {
         ));
 
         id = 12L;
-        motorcycle = new Motorcycle(id, "model", new Brand());
+        motorcycle = new Motorcycle();
+        motorcycle.setId(id);
+        motorcycle.setModel("model");
+        motorcycle.setBrand(new Brand());
 
         pageNumber = 2;
         pageSize = 10;

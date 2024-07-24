@@ -39,8 +39,15 @@ class AuthControllerTest {
 
     @BeforeAll
     static void init() {
-        validInputUser = new User(null, "someUsername", "somePassword", false, null, "somePublicName");
-        invalidInputUser = new User(null, "", "", false, null, "somePublicName");
+        validInputUser = new User();
+        validInputUser.setUsername("someUsername");
+        validInputUser.setPassword("somePassword");
+        validInputUser.setPublicName("somePublicName");
+
+        invalidInputUser = new User();
+        invalidInputUser.setUsername("");
+        invalidInputUser.setPassword("");
+        invalidInputUser.setPublicName("somePublicName");
     }
 
     @Test
@@ -57,7 +64,12 @@ class AuthControllerTest {
     @Test
     void signUp_shouldCreateEnabledUserWithClientRole_ifUserIsValid() throws Exception {
 
-        User expectedUser = new User(null, validInputUser.getUsername(), validInputUser.getPassword(), true, Role.CLIENT, validInputUser.getPublicName());
+        User expectedUser = new User();
+        expectedUser.setUsername(validInputUser.getUsername());
+        expectedUser.setPassword(validInputUser.getPassword());
+        expectedUser.setEnabled(true);
+        expectedUser.setRole(Role.CLIENT);
+        expectedUser.setPublicName(validInputUser.getPublicName());
 
         mockMvc.perform(post("/signup")
                 .param("username", validInputUser.getUsername())

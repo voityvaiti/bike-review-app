@@ -68,18 +68,30 @@ class UserControllerTest {
     @BeforeAll
     static void init() {
         userPage = new PageImpl<>(List.of(
-                new User(1L, "username1", "password1", true, Role.CLIENT, "publicName1"),
-                new User(2L, "username2", "password2", true, Role.CLIENT, "publicName2"),
-                new User(3L, "username3", "password3", true, Role.CLIENT, "publicName3")
+                new User(),
+                new User(),
+                new User()
         ));
 
-        Motorcycle sampleMotorcycle = new Motorcycle(1L, "someModel", new Brand(1L, "someName", "someCountry"));
+        Motorcycle sampleMotorcycle = new Motorcycle();
+        sampleMotorcycle.setId(1L);
+        sampleMotorcycle.setModel("someModel");
+        sampleMotorcycle.setBrand(new Brand());
+
         reviewPage = new PageImpl<>(List.of(
                 new Review(1L, "bodyContent", LocalDate.of(2000, 1, 10), (short) 3, sampleMotorcycle, user, 10, 5),
                 new Review(2L, "bodyContent", LocalDate.of(2000, 2, 20), (short) 4, sampleMotorcycle, user, 25, 1)
         ));
 
-        user = new User(8L, USERNAME, "somePassword", true, Role.CLIENT, "somePublicName");
+        user = new User();
+        user.setId(8L);
+        user.setUsername(USERNAME);
+        user.setPassword("somePassword");
+        user.setEnabled(true);
+        user.setRole(Role.CLIENT);
+        user.setPublicName("somePublicName");
+
+
         passwordUpdateDto = new PasswordUpdateDto("oldPassword", "newPassword");
         publicNameUpdateDto = new PublicNameUpdateDto(user.getPublicName());
 

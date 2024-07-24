@@ -53,12 +53,15 @@ class BrandControllerTest {
     @BeforeAll
     static void init() {
         brandPage = new PageImpl<>(Arrays.asList(
-                new Brand(1L, "somename1", "somecountry1"),
-                new Brand(2L, "somename2", "somecountry2"),
-                new Brand(3L, "somename3", "somecountry3")
+                new Brand(),
+                new Brand(),
+                new Brand()
         ));
 
-        brand = new Brand(null, "someName", "someCountry");
+        brand = new Brand();
+        brand.setName("someName");
+        brand.setCountry("someCountry");
+
         id = 10L;
 
         pageNumber = 7;
