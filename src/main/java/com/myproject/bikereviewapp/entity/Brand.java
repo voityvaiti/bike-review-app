@@ -3,22 +3,17 @@ package com.myproject.bikereviewapp.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @Entity
 @Table(name = "brand")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class Brand {
 
     @Id
@@ -37,37 +32,12 @@ public class Brand {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "img_id", referencedColumnName = "id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Image image;
 
     @OneToMany(mappedBy = "brand")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Motorcycle> motorcycles = new ArrayList<>();
-
-
-    public Brand(Long id, String name, String country) {
-        this.id = id;
-        this.name = name;
-        this.country = country;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Brand brand = (Brand) o;
-        return Objects.equals(id, brand.id) && Objects.equals(name, brand.name) && Objects.equals(country, brand.country);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, country);
-    }
-
-    @Override
-    public String toString() {
-        return "Brand{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", country='" + country + '\'' +
-                '}';
-    }
 }
