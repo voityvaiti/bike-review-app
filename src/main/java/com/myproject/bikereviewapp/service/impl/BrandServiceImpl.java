@@ -91,7 +91,7 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public void delete(Long id) {
 
-        Brand brand = getById(id);
+        Brand brand = getBrandById(id);
 
         log.debug("Removing Brand with ID: {}", id);
 

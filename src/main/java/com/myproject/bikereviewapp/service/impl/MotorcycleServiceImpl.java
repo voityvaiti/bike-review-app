@@ -97,7 +97,7 @@ public class MotorcycleServiceImpl implements MotorcycleService {
     @Transactional
     public void delete(Long id) {
 
-        Motorcycle motorcycle = getById(id);
+        Motorcycle motorcycle = getMotorcycleById(id);
 
         log.debug("Removing Motorcycle with ID: {}", id);
 
