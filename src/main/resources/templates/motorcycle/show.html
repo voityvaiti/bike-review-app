@@ -22,21 +22,21 @@
             <img th:src="${motorcycle.image != null ? motorcycle.image.url : '/img/motorcycle.png'}" class="motorcycle-img" alt="motorcycle-img" draggable="false">
         </div>
 
-        <div class="d-flex justify-content-start my-2">
+        <div class="d-flex justify-content-between my-2">
             <img th:src="${motorcycle.brand.image != null ? motorcycle.brand.image.url : '/img/brand.png'}" class="brand-img" alt="brand-img" draggable="false">
+
+            <div class="d-flex justify-content-start">
+                <small th:text="${motorcycle.getAvgRating() != null ? #numbers.formatDecimal(motorcycle.getAvgRating(), 1, 1) : '0.0'}"
+                       class="text-muted me-1"></small>
+                <meter class="average-rating d-flex align-items-center" min="0" max="5"
+                       th:value="${motorcycle.getAvgRating()}"></meter>
+            </div>
         </div>
 
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-start">
             <div>
                 <h1 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"></h1>
                 <p th:text="${'Country: ' + motorcycle.getBrand().getCountry()}"></p>
-            </div>
-
-            <div>
-                <small th:text="${motorcycle.getAvgRating() != null ? #numbers.formatDecimal(motorcycle.getAvgRating(), 1, 1) : '0.0'}"
-                       class="text-muted me-1"></small>
-                <meter class="average-rating" min="0" max="5"
-                       th:value="${motorcycle.getAvgRating()}"></meter>
             </div>
         </div>
 
