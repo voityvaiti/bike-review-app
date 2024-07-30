@@ -13,12 +13,22 @@
         <h1 class="m-0">BIKE REVIEWER</h1>
     </a>
 
-    <a th:href="@{/users/profile}" sec:authorize="isAuthenticated()">
-        <img th:src="@{/img/user.png}" class="user-icon" alt="Profile" draggable="false"/>
-    </a>
-    <div sec:authorize="isAnonymous()">
-        <a th:href="@{/login}" class="btn btn-dark">Log In</a>
-        <a th:href="@{/signup}" class="btn btn-dark">Sign Up</a>
+    <div class="ms-3">
+
+        <div class="d-flex justify-content-center">
+            <a th:href="@{/users/profile}" sec:authorize="isAuthenticated()" class="text-white">
+                <img th:src="@{/img/user.png}" class="profile-icon" alt="Profile" draggable="false"/>
+            </a>
+
+            <a th:href="@{/admin}" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" class="text-white">
+                <img th:src="@{/img/admin-panel.png}" class="profile-icon ms-2" alt="Panel" draggable="false"/>
+            </a>
+        </div>
+
+        <a th:href="@{/login}" sec:authorize="isAnonymous()">
+            <img th:src="@{/img/login.png}" class="profile-icon" alt="Log In" draggable="false"/>
+        </a>
+
     </div>
 </div>
 
