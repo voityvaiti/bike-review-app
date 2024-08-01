@@ -11,39 +11,40 @@
 <div th:fragment="userReviewTemplate(review, currentReviewPageNumber, currentReviewSort, reviewPageNumberParamName, reviewSortParamName)"
      class="border border-black rounded p-3 mb-2 d-flex">
 
+    <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:method="DELETE"
+          th:action="@{/reviews/{id}(id=${review.getId()})}" class="d-flex justify-content-end">
+        <input type="hidden" name="motorcycleId" th:value="${review.motorcycle.getId()}">
+        <button type="submit" class="btn-close"></button>
+    </form>
+
     <img th:src="${review.user.image != null ? review.user.image.url : '/img/user.png'}" alt="User" class="user-icon me-3" draggable="false">
 
     <div class="w-100">
         <div class="d-flex justify-content-between">
-            <div>
-                <strong th:text="${review.user.getPublicName()}"></strong>
+            <div class="mb-1 me-1">
+                <strong th:text="${review.user.getPublicName()}" class="text-nowrap"></strong>
                 <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                       class="ms-2 text-muted"></small> <br>
+                       class="ms-2 text-muted text-nowrap"></small> <br>
             </div>
 
-            <div class="d-flex">
-                <form th:method="PATCH" th:action="@{/reviews/reaction}">
+            <div>
+                <form th:method="PATCH" th:action="@{/reviews/reaction}" class="d-flex justify-content-center">
                     <input type="hidden" name="reviewId" th:value="${review.getId()}">
 
                     <button type="submit" name="isLike" th:value="${true}" class="btn p-0">
                         <img src="/img/like.png" class="reaction-icon" alt="Like" draggable="false">
                     </button>
-                    <span th:text="${review.getLikes()}" class="text-success"></span>
+                    <span th:text="${review.getLikes()}" class="text-success mx-1"></span>
                     <button type="submit" name="isLike" th:value="${false}" class="btn p-0 ms-2">
                         <img src="/img/dislike.png" class="reaction-icon" alt="Dislike" draggable="false">
                     </button>
-                    <span th:text="${review.getDislikes()}" class="text-danger"></span>
+                    <span th:text="${review.getDislikes()}" class="text-danger mx-1"></span>
 
 
                     <input type="hidden" th:name="${reviewPageNumberParamName}" th:value="${currentReviewPageNumber}">
                     <input type="hidden" th:name="${reviewSortParamName}" th:value="${currentReviewSort}">
                 </form>
 
-                <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:method="DELETE"
-                      th:action="@{/reviews/{id}(id=${review.getId()})}" class="ms-2">
-                    <input type="hidden" name="motorcycleId" th:value="${review.motorcycle.getId()}">
-                    <button type="submit" class="btn-close"></button>
-                </form>
             </div>
 
         </div>
@@ -65,21 +66,21 @@
 
     <div class="w-100">
         <div class="d-flex justify-content-between">
-            <div>
+            <div class="mb-1 me-1">
                 <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}"
                    class="text-black text-decoration-none">
-                    <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"></strong>
+                    <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}" class="text-nowrap"></strong>
                 </a>
                 <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                       class="ms-2 text-muted"></small> <br>
+                       class="ms-2 text-muted  text-nowrap"></small> <br>
             </div>
 
-            <div>
+            <div class="d-flex align-items-center">
                 <img src="/img/like.png" class="reaction-icon" alt="Like" draggable="false">
-                <span th:text="${review.getLikes()}" class="text-success"></span>
+                <span th:text="${review.getLikes()}" class="text-success mx-1"></span>
 
                 <img src="/img/dislike.png" class="reaction-icon ms-2" alt="Dislike" draggable="false">
-                <span th:text="${review.getDislikes()}" class="text-danger"></span>
+                <span th:text="${review.getDislikes()}" class="text-danger mx-1"></span>
             </div>
         </div>
 
