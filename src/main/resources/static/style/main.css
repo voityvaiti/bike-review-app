@@ -49,6 +49,13 @@ body {
     max-height: 23px;
 }
 
+.form-container {
+    max-width: 400px;
+    width: 100%;
+    margin-left: 4%;
+    margin-right: 4%;
+}
+
 .page-item.active .page-link {
     color: #fff !important;
     background: #000 !important;

@@ -4,6 +4,7 @@
 >
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
@@ -17,7 +18,7 @@
 
 <div class="d-flex justify-content-center mt-4">
 
-    <div class="w-25">
+    <div class="profile-container">
 
         <div class="border border-black rounded p-4">
 
@@ -62,7 +63,7 @@
 </div>
 
 <div th:with="reviews=${reviewPage.content}" class="d-flex justify-content-center mt-3">
-    <div class="w-50">
+    <div class="container">
 
         <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }"
              class="d-flex justify-content-between mt-4 mb-2">
