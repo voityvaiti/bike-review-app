@@ -39,9 +39,14 @@ body {
     padding: 5px;
 }
 
-.search-icon {
+.sm-widget-icon {
     max-width: 20px;
     max-height: 20px;
+}
+
+.md-widget-icon {
+    max-width: 30px;
+    max-height: 30px;
 }
 
 .reaction-icon {
