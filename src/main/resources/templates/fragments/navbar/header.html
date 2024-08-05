@@ -17,7 +17,7 @@
 
         <div class="d-flex justify-content-center">
             <a th:href="@{/users/profile}" sec:authorize="isAuthenticated()" class="text-white">
-                <img th:src="@{/img/user.png}" class="profile-icon" alt="Profile" draggable="false"/>
+                <img th:src="@{/img/profile.png}" class="profile-icon" alt="Profile" draggable="false"/>
             </a>
 
             <a th:href="@{/admin}" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" class="text-white">
