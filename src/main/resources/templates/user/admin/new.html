@@ -4,6 +4,7 @@
 >
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New user</title>
     <th:block th:replace="~{fragments/bootstrap :: bootstrap-link}"></th:block>
     <th:block th:replace="~{fragments/font :: font-link}"></th:block>
@@ -15,7 +16,7 @@
 
 <div class="d-flex justify-content-center mt-4">
 
-    <div class="w-25">
+    <div class="form-container">
 
         <form th:method="POST" th:action="@{/users/admin}" th:object="${user}"
               class="border border-black rounded p-4">
