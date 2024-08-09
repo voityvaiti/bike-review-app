@@ -95,7 +95,9 @@ public class BrandServiceImpl implements BrandService {
 
         log.debug("Removing Brand with ID: {}", id);
 
-        imageService.delete(brand.getImage().getId());
+        if(brand.getImage() != null) {
+            imageService.delete(brand.getImage().getId());
+        }
         brandRepository.delete(getById(id));
     }
 

@@ -147,7 +147,9 @@ public class UserServiceImpl implements UserService {
 
         log.debug("Removing User with ID: {}", id);
 
-        imageService.delete(user.getImage().getId());
+        if(user.getImage() != null) {
+            imageService.delete(user.getImage().getId());
+        }
         userRepository.delete(user);
     }
 

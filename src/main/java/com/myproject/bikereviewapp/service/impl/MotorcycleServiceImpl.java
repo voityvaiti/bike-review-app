@@ -101,7 +101,9 @@ public class MotorcycleServiceImpl implements MotorcycleService {
 
         log.debug("Removing Motorcycle with ID: {}", id);
 
-        imageService.delete(motorcycle.getImage().getId());
+        if(motorcycle.getImage() != null) {
+            imageService.delete(motorcycle.getImage().getId());
+        }
         motorcycleRepository.delete(motorcycle);
     }
 
