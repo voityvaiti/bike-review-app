@@ -1,5 +1,6 @@
 package com.myproject.bikereviewapp.service.abstraction;
 
+import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ public interface UserService {
     User updatePassword(Long id, String password);
 
     User updatePublicName(Long id, String publicName);
+
+    User updateRole(Long id, Role role);
 
     void updateImg(Long id, MultipartFile file);
 

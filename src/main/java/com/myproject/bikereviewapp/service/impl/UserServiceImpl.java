@@ -1,5 +1,6 @@
 package com.myproject.bikereviewapp.service.impl;
 
+import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UniquenessConstraintViolationException;
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(password));
 
-        log.debug("Saving User with updated password with ID: {}", id);
+        log.debug("Saving USER with updated PASSWORD with ID: {}", id);
 
         return userRepository.save(user);
     }
@@ -117,7 +118,19 @@ public class UserServiceImpl implements UserService {
 
         user.setPublicName(publicName);
 
-        log.debug("Saving User with updated public name with ID: {}", id);
+        log.debug("Saving USER with updated PUBLIC NAME with ID: {}", id);
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateRole(Long id, Role role) {
+
+        User user = getUserById(id);
+
+        user.setRole(role);
+
+        log.debug("Saving USER with updated ROLE with ID: {}", id);
 
         return userRepository.save(user);
     }
