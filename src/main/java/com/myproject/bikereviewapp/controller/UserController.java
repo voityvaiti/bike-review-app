@@ -5,6 +5,7 @@ import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.entity.dto.ImageDto;
 import com.myproject.bikereviewapp.entity.dto.PasswordUpdateDto;
 import com.myproject.bikereviewapp.entity.dto.PublicNameUpdateDto;
+import com.myproject.bikereviewapp.entity.dto.RoleUpdateDto;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
@@ -38,6 +39,7 @@ public class UserController {
     protected static final String PASSWORD_UPDATE_DTO_ATTR = "passwordUpdateDto";
     protected static final String OLD_PASSWORD_FIELD_ATTR = "oldPassword";
     protected static final String PUBLIC_NAME_UPDATE_DTO_ATTR = "publicNameUpdateDto";
+    protected static final String ROLE_UPDATE_DTO_ATTR = "roleUpdateDto";
 
 
     private static final String PASSWORD_EDIT_PAGE = "user/password-edit";
@@ -180,6 +182,34 @@ public class UserController {
         userService.updatePublicName(currentUser.getId(), publicNameUpdateDto.getPublicName());
 
         return "redirect:/users/profile";
+    }
+
+    @GetMapping("/admin/role/edit/{id}")
+    public String editRole(@PathVariable(ID) Long id, Model model) {
+
+        User user = userService.getById(id);
+
+        if(!model.containsAttribute(ROLE_UPDATE_DTO_ATTR)) {
+            model.addAttribute(ROLE_UPDATE_DTO_ATTR, new RoleUpdateDto(user.getId(), user.getRole()));
+        }
+        model.addAttribute(ROLE_LIST_ATTR, Role.values());
+
+        return "user/admin/role-edit";
+    }
+
+    @PatchMapping("/admin/role")
+    public String updateRole(@ModelAttribute(ROLE_UPDATE_DTO_ATTR) @Valid RoleUpdateDto roleUpdateDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addAttribute(ID, roleUpdateDto.getId());
+            redirectAttributes.addFlashAttribute(ROLE_UPDATE_DTO_ATTR, roleUpdateDto);
+            redirectAttributes.addFlashAttribute(BINDING_RESULT_ATTR + ROLE_UPDATE_DTO_ATTR, bindingResult);
+            return "redirect:/users/admin/role/edit/{id}";
+        }
+
+        userService.updateRole(roleUpdateDto.getId(), roleUpdateDto.getRole());
+
+        return "redirect:/users/admin";
     }
 
     @PostMapping("/profile/upload-image")
