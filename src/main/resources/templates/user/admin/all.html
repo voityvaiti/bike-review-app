@@ -36,7 +36,6 @@
 
                 <th th:replace="~{fragments/navbar/admin/sort :: thWithSort(${thNameArr}, ${fieldParamArr}, ${userPage.number}, ${sort}, ${url}, ${pageNumberParamName}, ${sortParamName})}"></th>
 
-                <th scope="col" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')"></th>
                 <th scope="col" sec:authorize="hasAuthority('ADMIN')"></th>
             </tr>
             </thead>
@@ -48,20 +47,35 @@
 
                 <th th:text="${user.getUsername()}"></th>
                 <th th:text="${user.getPublicName()}"></th>
-                <th th:text="${user.getRole()}"></th>
 
                 <th>
-                    <span th:if="${user.isEnabled()}" th:text="Enabled" class="text-success"></span>
-                    <span th:unless="${user.isEnabled()}" th:text="Disabled" class="text-danger"></span>
+                    <div class="d-flex justify-content-center">
+
+                        <span th:text="${user.getRole()}"></span>
+
+                        <a th:href="@{/users/admin/role/edit/{id}(id=${user.getId()})}" sec:authorize="hasAuthority('ADMIN')" class="ms-2 text-black text-decoration-none">
+                            <img src="/img/edit.png" class="sm-widget-icon" alt="Edit" draggable="false">
+                        </a>
+
+                    </div>
                 </th>
 
                 <th>
-                    <form th:method="PATCH" th:action="@{/users/admin/is-enabled/{id}(id=${user.getId()})}">
-                        <button type="submit" class="btn btn-dark">
-                            <span th:if="${user.isEnabled()}">Disable</span>
-                            <span th:if="${!user.isEnabled()}">Enable</span>
-                        </button>
-                    </form>
+                    <div class="d-flex justify-content-center">
+
+                        <span th:if="${user.isEnabled()}" th:text="Enabled" class="text-success"></span>
+                        <span th:unless="${user.isEnabled()}" th:text="Disabled" class="text-danger"></span>
+
+                        <form sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" th:action="@{/users/admin/is-enabled/{id}(id=${user.getId()})}" th:method="PATCH" class="ms-2">
+                            <button type="submit" class="border-0 p-0 bg-white">
+
+                                <img th:if="${user.isEnabled()}" src="/img/toggle-on.png" class="md-widget-icon" alt="Toggle" draggable="false">
+                                <img th:unless="${user.isEnabled()}" src="/img/toggle-off.png" class="md-widget-icon" alt="Toggle" draggable="false">
+
+                            </button>
+                        </form>
+
+                    </div>
                 </th>
 
                 <th>
