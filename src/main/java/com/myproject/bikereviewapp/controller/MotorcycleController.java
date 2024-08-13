@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.myproject.bikereviewapp.controller.MainController.*;
@@ -30,7 +29,7 @@ import static com.myproject.bikereviewapp.controller.ReviewController.*;
 @RequiredArgsConstructor
 public class MotorcycleController {
 
-    protected static final Integer MOTORCYCLE_MAIN_PAGE_SIZE = 16;
+    protected static final Integer MOTORCYCLE_MAIN_PAGE_SIZE = 12;
     protected static final String MOTORCYCLE_MAIN_PAGE_DEFAULT_SORT = "reviewsAmount:desc";
 
 
