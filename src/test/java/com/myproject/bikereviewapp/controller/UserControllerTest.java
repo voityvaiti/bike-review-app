@@ -344,7 +344,7 @@ class UserControllerTest {
     @Test
     void editCurrentUserPublicName_shouldReturnAppropriateView() throws Exception {
 
-        mockMvc.perform(get("/users/profile/public-name-edit")
+        mockMvc.perform(get("/users/profile/public-name/edit")
                         .principal(mockAuthentication))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/public-name-edit"));
@@ -353,7 +353,7 @@ class UserControllerTest {
     @Test
     void editCurrentUserPublicName_shouldAddProperDtoModelAttribute() throws Exception {
 
-        mockMvc.perform(get("/users/profile/public-name-edit")
+        mockMvc.perform(get("/users/profile/public-name/edit")
                         .principal(mockAuthentication))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute(PUBLIC_NAME_UPDATE_DTO_ATTR, publicNameUpdateDto));
@@ -362,7 +362,7 @@ class UserControllerTest {
     @Test
     void editCurrentUserPublicName_shouldShouldGetUserByProperUsername() throws Exception {
 
-        mockMvc.perform(get("/users/profile/public-name-edit")
+        mockMvc.perform(get("/users/profile/public-name/edit")
                         .principal(mockAuthentication));
 
         verify(userService).getByUsername(USERNAME);
@@ -371,7 +371,7 @@ class UserControllerTest {
     @Test
     void editCurrentUserPublicName_shouldForbidRequest_whenUserIsNotAuthenticated() throws Exception {
 
-        mockMvc.perform(get("/users/profile/public-name-edit"))
+        mockMvc.perform(get("/users/profile/public-name/edit"))
                 .andExpect(status().isUnauthorized());
 
         verify(userService, never()).getByUsername(anyString());

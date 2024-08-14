@@ -125,7 +125,7 @@ public class UserController {
 
 
 
-    @GetMapping("/profile/password-edit")
+    @GetMapping("/profile/password/edit")
     public String editCurrentUserPassword(Model model) {
 
         model.addAttribute(PASSWORD_UPDATE_DTO_ATTR, new PasswordUpdateDto());
@@ -155,7 +155,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/profile/public-name-edit")
+    @GetMapping("/profile/public-name/edit")
     public String editCurrentUserPublicName(Model model, Authentication authentication) {
 
         if (authentication == null) {

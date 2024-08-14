@@ -38,12 +38,12 @@
 
             <p>
                 <span th:text="${'Public name: ' + user.getPublicName()}"></span>
-                <a th:href="@{/users/profile/public-name-edit}" class="text-black ms-1">Edit</a>
+                <a th:href="@{/users/profile/public-name/edit}" class="text-black ms-1">Edit</a>
             </p>
 
             <p th:text="${'Role: ' + user.getRole()}"></p>
 
-            <a th:href="@{/users/profile/password-edit}" class="text-black">Change password</a>
+            <a th:href="@{/users/profile/password/edit}" class="text-black">Change password</a>
 
             <form th:action="@{/users/profile/upload-image}" method="post" th:object="${imageDto}" enctype="multipart/form-data" class="border border-black rounded p-3 my-2">
                 <div class="form-group mb-2">
