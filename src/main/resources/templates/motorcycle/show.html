@@ -43,11 +43,11 @@
             </div>
         </div>
 
-        <div class="border border-black rounded p-3 border-2">
+        <div th:if="${currentUserReview == null}" class="border border-black rounded p-3 border-2">
 
-            <h4>Your review:</h4>
+            <h4>Describe your opinion:</h4>
 
-            <form th:if="${currentUserReview == null}" th:method="POST" th:action="@{/reviews}"
+            <form th:method="POST" th:action="@{/reviews}"
                   th:object="${newReview}">
 
                 <div class="d-flex justify-content-start">
@@ -78,10 +78,14 @@
 
             </form>
 
+        </div>
+
+        <div>
+            <h4>Your review:</h4>
+
             <div th:unless="${currentUserReview == null}">
                 <div th:replace="~{fragments/review :: userReviewTemplate(${currentUserReview}, ${reviewPage.number}, ${reviewSort}, ${reviewPageNumberParamName}, ${reviewSortParamName})}"></div>
             </div>
-
         </div>
 
         <div th:with="linkTextArr=${ {'↓Date', '↑Date', '↓Rating', '↑Rating'} }, sortArr=${ {'publicationDate:desc', 'publicationDate:asc', 'rating:desc', 'rating:asc'} }"
