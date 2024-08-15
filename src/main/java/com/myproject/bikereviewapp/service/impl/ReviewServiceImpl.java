@@ -82,6 +82,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         review.setPublicationDate(LocalDate.now());
+        review.setBody(review.getBody().trim());
 
         log.debug("Saving new Review: {}", review);
 
