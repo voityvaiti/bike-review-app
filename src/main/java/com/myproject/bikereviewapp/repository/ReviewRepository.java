@@ -6,6 +6,8 @@ import com.myproject.bikereviewapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -14,6 +16,9 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     boolean existsByUserIdAndMotorcycleId(Long userId, Long motorcycleId);
+
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM Review r WHERE r.id = :reviewId AND r.user.id = :userId")
+    boolean existsByIdAndUserId(@Param("reviewId") Long reviewId, @Param("userId") Long userId);
 
     Page<Review> findAllByMotorcycle(Motorcycle motorcycle, Pageable pageable);
 
