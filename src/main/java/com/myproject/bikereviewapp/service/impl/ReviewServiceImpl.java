@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -94,7 +95,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<Reaction> optionalReaction = reactionRepository.findByReviewIdAndUserId(newReaction.getReview().getId(), newReaction.getUser().getId());
 
-        if(optionalReaction.isPresent()) {
+        if (optionalReaction.isPresent()) {
             Reaction reaction = optionalReaction.get();
             reaction.setLike(newReaction.isLike());
 
@@ -110,6 +111,16 @@ public class ReviewServiceImpl implements ReviewService {
         log.debug("Removing Review with ID: {}", id);
 
         reviewRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteReviewByUser(Long reviewId, Long userId) {
+
+        if (!reviewRepository.existsByIdAndUserId(reviewId, userId)) {
+            throw new AccessDeniedException("You do not have permission to delete this review, or it does not exist.");
+        }
+
+        reviewRepository.deleteById(reviewId);
     }
 
 
