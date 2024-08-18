@@ -43,7 +43,7 @@
 
         </div>
 
-        <div class="d-flex justify-content-between mb-1">
+        <div class="d-flex justify-content-between">
 
             <div>
                 <meter class="average-rating d-flex align-items-center" min="0" max="5"
@@ -68,22 +68,24 @@
 </div>
 
 
-<div th:fragment="motorcycleReviewTemplate(review)" class="border border-black rounded p-3 mt-2 d-flex">
+<div th:fragment="motorcycleReviewTemplate(review)" class="border border-black rounded p-2 mt-2 d-flex">
 
-    <img th:src="${review.motorcycle.image != null ? review.motorcycle.image.url : '/img/motorcycle.png'}" alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
+    <img th:src="${review.motorcycle.image != null ? review.motorcycle.image.url : '/img/motorcycle.png'}"
+         alt="Motorcycle" class="motorcycle-icon me-3" draggable="false">
 
     <div class="w-100">
         <div class="d-flex justify-content-between">
             <div class="mb-1 me-1">
                 <a th:href="@{/motorcycles/{id}(id=${review.motorcycle.getId()})}"
                    class="text-black text-decoration-none">
-                    <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}" class="text-nowrap"></strong>
+                    <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"
+                            class="text-nowrap"></strong>
                 </a>
                 <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                       class="ms-2 text-muted  text-nowrap"></small> <br>
+                       class="ms-2 text-muted text-nowrap"></small> <br>
             </div>
 
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center mt-1">
                 <img src="/img/like.png" class="reaction-icon" alt="Like" draggable="false">
                 <span th:text="${review.getLikes()}" class="text-success mx-1"></span>
 
@@ -92,15 +94,24 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-start">
-            <small th:text="${review.getRating() != null ? #numbers.formatDecimal(review.getRating(), 1, 1) : '0'}"
-                   class="text-muted me-1"></small>
+        <div class="d-flex justify-content-between">
 
-            <meter class="average-rating d-flex align-items-center" min="0" max="5"
-                   th:value="${review.getRating()}"></meter>
+            <div>
+                <meter class="average-rating d-flex align-items-center" min="0" max="5"
+                           th:value="${review.getRating()}"></meter>
+
+                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+            </div>
+
+            <form th:method="DELETE" th:action="@{/users/profile/review/{id}(id=${review.getId()})}" class="d-flex justify-content-end mt-3">
+
+                <button type="submit" class="bg-white border-0 p-0 text-decoration-none md-widget-icon">
+                    <img th:src="@{/img/delete.png}" class="img-fluid" alt="Delete" draggable="false">
+                </button>
+            </form>
+
         </div>
 
-        <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
     </div>
 </div>
 
