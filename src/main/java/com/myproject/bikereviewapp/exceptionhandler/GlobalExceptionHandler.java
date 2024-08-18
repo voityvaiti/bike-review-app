@@ -7,6 +7,7 @@ import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorize
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +35,13 @@ public class GlobalExceptionHandler {
             RuntimeException exception, Model model, HttpServletResponse response
     ) {
         return handleException(exception, model, HttpStatus.UNAUTHORIZED, response);
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public String handleAccessDeniedException(
+            RuntimeException exception, Model model, HttpServletResponse response
+    ) {
+        return handleException(exception, model, HttpStatus.FORBIDDEN, response);
     }
 
     @ExceptionHandler(CloudException.class)
