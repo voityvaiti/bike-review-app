@@ -1,11 +1,13 @@
 package com.myproject.bikereviewapp.controller;
 
+import com.myproject.bikereviewapp.entity.Review;
 import com.myproject.bikereviewapp.entity.Role;
 import com.myproject.bikereviewapp.entity.User;
 import com.myproject.bikereviewapp.entity.dto.ImageDto;
 import com.myproject.bikereviewapp.entity.dto.PasswordUpdateDto;
 import com.myproject.bikereviewapp.entity.dto.PublicNameUpdateDto;
 import com.myproject.bikereviewapp.entity.dto.RoleUpdateDto;
+import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
@@ -19,7 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.myproject.bikereviewapp.controller.MainController.*;
@@ -227,6 +228,16 @@ public class UserController {
         }
 
         userService.updateImg(currentUser.getId(), imageDto.getImage());
+
+        return "redirect:/users/profile";
+    }
+
+    @DeleteMapping("/profile/review/{id}")
+    public String deleteCurrentUserReview(@PathVariable(ID) Long id, Authentication authentication) {
+
+        User currentUser = userService.getByUsername(authentication.getName());
+
+        reviewService.deleteReviewByUser(id, currentUser.getId());
 
         return "redirect:/users/profile";
     }
