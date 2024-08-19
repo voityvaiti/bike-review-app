@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class, UniquenessConstraintViolationException.class, ConstraintViolationException.class})
     public String handleBadRequestExceptions(
+            RuntimeException exception, Model model, HttpServletResponse response
+    ) {
+        return handleException(exception, model, HttpStatus.BAD_REQUEST, response);
+    }
+
+    @ExceptionHandler({MaxUploadSizeExceededException.class})
+    public String handleMaxUploadSizeExceededException(
             RuntimeException exception, Model model, HttpServletResponse response
     ) {
         return handleException(exception, model, HttpStatus.BAD_REQUEST, response);
