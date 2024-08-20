@@ -34,7 +34,14 @@
 
         <form th:method="post" th:action="@{/brands/admin/{id}/upload-image(id=${brand.getId()})}" th:object="${imageDto}" enctype="multipart/form-data" class="mt-4">
             <div class="form-group mb-2">
-                <label for="image">Upload Image</label>
+
+                <label for="image" th:if="${brand.image != null}">
+                    Update Image <span class="text-success fst-italic"> (uploaded)</span>
+                </label>
+                 <label for="image" th:unless="${brand.image != null}">
+                     Upload Image <span class="text-danger fst-italic"> (not uploaded)</span>
+                 </label>
+
                 <input type="file" th:field="*{image}" class="form-control" id="image">
                 <div th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="form-text text-danger"></div>
             </div>
