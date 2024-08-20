@@ -4,14 +4,17 @@ body {
 
 .brand-img {
     max-width: 120px;
-    width: 100%;
+    max-height: 60px;
     height: auto;
+    object-fit: contain;
 }
 
 .motorcycle-img {
     max-width: 960px;
+    max-height: 520px;
     width: 100%;
     height: auto;
+    object-fit: contain;
 }
 
 .user-img {
