@@ -2,10 +2,7 @@ package com.myproject.bikereviewapp.service.impl;
 
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import com.myproject.bikereviewapp.entity.pojo.FileUploadPojo;
 import com.myproject.bikereviewapp.exceptionhandler.exception.CloudException;
 import com.myproject.bikereviewapp.service.abstraction.CloudService;
@@ -27,10 +24,13 @@ import java.util.UUID;
 @Validated
 public class CloudServiceImpl implements CloudService {
 
+    @Value("${cache.control.dynamic.max-age}")
+    private int cacheControlMaxAge;
+
 
     @Value("${firebase.access.file-name}")
     private String firebaseAccessFileName;
-    
+
     @Value("${firebase.bucket-name}")
     private String bucketName;
 
@@ -69,12 +69,12 @@ public class CloudServiceImpl implements CloudService {
     }
 
 
-
     private String uploadFile(File file, String fileName, String folderName) throws IOException {
 
         String blobName = folderName + "/" + fileName;
         BlobId blobId = BlobId.of(bucketName, blobName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
+
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").setCacheControl(getCacheControlHeader()).build();
 
         Storage storage = initializeStorage();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
@@ -104,6 +104,25 @@ public class CloudServiceImpl implements CloudService {
     private String getExtension(String fileName) {
         int lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex);
+    }
+
+
+    private void updateCacheControlForAllFiles() throws IOException {
+        Storage storage = initializeStorage();
+        Bucket bucket = storage.get(bucketName);
+
+        for (Blob blob : bucket.list().iterateAll()) {
+            BlobInfo updatedBlobInfo = blob.toBuilder()
+                    .setCacheControl(getCacheControlHeader())
+                    .build();
+
+            storage.update(updatedBlobInfo);
+            System.out.println("Updated Cache Control for: " + blob.getName());
+        }
+    }
+
+    private String getCacheControlHeader() {
+        return "max-age=" + cacheControlMaxAge;
     }
 }
 
