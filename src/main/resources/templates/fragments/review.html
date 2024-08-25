@@ -49,7 +49,7 @@
                 <meter class="average-rating d-flex align-items-center" min="0" max="5"
                        th:value="${review.getRating()}"></meter>
 
-                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0 mt-1"></p>
+                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="text-break m-0 mt-1"></p>
             </div>
 
 
@@ -58,7 +58,7 @@
                 <input type="hidden" name="motorcycleId" th:value="${review.motorcycle.getId()}">
 
                 <button type="submit" class="bg-white border-0 p-0 text-decoration-none md-widget-icon">
-                    <img th:src="@{/img/delete.png}" class="img-fluid" alt="Delete" draggable="false">
+                    <img th:src="@{/img/delete.png}" class="md-widget-icon img-fluid" alt="Delete" draggable="false">
                 </button>
             </form>
 
@@ -100,13 +100,13 @@
                 <meter class="average-rating d-flex align-items-center" min="0" max="5"
                            th:value="${review.getRating()}"></meter>
 
-                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="m-0"></p>
+                <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="text-break m-0"></p>
             </div>
 
             <form th:method="DELETE" th:action="@{/users/profile/review/{id}(id=${review.getId()})}" class="d-flex justify-content-end mt-3">
 
                 <button type="submit" class="bg-white border-0 p-0 text-decoration-none md-widget-icon">
-                    <img th:src="@{/img/delete.png}" class="img-fluid" alt="Delete" draggable="false">
+                    <img th:src="@{/img/delete.png}" class="md-widget-icon img-fluid" alt="Delete" draggable="false">
                 </button>
             </form>
 
