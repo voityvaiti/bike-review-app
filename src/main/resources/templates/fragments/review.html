@@ -16,9 +16,11 @@
     <div class="w-100">
         <div class="d-flex justify-content-between">
             <div class="mb-1 me-1">
-                <strong th:text="${review.user.getPublicName()}" class="text-nowrap"></strong>
-                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                       class="ms-2 text-muted text-nowrap"></small> <br>
+                <strong th:text="${review.user.getPublicName()}" class="text-break"></strong>
+                <small th:text="${review.publicationDate.year == #temporals.createNow().year ?
+                #temporals.format(review.publicationDate, 'd MMMM') :
+                #temporals.format(review.publicationDate, 'd MMMM yyyy')}"
+                       class="ms-2 text-muted text-break"></small><br>
             </div>
 
             <div>
@@ -81,8 +83,10 @@
                     <strong th:text="${review.motorcycle.getBrand().getName() + ' ' + review.motorcycle.getModel()}"
                             class="text-nowrap"></strong>
                 </a>
-                <small th:text="${#temporals.format(review.getPublicationDate(), 'd MMMM yyyy')}"
-                       class="ms-2 text-muted text-nowrap"></small> <br>
+                <small th:text="${review.publicationDate.year == #temporals.createNow().year ?
+                #temporals.format(review.publicationDate, 'd MMMM') :
+                #temporals.format(review.publicationDate, 'd MMMM yyyy')}"
+                       class="ms-2 text-muted text-nowrap"></small><br>
             </div>
 
             <div class="d-flex align-items-center mt-1">
