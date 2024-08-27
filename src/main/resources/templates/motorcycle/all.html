@@ -47,7 +47,7 @@
                 <img th:src="${motorcycle.image != null ? motorcycle.image.url : '/img/motorcycle.png'}"
                      class="img-fluid img-thumbnail border-0 mb-1" alt="Motorcycle" draggable="false">
                 <h4 th:text="${motorcycle.getBrand().getName() + ' ' + motorcycle.getModel()}"
-                    class="text-center mb-1"></h4>
+                    class="text-center mb-1 text-break"></h4>
 
                 <div class="d-flex justify-content-between w-100">
 
