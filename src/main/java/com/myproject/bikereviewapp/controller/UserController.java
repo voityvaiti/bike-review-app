@@ -7,7 +7,6 @@ import com.myproject.bikereviewapp.entity.dto.ImageDto;
 import com.myproject.bikereviewapp.entity.dto.PasswordUpdateDto;
 import com.myproject.bikereviewapp.entity.dto.PublicNameUpdateDto;
 import com.myproject.bikereviewapp.entity.dto.RoleUpdateDto;
-import com.myproject.bikereviewapp.exceptionhandler.exception.EntityNotFoundException;
 import com.myproject.bikereviewapp.exceptionhandler.exception.UserIsNotAuthorizedException;
 import com.myproject.bikereviewapp.service.abstraction.ReviewService;
 import com.myproject.bikereviewapp.service.abstraction.UserService;
@@ -61,7 +60,7 @@ public class UserController {
                                       @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SIZE, name = PAGE_SIZE_ATTR) Integer pageSize,
                                       @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SORT, name = SORT_ATTR) String sort) {
 
-        model.addAttribute(USER_PAGE_ATTR, userService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
+        model.addAttribute(USER_PAGE_ATTR, userService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort, User.class))));
 
         model.addAttribute(SORT_ATTR, sort);
 
@@ -84,7 +83,7 @@ public class UserController {
             model.addAttribute(IMAGE_DTO_ATTR, new ImageDto());
         }
 
-        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByUserId(currentUser.getId(), PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort, Review.class))));
         model.addAttribute(REVIEW_SORT_ATTR, reviewSort);
 
         return "user/profile";

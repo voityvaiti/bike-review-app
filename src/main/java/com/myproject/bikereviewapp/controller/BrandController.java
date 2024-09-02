@@ -37,7 +37,7 @@ public class BrandController {
                                       @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SIZE, name = PAGE_SIZE_ATTR) Integer pageSize,
                                       @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SORT, name = SORT_ATTR) String sort) {
 
-        model.addAttribute(BRAND_PAGE_ATTR, brandService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
+        model.addAttribute(BRAND_PAGE_ATTR, brandService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort, Brand.class))));
 
         model.addAttribute(SORT_ATTR, sort);
 

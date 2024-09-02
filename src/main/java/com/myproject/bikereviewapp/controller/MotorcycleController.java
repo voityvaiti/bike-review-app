@@ -56,7 +56,7 @@ public class MotorcycleController {
                           @RequestParam(required = false, name = "query") String query) {
 
         Page<Motorcycle> motorcyclePage;
-        Pageable pageable = PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sortUtility.parseSort(sort));
+        Pageable pageable = PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sortUtility.parseSort(sort, Motorcycle.class));
 
         if (query != null && !query.isBlank()) {
             motorcyclePage = motorcycleService.getAllByQuery(query, pageable);
@@ -78,7 +78,7 @@ public class MotorcycleController {
                                       @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SIZE, name = PAGE_SIZE_ATTR) Integer pageSize,
                                       @RequestParam(defaultValue = DEFAULT_ADMIN_PAGE_SORT, name = SORT_ATTR) String sort) {
 
-        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort))));
+        model.addAttribute(MOTORCYCLE_PAGE_ATTR, motorcycleService.getAll(PageRequest.of(pageNumber, pageSize, sortUtility.parseSort(sort, Motorcycle.class))));
 
         model.addAttribute(SORT_ATTR, sort);
 
@@ -105,7 +105,7 @@ public class MotorcycleController {
         if(!model.containsAttribute(NEW_REVIEW_ATTR)) {
             model.addAttribute(NEW_REVIEW_ATTR, new Review());
         }
-        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort))));
+        model.addAttribute(REVIEW_PAGE_ATTR, reviewService.getReviewsByMotorcycleId(motorcycleId, PageRequest.of(reviewPageNumber, REVIEW_PAGE_SIZE, sortUtility.parseSort(reviewSort, Review.class))));
         model.addAttribute("currentUserReview", currentUserReview);
 
         model.addAttribute(REVIEW_SORT_ATTR, reviewSort);
