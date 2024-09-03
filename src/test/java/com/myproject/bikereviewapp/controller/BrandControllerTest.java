@@ -72,7 +72,7 @@ class BrandControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(sortUtility.parseSort(anyString(), any())).thenReturn(sort);
 
         when(brandService.getAll(any(PageRequest.class))).thenReturn(brandPage);
     }
@@ -103,7 +103,7 @@ class BrandControllerTest {
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
-        verify(sortUtility).parseSort(sortStr);
+        verify(sortUtility).parseSort(sortStr, Brand.class);
         verify(brandService).getAll(PageRequest.of(pageNumber, pageSize, sort));
     }
 

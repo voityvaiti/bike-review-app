@@ -118,7 +118,7 @@ class MotorcycleControllerTest {
         when(motorcycleService.getById(anyLong())).thenReturn(motorcycle);
         when(reviewService.getReviewsByMotorcycleId(anyLong(), any(PageRequest.class))).thenReturn(reviewPage);
 
-        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(sortUtility.parseSort(anyString(), any())).thenReturn(sort);
     }
 
     @Test
@@ -140,14 +140,14 @@ class MotorcycleControllerTest {
     @Test
     void showAll_shouldMakePageRequestByProperParams_whenRequestContainAppropriateParams() throws Exception {
 
-        when(sortUtility.parseSort(sortStr)).thenReturn(sort);
+        when(sortUtility.parseSort(sortStr, Motorcycle.class)).thenReturn(sort);
 
         mockMvc.perform(get("/motorcycles")
                         .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
-        verify(sortUtility).parseSort(sortStr);
+        verify(sortUtility).parseSort(sortStr, Motorcycle.class);
         verify(motorcycleService).getAll(PageRequest.of(pageNumber, MOTORCYCLE_MAIN_PAGE_SIZE, sort));
     }
 
@@ -188,7 +188,7 @@ class MotorcycleControllerTest {
     @Test
     void showAllInAdminPanel_shouldMakePageRequestByProperParams_whenRequestContainAppropriateParams() throws Exception {
 
-        when(sortUtility.parseSort(sortStr)).thenReturn(sort);
+        when(sortUtility.parseSort(sortStr, Motorcycle.class)).thenReturn(sort);
 
         mockMvc.perform(get("/motorcycles/admin")
                         .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
@@ -196,7 +196,7 @@ class MotorcycleControllerTest {
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
-        verify(sortUtility).parseSort(sortStr);
+        verify(sortUtility).parseSort(sortStr, Motorcycle.class);
         verify(motorcycleService).getAll(PageRequest.of(pageNumber, pageSize, sort));
     }
 
@@ -263,7 +263,7 @@ class MotorcycleControllerTest {
                         .param(REVIEW_SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
-        verify(sortUtility).parseSort(sortStr);
+        verify(sortUtility).parseSort(sortStr, Review.class);
         verify(reviewService).getReviewsByMotorcycleId(id, PageRequest.of(pageNumber, REVIEW_PAGE_SIZE, sort));
     }
 

@@ -112,7 +112,7 @@ class UserControllerTest {
         when(userService.isCorrectCredentials(anyString(), anyString())).thenReturn(true);
         when(reviewService.getReviewsByUserId(anyLong(), any(Pageable.class))).thenReturn(reviewPage);
 
-        when(sortUtility.parseSort(anyString())).thenReturn(sort);
+        when(sortUtility.parseSort(anyString(), any())).thenReturn(sort);
     }
 
 
@@ -135,7 +135,7 @@ class UserControllerTest {
     @Test
     void showAllInAdminPanel_shouldMakePageRequestByProperParams_whenRequestContainAppropriateParams() throws Exception {
 
-        when(sortUtility.parseSort(sortStr)).thenReturn(sort);
+        when(sortUtility.parseSort(sortStr, User.class)).thenReturn(sort);
 
         mockMvc.perform(get("/users/admin")
                         .param(PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
@@ -143,7 +143,7 @@ class UserControllerTest {
                         .param(SORT_ATTR, sortStr))
                 .andExpect(status().isOk());
 
-        verify(sortUtility).parseSort(sortStr);
+        verify(sortUtility).parseSort(sortStr, User.class);
         verify(userService).getAll(PageRequest.of(pageNumber, pageSize, sort));
     }
 
@@ -208,7 +208,7 @@ class UserControllerTest {
     @Test
     void showCurrentUserProfile_shouldMakeReviewPageRequestByProperParams_whenRequestContainAppropriateParams() throws Exception {
 
-        when(sortUtility.parseSort(sortStr)).thenReturn(sort);
+        when(sortUtility.parseSort(sortStr, Review.class)).thenReturn(sort);
 
         mockMvc.perform(get("/users/profile")
                         .param(REVIEW_PAGE_NUMBER_ATTR, String.valueOf(pageNumber))
@@ -216,7 +216,7 @@ class UserControllerTest {
                         .principal(mockAuthentication))
                 .andExpect(status().isOk());
 
-        verify(sortUtility).parseSort(sortStr);
+        verify(sortUtility).parseSort(sortStr, Review.class);
         verify(reviewService).getReviewsByUserId(user.getId(), PageRequest.of(pageNumber, REVIEW_PAGE_SIZE, sort));
     }
 
