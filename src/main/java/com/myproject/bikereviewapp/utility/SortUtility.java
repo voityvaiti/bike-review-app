@@ -70,7 +70,7 @@ public class SortUtility {
                 .allMatch(orderExpression -> Pattern.matches(ORDER_EXPRESSION_REGEX, orderExpression));
     }
 
-    public boolean isValidProperty(String propertyPath, Class<?> entityClass) {
+    private boolean isValidProperty(String propertyPath, Class<?> entityClass) {
 
         Metamodel metamodel = entityManager.getMetamodel();
         EntityType<?> entityType = metamodel.entity(entityClass);
@@ -102,7 +102,7 @@ public class SortUtility {
         return true;
     }
 
-    public static Sort getDefaultSort() {
+    private static Sort getDefaultSort() {
         return DEFAULT_SORT;
     }
 
