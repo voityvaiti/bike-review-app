@@ -1,49 +1,106 @@
 package com.myproject.bikereviewapp.utility;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Id;
+import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.Metamodel;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = SortUtility.class)
 class SortUtilityTest {
 
-    @Autowired
-    SortUtility sortUtility;
+    @MockBean
+    private EntityManager entityManager;
+
+    @MockBean
+    private Metamodel metamodel;
+
+    private SortUtility sortUtility;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        sortUtility = new SortUtility(entityManager);
+        when(entityManager.getMetamodel()).thenReturn(metamodel);
+    }
 
 
     @Test
-    void parseSort_shouldShouldReturnAppropriateSort_ifSortExpressionIsValid() {
-        Sort.Order idDescOrder = Sort.Order.desc("id");
-        Sort.Order nameAscOrder = Sort.Order.asc("name");
-        Sort.Order averageAgeDescOrder = Sort.Order.desc("averageAge");
-        Sort.Order countryAscOrder = Sort.Order.asc("country");
+    public void testParseSort_WithValidSortExpression_ShouldReturnCorrectSort() {
 
-        assertEquals(Sort.by(idDescOrder), sortUtility.parseSort("id:desc"));
-        assertEquals(Sort.by(nameAscOrder), sortUtility.parseSort("name  :asc"));
-        assertEquals(Sort.by(averageAgeDescOrder), sortUtility.parseSort("  averageAge:  desc"));
-        assertEquals(Sort.by(countryAscOrder), sortUtility.parseSort(" country      :asc    "));
+        String sortExpression = "name:desc,age:asc";
+        Class<TestEntity> entityClass = TestEntity.class;
 
-        assertEquals(Sort.by(List.of(idDescOrder, nameAscOrder)), sortUtility.parseSort("id:desc,name:asc"));
-        assertEquals(Sort.by(List.of(nameAscOrder, averageAgeDescOrder, countryAscOrder)), sortUtility.parseSort("name: asc, averageAge:desc  ,   country  :asc"));
-        assertEquals(Sort.by(List.of(averageAgeDescOrder, countryAscOrder, idDescOrder, nameAscOrder)), sortUtility.parseSort("averageAge  :   desc ,country:asc,id:desc,name:asc "));
+        EntityType<TestEntity> mockEntityType = mock(EntityType.class);
+        when(metamodel.entity(entityClass)).thenReturn(mockEntityType);
+        when(mockEntityType.getSingularAttribute("name")).thenReturn(mockSingularAttribute());
+        when(mockEntityType.getSingularAttribute("age")).thenReturn(mockSingularAttribute());
+
+        Sort sort = sortUtility.parseSort(sortExpression, entityClass);
+
+        assertEquals(2, sort.stream().count());
+        assertEquals(Sort.Direction.DESC, Objects.requireNonNull(sort.getOrderFor("name")).getDirection());
+        assertEquals(Sort.Direction.ASC, Objects.requireNonNull(sort.getOrderFor("age")).getDirection());
     }
 
     @Test
-    void parseSort_shouldReturnDefaultSort_ifSortExpressionIsInvalid() {
-        Sort defaultSort = SortUtility.getDefaultSort();
+    public void testParseSort_WithInvalidSortExpression_ShouldReturnDefaultSort() {
+        String invalidSortExpression = "invalid_sort_expression";
+        Sort sort = sortUtility.parseSort(invalidSortExpression, TestEntity.class);
 
-        assertEquals(defaultSort, sortUtility.parseSort(""));
-        assertEquals(defaultSort, sortUtility.parseSort("    "));
-        assertEquals(defaultSort, sortUtility.parseSort(":"));
-        assertEquals(defaultSort, sortUtility.parseSort("id:acss"));
-        assertEquals(defaultSort, sortUtility.parseSort("field-asc"));
-        assertEquals(defaultSort, sortUtility.parseSort("field1:asc,invalid,field2:desc"));
-        assertEquals(defaultSort, sortUtility.parseSort("1235:desc"));
+        assertEquals(Sort.by("id"), sort);
+    }
+
+    @Test
+    public void testParseSort_WithBlankSortExpression_ShouldReturnDefaultSort() {
+        String blankSortExpression = "";
+        Sort sort = sortUtility.parseSort(blankSortExpression, TestEntity.class);
+
+        assertEquals(Sort.by("id"), sort);
+    }
+
+    @Test
+    public void testParseSort_WithInvalidProperty_ShouldReturnDefaultSort() {
+        
+        String sortExpression = "invalidProperty:asc";
+        Class<TestEntity> entityClass = TestEntity.class;
+
+        EntityType<TestEntity> entityType = mock(EntityType.class);
+
+        when(metamodel.entity(entityClass)).thenReturn(entityType);
+        when(entityType.getSingularAttribute("invalidProperty")).thenThrow(IllegalArgumentException.class);
+
+        Sort sort = sortUtility.parseSort(sortExpression, entityClass);
+
+        assertEquals(Sort.by("id"), sort);
+    }
+
+
+    private <X, Y> jakarta.persistence.metamodel.SingularAttribute<X, Y> mockSingularAttribute() {
+        return mock(jakarta.persistence.metamodel.SingularAttribute.class);
+    }
+
+
+    @Entity
+    public static class TestEntity {
+
+        @Id
+        private Long id;
+
+        private String name;
+        private int age;
     }
 
 }
