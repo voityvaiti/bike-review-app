@@ -49,7 +49,7 @@
                 <th th:text="${user.getPublicName()}"></th>
 
                 <th>
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-start">
 
                         <span th:text="${user.getRole()}"></span>
 
@@ -61,7 +61,7 @@
                 </th>
 
                 <th>
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-start">
 
                         <span th:if="${user.isEnabled()}" th:text="Enabled" class="text-success"></span>
                         <span th:unless="${user.isEnabled()}" th:text="Disabled" class="text-danger"></span>
