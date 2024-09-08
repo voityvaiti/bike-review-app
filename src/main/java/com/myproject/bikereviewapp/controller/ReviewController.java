@@ -24,7 +24,7 @@ import static com.myproject.bikereviewapp.controller.UserController.USER_IS_NOT_
 @Controller
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
-public class ReviewController {
+public class ReviewController extends BaseController {
 
     protected static final String DEFAULT_REVIEWS_PAGE_NUMBER = "0";
     protected static final String DEFAULT_REVIEWS_SORT = "publicationDate:desc";

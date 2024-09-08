@@ -18,7 +18,7 @@ import static com.myproject.bikereviewapp.controller.MainController.*;
 @Controller
 @RequestMapping("/brands")
 @RequiredArgsConstructor
-public class BrandController {
+public class BrandController extends BaseController {
 
 
     protected static final String BRAND_ATTR = "brand";

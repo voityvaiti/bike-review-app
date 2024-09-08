@@ -27,7 +27,7 @@ import static com.myproject.bikereviewapp.controller.ReviewController.*;
 @Controller
 @RequestMapping("/motorcycles")
 @RequiredArgsConstructor
-public class MotorcycleController {
+public class MotorcycleController extends BaseController {
 
     protected static final Integer MOTORCYCLE_MAIN_PAGE_SIZE = 12;
     protected static final String MOTORCYCLE_MAIN_PAGE_DEFAULT_SORT = "reviewsAmount:desc";

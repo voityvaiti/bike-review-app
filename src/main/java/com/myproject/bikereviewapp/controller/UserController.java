@@ -28,7 +28,7 @@ import static com.myproject.bikereviewapp.controller.ReviewController.*;
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController extends BaseController {
 
     protected static final String USER_IS_NOT_AUTHORIZED_ERROR_MESSAGE = "Error! User is not authorized.";
 
