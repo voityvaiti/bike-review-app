@@ -17,7 +17,10 @@
 
         <div class="d-flex justify-content-center">
             <a th:href="@{/users/profile}" sec:authorize="isAuthenticated()" class="text-white">
-                <img th:src="@{/img/profile.png}" class="profile-icon" alt="Profile" draggable="false"/>
+
+                <img th:if="${userImgUrl != null && !userImgUrl.isEmpty()}" th:src="@{${userImgUrl}}" class="profile-icon rounded-circle border border-black border-1 p-1" alt="Profile" draggable="false"/>
+
+                <img th:unless="${userImgUrl != null && !userImgUrl.isEmpty()}" th:src="@{/img/profile.png}" class="profile-icon" alt="Profile" draggable="false"/>
             </a>
 
             <a th:href="@{/admin}" sec:authorize="hasAnyAuthority('ADMIN', 'STUFF')" class="text-white">
