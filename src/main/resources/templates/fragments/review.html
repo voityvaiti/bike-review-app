@@ -48,8 +48,10 @@
         <div class="d-flex justify-content-between">
 
             <div>
-                <meter class="average-rating d-flex align-items-center" min="0" max="5"
-                       th:value="${review.getRating()}"></meter>
+                <div class="d-flex">
+                    <meter class="average-rating d-flex align-items-center" min="0" max="5"
+                           th:value="${review.getRating()}"></meter>
+                </div>
 
                 <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="text-break m-0 mt-1"></p>
             </div>
@@ -101,8 +103,10 @@
         <div class="d-flex justify-content-between">
 
             <div>
-                <meter class="average-rating d-flex align-items-center" min="0" max="5"
+                <div class="d-flex">
+                    <meter class="average-rating d-flex align-items-center" min="0" max="5"
                            th:value="${review.getRating()}"></meter>
+                </div>
 
                 <p th:utext="${#strings.replace(#strings.escapeXml(review.body),'&#10;','&lt;br&gt;')}" class="text-break m-0"></p>
             </div>
