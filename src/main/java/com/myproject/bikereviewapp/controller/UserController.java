@@ -236,7 +236,7 @@ public class UserController extends BaseController {
 
         User currentUser = userService.getByUsername(authentication.getName());
 
-        reviewService.deleteReviewByUser(id, currentUser.getId());
+        reviewService.deleteReviewIfOwnedByUser(id, currentUser.getId());
 
         return "redirect:/users/profile";
     }

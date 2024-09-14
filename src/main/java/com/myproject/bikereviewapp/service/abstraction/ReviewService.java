@@ -22,6 +22,6 @@ public interface ReviewService {
 
     void delete(Long id);
 
-    void deleteReviewByUser(Long reviewId, Long userId);
+    void deleteReviewIfOwnedByUser(Long reviewId, Long userId);
 
 }

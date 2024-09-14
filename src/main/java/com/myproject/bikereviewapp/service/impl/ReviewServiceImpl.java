@@ -114,7 +114,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReviewByUser(Long reviewId, Long userId) {
+    public void deleteReviewIfOwnedByUser(Long reviewId, Long userId) {
 
         if (!reviewRepository.existsByIdAndUserId(reviewId, userId)) {
             throw new AccessDeniedException("You do not have permission to delete this review, or it does not exist.");
