@@ -30,7 +30,7 @@ public class Brand {
     @Size(max = 30, message = "Country cannot be longer then 30 characters.")
     private String country;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "img_id", referencedColumnName = "id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

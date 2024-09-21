@@ -31,7 +31,7 @@ public class Motorcycle {
     @NotNull(message = "Brand must be selected.")
     private Brand brand;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "img_id", referencedColumnName = "id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
