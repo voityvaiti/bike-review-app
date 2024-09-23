@@ -30,6 +30,8 @@ public interface UserService {
 
     void updateImg(Long id, MultipartFile file);
 
+    void deleteImageIfOwnedByUser(Long imageId, Long userId);
+
     void delete(Long id);
     
 }
