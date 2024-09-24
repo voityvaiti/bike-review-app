@@ -77,6 +77,8 @@ public class UserController extends BaseController {
         }
         User currentUser = userService.getByUsername(authentication.getName());
 
+        System.out.println(currentUser.getImage());
+
         model.addAttribute(USER_ATTR, currentUser);
 
         if (!model.containsAttribute(IMAGE_DTO_ATTR)) {
@@ -227,6 +229,16 @@ public class UserController extends BaseController {
         }
 
         userService.updateImg(currentUser.getId(), imageDto.getImage());
+
+        return "redirect:/users/profile";
+    }
+
+    @DeleteMapping("/profile/image/{id}")
+    public String deleteCurrentUserImage(@PathVariable(ID) Long id, Authentication authentication) {
+
+        User currentUser = userService.getByUsername(authentication.getName());
+
+        userService.deleteImageIfOwnedByUser(id, currentUser.getId());
 
         return "redirect:/users/profile";
     }
